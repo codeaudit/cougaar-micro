@@ -107,6 +107,9 @@ public class SWHub {
       while (true) {
 	try {
           // Blocking read
+	  if (debugging)
+	     System.out.println("SWHub blocking on datain read...");
+
           podnumber = datain.readInt();
 	  longdate = datain.readLong();
           datatype = (byte) datain.read();
@@ -116,7 +119,12 @@ public class SWHub {
             System.out.println("SWHub::SWRecord received from pod " + podnumber + ":");
 	    System.out.println("pn " + podnumber + ", ld " + longdate + ", dt " + datatype + ", dv " + datavalue + ", st " + sourcetype + ".");
           }
-        } catch (Exception e) {
+        }
+	catch (EOFException e) {
+	  System.err.println("SWHub::EOF Exception. \n" + e);
+	  break;
+        }
+	catch (Exception e) {
 	  System.err.println("SWHub::Unable to read from input stream. \n" + e);
 	  continue;
         }
@@ -143,15 +151,12 @@ public class SWHub {
               }
 
 	    }  // end if
+	    else
+	    {
+	      if (debugging) {System.out.println("SWHub::Will not retransmit to self.");}
+	    }
 	  }  // end while
 	}  // end synchronized
-
-	if (debugging) {
-	  try {
-	    Thread.sleep(100000000);
-	  } catch (Exception ell) {}
-}
-
       }  // end while
     }  // end method run()
   }  // end class InStreamHandler
