@@ -21,7 +21,7 @@ public abstract class ControllerResource extends Resource {
 
   public abstract void setChan(int c);
   public abstract void setUnits(String u);
-  public abstract double getValue();
+  public abstract long getValue();
 
   public ControllerResource() {}
 

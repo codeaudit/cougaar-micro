@@ -20,11 +20,11 @@ public abstract class LocomotionResource extends Resource {
   /**
    * @return the speed setting (in mm/sec)
    */
-  public abstract double getSpeed();
+  public abstract long getSpeed();
   /**
    * @param newSpeed the speed (in mm/sec) that the robot will move forward or backward
    */
-  public abstract void setSpeed(double newSpeed);
+  public abstract void setSpeed(long newSpeed);
 
   public static final int CLOCKWISE = 0;
   public static final int COUNTER_CLOCKWISE = 1;
@@ -33,15 +33,15 @@ public abstract class LocomotionResource extends Resource {
    * @param direction one of CLOCKWISE or COUNTER_CLOCKWISE
    * @param degrees the number of degrees to rotate in that direction
    */
-  public abstract long[] rotate(int direction, double degrees);
+  public abstract long[] rotate(int direction, long degrees);
   /**
    * Move forward at the requested speed
-   * @see setSpeed(double)
+   * @see setSpeed(long)
    */
   public abstract long[] forward();
   /**
    * Move in reverse at the requested speed
-   * @see setSpeed(double)
+   * @see setSpeed(long)
    */
   public abstract long[] backward();
   /**
