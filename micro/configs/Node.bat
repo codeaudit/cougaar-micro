@@ -8,7 +8,9 @@ CALL %COUGAAR_INSTALL_PATH%\bin\setarguments.bat
 set MYARGUMENTS= -c -n "%1"
 
 set MYPROPERTIES=%MYPROPERTIES%
-set LIBPATHS=..\SEclasses;%LIBPATHS%
+rem set LIBPATHS=%COUGAAR_INSTALL_PATH%\lib\core.jar;..\..\micro\SEclasses;%LIBPATHS%
+rem set LIBPATHS=%COUGAAR_INSTALL_PATH%\lib\core.jar;..\..\micro\SEclasses
+set LIBPATHS=%COUGAAR_INSTALL_PATH%\lib\core.jar;..\SEclasses
 
 @ECHO ON
 

@@ -1,0 +1,16 @@
+#!/bin/sh -x
+
+
+#
+# This batch file starts a CougaarME node using the KVM. 
+# Option 1: Provide one argument (the name of the XML config file)
+# Option 2: Provide three arguments (the name of the node, then the IP 
+#           address and port of the CougaarSE configuration server)
+#
+
+
+# Set this to the root of your KVM distribution
+KVM_HOME=/usr/local/j2me_cldc
+
+
+kvm -classpath ./:../../data/cougaarme.jar:$KVM_HOME/bin/kjava/api/classes org.cougaar.microedition.cluster.Node $1 $2 $3

@@ -1,7 +1,11 @@
 #
 # Makefile for CougaarME
-# Depends on GNU Make
+# Depends on GNU Make.  Works for linux or Win2k.
 #
+
+##
+## Set these three parameters to match your local installation
+##
 
 #PLATFORM=linux
 #KVMROOT=/home/wwright/j2me_cldc
@@ -30,6 +34,7 @@ SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/tinyxml/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/tinyxml/util/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/util/*.java)
+SRCFILES += $(wildcard $(TOP)/tutorial/*.java)
 
 SRCFILES += $(wildcard $(TOP)/gov/nasa/jpl/sensorweb/*.java)
 
@@ -38,17 +43,20 @@ OBJFILES = $(patsubst %.java,%.class,$(SRCFILES))
 
 all: $(OBJFILES) cougaarme.jar
 
-preverify:
+preverify: $(OBJFILES)
 	$(PREVERIFY) -d $(OUTDIR) -classpath "$(KVMCLASSES)" \
               $(TMPOUT) || exit 1; \
 
 cougaarme.jar: preverify 
-	$(JAR) -cf cougaarme.jar -C $(OUTDIR) org -C $(OUTDIR) gov
+	$(JAR) -cf cougaarme.jar \
+	        -C $(OUTDIR) org \
+	        -C $(OUTDIR) tutorial \
+		-C $(OUTDIR) gov
 
 PalmMain.prc: cougaarme.jar
 	java -classpath $(KVMROOT)/tools/palm/src/palm.jar palm.database.MakePalmApp \
 	-v -v -classpath $(OUTDIR) -bootclasspath "$(KVMCLASSES)" -networking \
-	-JARtoPRC cougaarme.jar org.cougaar.microedition.lvm.PalmMain
+	-JARtoPRC cougaarme.jar org.cougaar.microedition.kvm.PalmMain
 
 
 #$(OBJFILES): %.class: %.java

@@ -32,16 +32,16 @@ java.sun.com/j2me
 java.sun.com/people/shommel/KVM/
 
 We currently build our KVM executables under Linux using the standard SUN
-javac 1.3 distribution.  We use a modified KVM distribution from kvmworld, 
-not the vanilla distribution from SUN which doesn't work under Linux. All Palm 
-development to date has been done under a Palm Emulator which is part of the
-distribution.
+javac 1.3 distribution.  We use the CLDC 1.0.2 release of the KVM under LINUX,
+Windows, and PalmOS. Note that you'll need palmOS 3.5 or the networking 
+won't work.
 
 Within this directory (micro) you will find:
 Directories:
 	configs where ".ini" files to seed the Big Cougaar Node, and
 		where ".xml" files to seed the Micro Cougaars live.
 		Also Node.bat to start Big Cougaar.
+		Look in the "examples" directory for a simple example
 	
 	data	where ".jpr" files to setup JBuilder (3 or 4) live.
 

@@ -17,7 +17,15 @@ The first thing the ME does is attempt to register with the SE (mom) at
 the ip address and port given to it on the command line.  The ME passes
 its node name to mom, and mom lookes for a file named "nodename.xml" in
 the configs directory.  Mom then passes this file to the ME so the ME knows
-which plugins to instantiate. Below is an example file called Tini1.xml
+which plugins to instantiate. 
+
+You can also just invoke it with one argument which is the name of the 
+XML configuration file. When started this way, the ME node will not try to
+register with any name server, so if you need more than one, you'll need
+to find another way to connect.
+
+
+Below is an example file called Tini1.xml
 used in our workshop demo scenario...
 
 <?xml version="1.0"?>
