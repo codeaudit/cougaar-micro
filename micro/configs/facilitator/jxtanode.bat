@@ -6,8 +6,8 @@ CALL %ALP_INSTALL_PATH%\bin\setarguments.bat
 set MYARGUMENTS= -c -n "%1"
 set PROJDIR=C:\Projects\JXTA
 set JXTADIR=C:\Projects\JXTA
-set JXTAPEER="daffyduck"
-set JXTAPW="daffyduck"
+set JXTAPEER="facilitator"
+set JXTAPW="jxtapeer"
 
 set MYPROPERTIES= -Dorg.cougaar.domain.micro=org.cougaar.microedition.se.domain.Domain -Dorg.cougaar.microedition.ServerPort=%2 %MYPROPERTIES% -Dorg.cougaar.core.cluster.SharedPlugInManager.watching=false -Dorg.cougaar.core.cluster.enablePublishException=false -Dorg.cougaar.core.cluster.showTraffic=false -Dorg.cougaar.core.cluster.idle.verbose=false -Dorg.cougaar.useBootstrapper=false -Dnet.jxta.tls.principal=%JXTAPEER% -Dnet.jxta.tls.password=%JXTAPW%
 
