@@ -22,7 +22,7 @@ import org.cougaar.util.*;
 import org.cougaar.core.cluster.*;
 import org.cougaar.domain.planning.ldm.plan.*;
 
-import org.cougaar.microedition.domain.*;
+import org.cougaar.microedition.se.domain.*;
 
 public class PSP_MicroData extends PSP_BaseAdapter implements PlanServiceProvider, KeepAlive, UseDirectSocketOutputStream, UISubscriber
 {

@@ -23,7 +23,7 @@ import org.cougaar.core.cluster.*;
 import org.cougaar.domain.planning.ldm.plan.*;
 import org.cougaar.domain.planning.ldm.asset.*;
 
-import org.cougaar.microedition.domain.*;
+import org.cougaar.microedition.se.domain.*;
 
 /**
  * This PSP responds with the vital statistics of each robot reporting to
