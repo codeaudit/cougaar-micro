@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>PositionProvider,LocomotionController</description>
+
+  <resource SurveyLatitude="0.0" SurveyLongitude="0.0" SurveyHeading="0.0">org.cougaar.microedition.tini.TiniMach5PositionResource</resource>
+
+  <resource>org.cougaar.microedition.tini.TiniMach5LocomotionResource</resource>
+
+  <plugin >org.cougaar.microedition.tini.TiniMach5CouplingPlugIn</plugin>
+
+  <plugin resource="TiniMach5PositionResource" command="ReportPosition">org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+
+  <plugin resource="TiniMach5LocomotionResource" command="Advance" parameter="Speed" parametervalue="25">org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+
+  <!-- Infrastructure PlugIns -->
+  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+</NodeConfiguration>

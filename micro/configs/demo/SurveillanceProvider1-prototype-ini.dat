@@ -1,6 +1,6 @@
 [Prototype]     Organization          
 
-[UIC]		"SurveillanceProvider2"  
+[UIC]		"SurveillanceProvider1"  
 
 [Relationship] 
 Supporting	"SurveillanceManager"		"SurveillanceProvider"          
