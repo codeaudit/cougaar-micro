@@ -1,8 +1,11 @@
 /*
- * MicroEdition.java
- *
- * Copyright 2000 by BBN Technologies, LLC. All Rights Reserved
- *
+ * <copyright>
+ *  Copyright 1999-2001 Defense Advanced Research Projects
+ *  Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
+ *  Raytheon Systems Company (RSC) Consortium).
+ *  This software to be used only in accordance with the
+ *  COUGAAR licence agreement.
+ * </copyright>
  */
 
 
@@ -13,37 +16,42 @@ package org.cougaar.microedition.util;
  */
 public class MicroEdition {
 
+ static ObjectFactory factory = null;
+
 /**
  * This static variable stores the kvm (j2me) configuration. If null we assume tini (java1.1).
  */
-  static String kvmConfig = System.getProperty("microedition.configuration");
+ static String kvmConfig;
+ static {
+   kvmConfig = System.getProperty("microedition.configuration");
+   try {
+     if (kvmConfig != null) {
+       factory = (ObjectFactory)Class.forName("org.cougaar.microedition.kvm.KvmObjectFactory").newInstance();
+     } else {
+       factory = (ObjectFactory)Class.forName("org.cougaar.microedition.tini.TiniObjectFactory").newInstance();
+     }
+   } catch (Exception ex) {
+     System.err.println("Error installing object factory");
+     ex.printStackTrace();
+   }
+ }
+
+
 
 /**
  * This constructor does nothing.
  */
-  public MicroEdition() {
+  private MicroEdition() {
   }
 
   /**
    * This static method returns the appropriate object given the ME type.
    *
-   * @param   kvmClassname    String which represents the class to be instantiated if our vm is kvm.
-   * @param   tiniClassname   String which represents the class to be instantiated if our vm is jvm 1.1.
-   * @return  Object which is an appropriate instantiation of one of the two passed class names.
+   * @param   ofType The abstract type of which to make a concrete instance.
+   * @return  Object which is an appropriate instantiation of the ofType argument.
    */
-  public static Object getObjectME(String kvmClassname, String tiniClassname) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-
-    String classname = null;
-
-    if (kvmConfig == null)
-      classname = tiniClassname;
-    else
-      classname = kvmClassname;
-
-    Class claz = Class.forName(classname);
-
-    return (Object)claz.newInstance();
-
+  public static Object getObjectME(Class ofType) {
+    return factory.getObjectME(ofType);
   }
 
 }

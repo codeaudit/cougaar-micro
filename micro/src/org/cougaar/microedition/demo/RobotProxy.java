@@ -1,3 +1,12 @@
+/*
+ * <copyright>
+ *  Copyright 1999-2001 Defense Advanced Research Projects
+ *  Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
+ *  Raytheon Systems Company (RSC) Consortium).
+ *  This software to be used only in accordance with the
+ *  COUGAAR licence agreement.
+ * </copyright>
+ */
 package org.cougaar.microedition.demo;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D.Double;

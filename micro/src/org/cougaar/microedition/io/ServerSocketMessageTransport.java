@@ -53,7 +53,7 @@ public class ServerSocketMessageTransport implements MessageTransport {
   boolean done = false;
   while (!done) {
     try {
-      SocketME sock = (SocketME)MicroEdition.getObjectME("org.cougaar.microedition.kvm.KvmSocketME", "org.cougaar.microedition.tini.TiniSocketME");
+      SocketME sock = (SocketME)MicroEdition.getObjectME(Class.forName("org.cougaar.microedition.io.SocketME"));
       OutputStream os = sock.getOutputStream(server, port);
       byte [] data = message.getBytes();
       os.write(data);

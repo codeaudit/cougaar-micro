@@ -59,7 +59,7 @@ public class PacketReader {
       try {
         ServerSocketME ss = null;
         if (bufr == null) {
-          ss = (ServerSocketME) MicroEdition.getObjectME("org.cougaar.microedition.kvm.KvmServerSocketME", "org.cougaar.microedition.tini.TiniServerSocketME");
+          ss = (ServerSocketME) MicroEdition.getObjectME(Class.forName("org.cougaar.microedition.io.ServerSocketME"));
           ss.openServerSocket(myListenPort);
           System.out.println("Listening on " + myListenPort);
         } else {
@@ -91,9 +91,9 @@ public class PacketReader {
       } catch (IllegalAccessException iae) {
         System.err.println("Error configuring message recv: IllegalAccessException");
         iae.printStackTrace();
-      } catch (InstantiationException ie) {
-        System.err.println("Error configuring message recv: InstantiationException");
-        ie.printStackTrace();
+//      } catch (InstantiationException ie) {
+//        System.err.println("Error configuring message recv: InstantiationException");
+//        ie.printStackTrace();
       } catch (IOException ioe) {
         System.err.println("Error configuring message recv: IOException");
         ioe.printStackTrace();
