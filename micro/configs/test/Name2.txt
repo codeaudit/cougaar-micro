@@ -1,2 +1,0 @@
-This is the test left click URL for the robot named Name2.
-Change robotui.properties to have this point to the ControlFlashlight.PSP.
