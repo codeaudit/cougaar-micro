@@ -7,11 +7,26 @@ import java.io.*;
 
 public class TiniSocketME implements SocketME {
 
+  Socket sock = null;
+
   public OutputStream getOutputStream( String server, int port ) throws IllegalArgumentException, IllegalAccessException, IOException {
 
-    Socket sock = new Socket ( server, port );
+    sock = new Socket ( server, port );
 
     return sock.getOutputStream();
 
   }
+
+  public InputStream getInputStream( ) throws IOException {
+
+    return sock.getInputStream();
+
+  }
+
+  public void close() throws IOException {
+
+    sock.close();
+
+  }
+
 }
