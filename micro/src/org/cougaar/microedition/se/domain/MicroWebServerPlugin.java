@@ -26,8 +26,8 @@ import java.io.*;
 import java.util.*;
 
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.core.blackboard.IncrementalSubscription;
+import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.core.plugin.util.PluginHelper;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.microedition.shared.*;
@@ -42,7 +42,7 @@ public class MicroWebServerPlugin extends SimplePlugin
     UnaryPredicate myPred = new UnaryPredicate() {
       public boolean execute(Object o)
       {
-	if(o instanceof MicroAgent)
+        if(o instanceof MicroAgent)
           return true;
         return false;
       }
@@ -96,7 +96,7 @@ public class MicroWebServerPlugin extends SimplePlugin
       MicroAgentPG mapg = magent.getMicroAgentPG();
 
       if(pubhash.table.containsKey(mapg.getName()))
-	continue; //don't spawn a task for this, it's already been done
+        continue; //don't spawn a task for this, it's already been done
 
       Integer temportid = new Integer(0);
       pubhash.table.put(mapg.getName(), temportid);
@@ -114,7 +114,7 @@ public class MicroWebServerPlugin extends SimplePlugin
 
        if(debugging)
        {
-	  System.out.println("MicroWebServerPlugin:: New MicroAgent: "+mapg.getName());
+          System.out.println("MicroWebServerPlugin:: New MicroAgent: "+mapg.getName());
           System.out.println("                  Task allocated: "+t.getUID());
        }
     }
@@ -127,8 +127,8 @@ public class MicroWebServerPlugin extends SimplePlugin
 
       if(pubhash.table.containsKey(mapg.getName()))
       {
-	pubhash.table.remove(mapg.getName());
-	publishChange(pubhash);
+        pubhash.table.remove(mapg.getName());
+        publishChange(pubhash);
       }
     }
 
@@ -143,7 +143,7 @@ public class MicroWebServerPlugin extends SimplePlugin
       if(magent != null)
       {
         MicroAgentPG mapg = magent.getMicroAgentPG();
-	if(mapg != null) assetname = mapg.getName();
+        if(mapg != null) assetname = mapg.getName();
       }
 
       AllocationResult mar = ma.getReportedResult();
@@ -151,31 +151,31 @@ public class MicroWebServerPlugin extends SimplePlugin
 
       if(debugging)
       {
-	System.out.println("MicroWebServerPlugin: Allocation changed on task   : " +ma.getTask().getUID());
-	System.out.println("MicroWebServerPlugin: Allocation changed from asset: " +assetname);
+        System.out.println("MicroWebServerPlugin: Allocation changed on task   : " +ma.getTask().getUID());
+        System.out.println("MicroWebServerPlugin: Allocation changed from asset: " +assetname);
       }
 
       try
       {
         int value = (int)mar.getValue(portidaspect);
-	if(assetname != null)
-	{
-	  Integer serverport = new Integer(value);
-	  if(pubhash.table.containsKey(assetname))
-	  {
-	    if(debugging)
-	    {
-	      System.out.println("Setting local hashtable: key = " +assetname);
-	      System.out.println("Setting local hashtable: obj = " +serverport);
-	    }
-	    pubhash.table.put(assetname, serverport);
-	    publishChange(pubhash);
-	  }
-	}
+        if(assetname != null)
+        {
+          Integer serverport = new Integer(value);
+          if(pubhash.table.containsKey(assetname))
+          {
+            if(debugging)
+            {
+              System.out.println("Setting local hashtable: key = " +assetname);
+              System.out.println("Setting local hashtable: obj = " +serverport);
+            }
+            pubhash.table.put(assetname, serverport);
+            publishChange(pubhash);
+          }
+        }
       }
       catch(Exception e)
       {
-	System.out.println("MicroWebServerPlugin: unable to obtain allocation result");
+        System.out.println("MicroWebServerPlugin: unable to obtain allocation result");
       }
     }
   }

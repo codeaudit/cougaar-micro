@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -22,8 +22,6 @@
  */
 package org.cougaar.microedition.se.robot;
 
-import org.cougaar.domain.planning.ldm.plan.PlanElement;
-
 import org.cougaar.util.UnaryPredicate;
 import java.io.*;
 import java.util.*;
@@ -34,10 +32,10 @@ import org.cougaar.lib.planserver.HttpInput;
 import org.cougaar.lib.planserver.PlanServiceContext;
 import org.cougaar.lib.planserver.PlanServiceUtilities;
 import org.cougaar.lib.planserver.RuntimePSPException;
-import org.cougaar.core.cluster.Subscription;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.RootFactory;
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.Subscription;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.core.domain.RootFactory;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.microedition.shared.Constants;
 
 /**
@@ -77,13 +75,13 @@ public class PSP_StartSystem extends PSP_BaseAdapter
     {
       public boolean execute(Object o)
       {
-	boolean ret=false;
-	if (o instanceof Task)
-	{
-	  Task mt = (Task)o;
-	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.STARTSYSTEM]));
-	}
-	return ret;
+        boolean ret=false;
+        if (o instanceof Task)
+        {
+          Task mt = (Task)o;
+          ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.STARTSYSTEM]));
+        }
+        return ret;
       }
     };
     return newPred;
@@ -116,18 +114,18 @@ public class PSP_StartSystem extends PSP_BaseAdapter
          String coordtext = (String) query_parameters.getFirstParameterToken(waypointParam, '=');
          System.out.println("Waypoint: ["+coordtext+"]");
 
-	 RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
+         RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
-	 NewTask t = theLDMF.newTask();
-	 t.setPlan(theLDMF.getRealityPlan());
-	 t.setVerb(Verb.getVerb(verbText));
+         NewTask t = theLDMF.newTask();
+         t.setPlan(theLDMF.getRealityPlan());
+         t.setVerb(Verb.getVerb(verbText));
 
-	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
+         NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
          npp.setPreposition(Constants.Robot.verbs[Constants.Robot.SETWAYPOINT]);
-	 npp.setIndirectObject(coordtext);
-	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
+         npp.setIndirectObject(coordtext);
+         t.setPrepositionalPhrase((PrepositionalPhrase)npp);
 
-	 psc.getServerPluginSupport().publishAddForSubscriber(t);
+         psc.getServerPluginSupport().publishAddForSubscriber(t);
 
       }
 
@@ -138,34 +136,34 @@ public class PSP_StartSystem extends PSP_BaseAdapter
          system_on=onText.equalsIgnoreCase("true");
          System.out.println("system on is "+system_on);
 
-	if (system_on)
-	{
-	  RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
+        if (system_on)
+        {
+          RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
-	  NewTask t = theLDMF.newTask();
-	  t.setPlan(theLDMF.getRealityPlan());
-	  t.setVerb(Verb.getVerb(verbText));
+          NewTask t = theLDMF.newTask();
+          t.setPlan(theLDMF.getRealityPlan());
+          t.setVerb(Verb.getVerb(verbText));
 
-	  psc.getServerPluginSupport().publishAddForSubscriber(t);
-	}
-	else
-	{
-	  IncrementalSubscription subscription = null;
+          psc.getServerPluginSupport().publishAddForSubscriber(t);
+        }
+        else
+        {
+          IncrementalSubscription subscription = null;
 
-	  subscription = (IncrementalSubscription)psc
-	    .getServerPluginSupport().subscribe(this, sysstartPred());
+          subscription = (IncrementalSubscription)psc
+            .getServerPluginSupport().subscribe(this, sysstartPred());
 
-	  Iterator iter = subscription.getCollection().iterator();
-	  if (iter.hasNext())
-	  {
-	    Task task=null;
-	    while (iter.hasNext())
-	    {
-	      task = (Task)iter.next();
-	      psc.getServerPluginSupport().publishRemoveForSubscriber(task);
-	    }
-	  }
-	}
+          Iterator iter = subscription.getCollection().iterator();
+          if (iter.hasNext())
+          {
+            Task task=null;
+            while (iter.hasNext())
+            {
+              task = (Task)iter.next();
+              psc.getServerPluginSupport().publishRemoveForSubscriber(task);
+            }
+          }
+        }
       }
     }
     catch (Exception ex)

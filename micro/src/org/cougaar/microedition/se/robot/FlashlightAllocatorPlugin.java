@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -25,11 +25,11 @@ import java.util.*;
 
 import org.cougaar.core.plugin.SimplePlugin;
 import org.cougaar.util.UnaryPredicate;
-import org.cougaar.core.cluster.IncrementalSubscription;
-import org.cougaar.domain.planning.ldm.plan.Task;
-import org.cougaar.domain.planning.ldm.plan.Allocation;
-import org.cougaar.domain.planning.ldm.plan.AllocationResult;
-import org.cougaar.domain.planning.ldm.plan.Role;
+import org.cougaar.core.blackboard.IncrementalSubscription;
+import org.cougaar.planning.ldm.plan.Task;
+import org.cougaar.planning.ldm.plan.Allocation;
+import org.cougaar.planning.ldm.plan.AllocationResult;
+import org.cougaar.planning.ldm.plan.Role;
 import org.cougaar.microedition.shared.Constants;
 import org.cougaar.microedition.se.domain.*;
 
@@ -64,18 +64,18 @@ public class FlashlightAllocatorPlugin extends SimplePlugin {
       public boolean execute(Object o)
       {
         if (o instanceof MicroAgent)
-	{
+        {
           MicroAgent m = (MicroAgent)o;
           String possible_roles = m.getMicroAgentPG().getCapabilities();
-	  StringTokenizer st = new StringTokenizer(possible_roles, ",");
-	  while (st.hasMoreTokens())
-	  {
-	    String a_role = st.nextToken();
-	    if(a_role.equals(Constants.Robot.meRoles[Constants.Robot.FLASHLIGHTCONTROLLER]))
-		 return true;
-	  }
+          StringTokenizer st = new StringTokenizer(possible_roles, ",");
+          while (st.hasMoreTokens())
+          {
+            String a_role = st.nextToken();
+            if(a_role.equals(Constants.Robot.meRoles[Constants.Robot.FLASHLIGHTCONTROLLER]))
+                 return true;
+          }
         }
-	return false;
+        return false;
       }
     };
     return resourcePred;

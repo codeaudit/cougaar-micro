@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -28,25 +28,25 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.util.UnaryPredicate;
 
-import org.cougaar.domain.planning.ldm.plan.Task;
-import org.cougaar.domain.planning.ldm.plan.NewTask;
-import org.cougaar.domain.planning.ldm.plan.PrepositionalPhrase;
-import org.cougaar.domain.planning.ldm.plan.NewPrepositionalPhrase;
-import org.cougaar.domain.planning.ldm.plan.Verb;
-import org.cougaar.domain.planning.ldm.plan.Allocation;
-import org.cougaar.domain.planning.ldm.plan.AllocationResult;
-import org.cougaar.domain.planning.ldm.plan.Role;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.planning.ldm.plan.Task;
+import org.cougaar.planning.ldm.plan.NewTask;
+import org.cougaar.planning.ldm.plan.PrepositionalPhrase;
+import org.cougaar.planning.ldm.plan.NewPrepositionalPhrase;
+import org.cougaar.planning.ldm.plan.Verb;
+import org.cougaar.planning.ldm.plan.Allocation;
+import org.cougaar.planning.ldm.plan.AllocationResult;
+import org.cougaar.planning.ldm.plan.Role;
+import org.cougaar.planning.ldm.plan.*;
 
 import org.cougaar.microedition.shared.*;
 import org.cougaar.microedition.se.domain.*;
 
-import org.cougaar.domain.planning.ldm.asset.*;
-import org.cougaar.domain.glm.ldm.asset.Organization;
-import org.cougaar.domain.glm.ldm.asset.OrganizationPG;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.glm.ldm.asset.Organization;
+import org.cougaar.glm.ldm.asset.OrganizationPG;
 
 
 
@@ -158,7 +158,7 @@ public class RobotPlugin extends SimplePlugin {
     UnaryPredicate myAllocPred = new UnaryPredicate() {
       public boolean execute(Object o) {
         if (o instanceof Allocation)
-	{
+        {
           Task mt = ((Allocation)o).getTask();
           return mt.getVerb().equals(advanceVerb);
         }
@@ -190,13 +190,13 @@ public class RobotPlugin extends SimplePlugin {
     {
       String param = (String)pnum.nextElement();
       if (param.toLowerCase().indexOf("destinationheading") >= 0)
-	 destinationheading = extractparameter(param);
+         destinationheading = extractparameter(param);
       if (param.toLowerCase().indexOf("scanspeed") >= 0)
-	 surveyscanspeed = extractparameter(param);
+         surveyscanspeed = extractparameter(param);
       if (param.toLowerCase().indexOf("surveyspeed") >= 0)
-	 surveyspeed = extractparameter(param);
+         surveyspeed = extractparameter(param);
       if (param.toLowerCase().indexOf("advanceincrement") >= 0)
-	 advanceincrement = extractparameter(param);
+         advanceincrement = extractparameter(param);
     }
 
     taskSub = (IncrementalSubscription)subscribe(getTaskPred());
@@ -323,7 +323,7 @@ public class RobotPlugin extends SimplePlugin {
     {
       if(gottawhiff)
       {
-	System.out.println("RobotPlugin: whiff was false. Resuming search.");
+        System.out.println("RobotPlugin: whiff was false. Resuming search.");
         gottawhiff = false; //reset this if 'twere set on a first successful target allocation
         makeFlashlightTask("off");
       }
@@ -362,44 +362,44 @@ public class RobotPlugin extends SimplePlugin {
       System.out.println("RobotPlugin Has Secondary Detection at "+detectionbearing);
       if(Math.abs(detectionbearing - robotheading) < detectiondifference)
       {
-	//looks like a good one.
-	idetected = true;
-	stopObjective((NewWorkflow)alloc.getTask().getWorkflow());
-	makeFlashlightTask("on");
+        //looks like a good one.
+        idetected = true;
+        stopObjective((NewWorkflow)alloc.getTask().getWorkflow());
+        makeFlashlightTask("on");
 
-	//tell houston
-	AllocationResult myar=makeAllocationResult(detectionbearing, true);
+        //tell houston
+        AllocationResult myar=makeAllocationResult(detectionbearing, true);
 
-	Enumeration taskEnum = taskSub.elements();
-	while (taskEnum.hasMoreElements())
-	{
-	  Task mt = (Task)taskEnum.nextElement();
-	  Expansion myExpansion=((Expansion)mt.getPlanElement());
-	  if (myExpansion!=null)
-	  {
-	    myExpansion.setEstimatedResult(myar);
-	    publishChange(myExpansion);
-	  }
-	  else
-	  {
-	    System.out.println("Have task with myVerb without Expansion.  verb: "+mt.getVerb()+" task: "+mt);
-	  }
+        Enumeration taskEnum = taskSub.elements();
+        while (taskEnum.hasMoreElements())
+        {
+          Task mt = (Task)taskEnum.nextElement();
+          Expansion myExpansion=((Expansion)mt.getPlanElement());
+          if (myExpansion!=null)
+          {
+            myExpansion.setEstimatedResult(myar);
+            publishChange(myExpansion);
+          }
+          else
+          {
+            System.out.println("Have task with myVerb without Expansion.  verb: "+mt.getVerb()+" task: "+mt);
+          }
 
-	  System.out.println("RobotPlugin Reporting Detection at "+detectionbearing+" true North");
-	  System.out.flush();
-	}
+          System.out.println("RobotPlugin Reporting Detection at "+detectionbearing+" true North");
+          System.out.flush();
+        }
       }
       else
       {
-	//try to pinpoint again...
-	System.out.println("RobotPlugin: Primary and secondary detection mismatch. Resuming search.");
-	//gottawhiff = false;
-	//makeFlashlightTask("off");
+        //try to pinpoint again...
+        System.out.println("RobotPlugin: Primary and secondary detection mismatch. Resuming search.");
+        //gottawhiff = false;
+        //makeFlashlightTask("off");
         //makeAdvanceTask(alloc, destinationheading, advanceincrement, surveyspeed);
-	firstdetectionbearing = detectionbearing;
-	gottawhiff = true;
-	makeFlashlightTask("flashing");
-	makeAdvanceTask(alloc, firstdetectionbearing, closerlook, getcloserspeed); //turn toward source and target again
+        firstdetectionbearing = detectionbearing;
+        gottawhiff = true;
+        makeFlashlightTask("flashing");
+        makeAdvanceTask(alloc, firstdetectionbearing, closerlook, getcloserspeed); //turn toward source and target again
       }
     }
   }
@@ -476,7 +476,7 @@ public class RobotPlugin extends SimplePlugin {
       NewWorkflow wf = (NewWorkflow)alloc.getTask().getWorkflow();
 
       if(wf == null)
-	return; //can happen if advance task was created via PSP
+        return; //can happen if advance task was created via PSP
 
       //remove the task
       wf.removeTask(alloc.getTask());
@@ -633,7 +633,7 @@ public class RobotPlugin extends SimplePlugin {
       if (preps!=null)
       {
         if (preps.getPreposition().equalsIgnoreCase(LatPrep))
-	   latString=(String)preps.getIndirectObject();
+           latString=(String)preps.getIndirectObject();
         if (preps.getPreposition().equalsIgnoreCase(LonPrep))
           lonString=(String)preps.getIndirectObject();
       }
@@ -652,8 +652,8 @@ public class RobotPlugin extends SimplePlugin {
       nwf.setParentTask(mt);
 
       RBCoordinate rb = EmitterLocator.FindRangeBearing(robotlat, robotlon,
-				Double.parseDouble(latString),
-				Double.parseDouble(lonString));
+                                Double.parseDouble(latString),
+                                Double.parseDouble(lonString));
 
       //double mmdistance = (rb.range*1000.0) - rangestandoff;
       double mmdistance = 0.0;

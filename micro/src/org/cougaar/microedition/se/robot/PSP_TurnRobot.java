@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -22,8 +22,6 @@
  */
 package org.cougaar.microedition.se.robot;
 
-import org.cougaar.domain.planning.ldm.plan.PlanElement;
-
 import org.cougaar.util.UnaryPredicate;
 import java.io.*;
 import java.util.*;
@@ -34,10 +32,10 @@ import org.cougaar.lib.planserver.HttpInput;
 import org.cougaar.lib.planserver.PlanServiceContext;
 import org.cougaar.lib.planserver.PlanServiceUtilities;
 import org.cougaar.lib.planserver.RuntimePSPException;
-import org.cougaar.core.cluster.Subscription;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.RootFactory;
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.Subscription;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.core.domain.RootFactory;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.microedition.shared.Constants;
 
 /**
@@ -68,13 +66,13 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
     {
       public boolean execute(Object o)
       {
-	boolean ret=false;
-	if (o instanceof Task)
-	{
-	  Task mt = (Task)o;
-	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.ADVANCE]));
-	}
-	return ret;
+        boolean ret=false;
+        if (o instanceof Task)
+        {
+          Task mt = (Task)o;
+          ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.ADVANCE]));
+        }
+        return ret;
       }
     };
     return newPred;
@@ -105,17 +103,17 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
       IncrementalSubscription subscription = null;
 
       subscription = (IncrementalSubscription)psc
-	.getServerPluginSupport().subscribe(this, advancePred());
+        .getServerPluginSupport().subscribe(this, advancePred());
 
       Iterator iter = subscription.getCollection().iterator();
       if (iter.hasNext())
       {
-	Task task=null;
-	while (iter.hasNext())
-	{
-	  task = (Task)iter.next();
-	  psc.getServerPluginSupport().publishRemoveForSubscriber(task);
-	}
+        Task task=null;
+        while (iter.hasNext())
+        {
+          task = (Task)iter.next();
+          psc.getServerPluginSupport().publishRemoveForSubscriber(task);
+        }
       }
 
       //now pop open a rotation task
@@ -125,33 +123,33 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
          String degreestext = (String) query_parameters.getFirstParameterToken(degreesparam, '=');
          out.println("Rotate: ["+degreestext+"]");
 
-	 String mmtext = (String) query_parameters.getFirstParameterToken(mmparam, '=');
+         String mmtext = (String) query_parameters.getFirstParameterToken(mmparam, '=');
          out.println("Translate: ["+mmtext+"]");
 
-	 RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
+         RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
-	 NewTask t = theLDMF.newTask();
-	 t.setPlan(theLDMF.getRealityPlan());
-	 t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.ADVANCE]));
+         NewTask t = theLDMF.newTask();
+         t.setPlan(theLDMF.getRealityPlan());
+         t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.ADVANCE]));
 
-	 Vector prepositions = new Vector();
+         Vector prepositions = new Vector();
 
-	 psc.getServerPluginSupport().openLogPlanTransaction();
+         psc.getServerPluginSupport().openLogPlanTransaction();
 
-	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
-	 npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]);
-	 npp.setIndirectObject(degreestext);
-	 prepositions.add(npp);
+         NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
+         npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]);
+         npp.setIndirectObject(degreestext);
+         prepositions.add(npp);
 
-	 npp = theLDMF.newPrepositionalPhrase();
-	 npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.TRANSLATEPREP]);
-	 npp.setIndirectObject(mmtext);
-	 prepositions.add(npp);
+         npp = theLDMF.newPrepositionalPhrase();
+         npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.TRANSLATEPREP]);
+         npp.setIndirectObject(mmtext);
+         prepositions.add(npp);
 
-	 t.setPrepositionalPhrases(prepositions.elements());
-	 psc.getServerPluginSupport().closeLogPlanTransaction();
+         t.setPrepositionalPhrases(prepositions.elements());
+         psc.getServerPluginSupport().closeLogPlanTransaction();
 
-	 psc.getServerPluginSupport().publishAddForSubscriber(t);
+         psc.getServerPluginSupport().publishAddForSubscriber(t);
 
       }
     }

@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -28,17 +28,17 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.util.UnaryPredicate;
 
-import org.cougaar.domain.planning.ldm.plan.Task;
-import org.cougaar.domain.planning.ldm.plan.NewTask;
-import org.cougaar.domain.planning.ldm.plan.PrepositionalPhrase;
-import org.cougaar.domain.planning.ldm.plan.NewPrepositionalPhrase;
-import org.cougaar.domain.planning.ldm.plan.Verb;
-import org.cougaar.domain.planning.ldm.plan.Allocation;
-import org.cougaar.domain.planning.ldm.plan.AllocationResult;
-import org.cougaar.domain.planning.ldm.plan.Role;
+import org.cougaar.planning.ldm.plan.Task;
+import org.cougaar.planning.ldm.plan.NewTask;
+import org.cougaar.planning.ldm.plan.PrepositionalPhrase;
+import org.cougaar.planning.ldm.plan.NewPrepositionalPhrase;
+import org.cougaar.planning.ldm.plan.Verb;
+import org.cougaar.planning.ldm.plan.Allocation;
+import org.cougaar.planning.ldm.plan.AllocationResult;
+import org.cougaar.planning.ldm.plan.Role;
 
 import org.cougaar.microedition.shared.Constants;
 import org.cougaar.microedition.se.domain.MicroAgent;
@@ -188,44 +188,44 @@ public class TargetingAllocatorPlugin extends SimplePlugin {
        try
        {
         if (ar!=null)
-	{
-	  if (ar.isSuccess())
-	  {
-	    //System.out.println("TargettingPlugin:  Turret reports bearing");
-	    bearing = ar.getValue(Constants.Aspects.BEARING);
-	    heedsonar = true;
-	  }
-	  else
-	  {
-	    //scanning finished. Tell the brain that nothing happened
-	    //System.out.println("TargettingPlugin:  Turret reports scan finish");
-	    bearing = ar.getValue(Constants.Aspects.BEARING);
-	    heedsonar = false;
+        {
+          if (ar.isSuccess())
+          {
+            //System.out.println("TargettingPlugin:  Turret reports bearing");
+            bearing = ar.getValue(Constants.Aspects.BEARING);
+            heedsonar = true;
+          }
+          else
+          {
+            //scanning finished. Tell the brain that nothing happened
+            //System.out.println("TargettingPlugin:  Turret reports scan finish");
+            bearing = ar.getValue(Constants.Aspects.BEARING);
+            heedsonar = false;
 
-	    AllocationResult myar = null;
+            AllocationResult myar = null;
 
-	    if(peakdetection > 0.0)
-	    {
-	      //there was a peak above threshold, report it
-	      System.out.println("TargetingAllocator Plugin: reporting peakbearing " +peakbearing);
-	      myar=makeAllocationResult(peakbearing, true);
-	      peakdetection = -1.0; //reset
-	    }
-	    else
-	    {
-	      myar=makeAllocationResult(bearing, false);
-	    }
+            if(peakdetection > 0.0)
+            {
+              //there was a peak above threshold, report it
+              System.out.println("TargetingAllocator Plugin: reporting peakbearing " +peakbearing);
+              myar=makeAllocationResult(peakbearing, true);
+              peakdetection = -1.0; //reset
+            }
+            else
+            {
+              myar=makeAllocationResult(bearing, false);
+            }
 
-	    Enumeration taskEnum = taskSub.elements();
-	    while (taskEnum.hasMoreElements())
-	    {
-	      Task mt = (Task)taskEnum.nextElement();
-	      Allocation myAlloc=((Allocation)mt.getPlanElement());
-	      myAlloc.setEstimatedResult(myar);
-	      publishChange(myAlloc);
-	    }
-	  }
-	}
+            Enumeration taskEnum = taskSub.elements();
+            while (taskEnum.hasMoreElements())
+            {
+              Task mt = (Task)taskEnum.nextElement();
+              Allocation myAlloc=((Allocation)mt.getPlanElement());
+              myAlloc.setEstimatedResult(myar);
+              publishChange(myAlloc);
+            }
+          }
+        }
       }
       catch (Exception ex)
       {
@@ -236,25 +236,25 @@ public class TargetingAllocatorPlugin extends SimplePlugin {
     {
       if(heedsonar == true)
       {
-	double detection = ar.getValue(Constants.Aspects.DETECTION);
-	System.out.println("TargettingPlugin:  sonar reports peak value " +detection+" at bearing "+bearing);
+        double detection = ar.getValue(Constants.Aspects.DETECTION);
+        System.out.println("TargettingPlugin:  sonar reports peak value " +detection+" at bearing "+bearing);
 
-	if(detection > peakdetection)
-	{
-	  peakdetection = detection;
-	  peakbearing = bearing;
-	}
+        if(detection > peakdetection)
+        {
+          peakdetection = detection;
+          peakbearing = bearing;
+        }
 /*
-	AllocationResult myar=makeAllocationResult(bearing, true);
+        AllocationResult myar=makeAllocationResult(bearing, true);
 
-	Enumeration taskEnum = taskSub.elements();
-	while (taskEnum.hasMoreElements())
-	{
-	  Task mt = (Task)taskEnum.nextElement();
-	  Allocation myAlloc=((Allocation)mt.getPlanElement());
-	  myAlloc.setEstimatedResult(myar);
-	  publishChange(myAlloc);
-	}
+        Enumeration taskEnum = taskSub.elements();
+        while (taskEnum.hasMoreElements())
+        {
+          Task mt = (Task)taskEnum.nextElement();
+          Allocation myAlloc=((Allocation)mt.getPlanElement());
+          myAlloc.setEstimatedResult(myar);
+          publishChange(myAlloc);
+        }
 */
       }
     }
@@ -310,8 +310,8 @@ public class TargetingAllocatorPlugin extends SimplePlugin {
       Enumeration enum= mt.getPrepositionalPhrases();
       while(enum.hasMoreElements())
       {
-	PrepositionalPhrase preps=(PrepositionalPhrase)enum.nextElement();
-	if (preps!=null) prepositions.add(preps);
+        PrepositionalPhrase preps=(PrepositionalPhrase)enum.nextElement();
+        if (preps!=null) prepositions.add(preps);
       }
       subTask.setPrepositionalPhrases(prepositions.elements());
     }

@@ -23,8 +23,8 @@
 package org.cougaar.microedition.se.robot;
 
 import org.cougaar.util.UnaryPredicate;
-import org.cougaar.core.cluster.*;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.core.blackboard.*;
+import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.lib.planserver.*;
 import java.io.*;
 import java.util.*;

@@ -10,8 +10,8 @@
 package org.cougaar.microedition.se.robot;
 
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.core.blackboard.IncrementalSubscription;
+import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.core.plugin.util.PluginHelper;
 import org.cougaar.util.UnaryPredicate;
 import java.util.*;
@@ -52,16 +52,16 @@ public class ImagingPlugin extends SimplePlugin
       public boolean execute(Object o)
       {
         if (o instanceof MicroAgent)
-	{
+        {
           MicroAgent m = (MicroAgent)o;
           String possible_roles = m.getMicroAgentPG().getCapabilities();
-	  StringTokenizer st = new StringTokenizer(possible_roles, ",");
-	  while (st.hasMoreTokens())
-	  {
-	    String a_role = st.nextToken();
-	    if(a_role.equals(Constants.Robot.meRoles[Constants.Robot.CAMERACONTROLLER]))
-		 return true;
-	  }
+          StringTokenizer st = new StringTokenizer(possible_roles, ",");
+          while (st.hasMoreTokens())
+          {
+            String a_role = st.nextToken();
+            if(a_role.equals(Constants.Robot.meRoles[Constants.Robot.CAMERACONTROLLER]))
+                 return true;
+          }
         }
         return false;
       }

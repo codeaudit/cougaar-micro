@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -23,8 +23,8 @@
 package org.cougaar.microedition.se.robot;
 
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.core.blackboard.IncrementalSubscription;
+import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.core.plugin.util.PluginHelper;
 import org.cougaar.util.UnaryPredicate;
 import java.util.*;
@@ -71,13 +71,13 @@ public class WeaponControlPlugin extends SimplePlugin
         if (o instanceof MicroAgent) {
           MicroAgent m = (MicroAgent)o;
           String possible_roles = m.getMicroAgentPG().getCapabilities();
-	  StringTokenizer st = new StringTokenizer(possible_roles, ",");
-	  while (st.hasMoreTokens())
-	  {
-	    String a_role = st.nextToken();
-	    if(a_role.equals(Constants.Robot.meRoles[Constants.Robot.WEAPONPROVIDER]))
-		 return true;
-	  }
+          StringTokenizer st = new StringTokenizer(possible_roles, ",");
+          while (st.hasMoreTokens())
+          {
+            String a_role = st.nextToken();
+            if(a_role.equals(Constants.Robot.meRoles[Constants.Robot.WEAPONPROVIDER]))
+                 return true;
+          }
         }
         return false;
       }});
@@ -118,10 +118,10 @@ public class WeaponControlPlugin extends SimplePlugin
       if (preps!=null)
       {
         if (preps.getPreposition().equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.LATPREP]))
-	   latString=(String)preps.getIndirectObject();
+           latString=(String)preps.getIndirectObject();
         if (preps.getPreposition().equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.LONPREP]))
           lonString=(String)preps.getIndirectObject();
-	if (preps.getPreposition().equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.TIMEPREP]))
+        if (preps.getPreposition().equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.TIMEPREP]))
           toaString=(String)preps.getIndirectObject();
       }
     } // end-for
@@ -138,73 +138,73 @@ public class WeaponControlPlugin extends SimplePlugin
       Iterator iter = posallocs.iterator();
       while(iter.hasNext())
       {
-	Allocation a = (Allocation)iter.next();
-	AllocationResult ar = a.getReceivedResult();
-	//if (ar != null && ar.isSuccess() == true)
-	if (ar != null)
-	{
-	  double mylat = ar.getValue(Constants.Aspects.LATITUDE);
-	  double mylon = ar.getValue(Constants.Aspects.LONGITUDE);
+        Allocation a = (Allocation)iter.next();
+        AllocationResult ar = a.getReceivedResult();
+        //if (ar != null && ar.isSuccess() == true)
+        if (ar != null)
+        {
+          double mylat = ar.getValue(Constants.Aspects.LATITUDE);
+          double mylon = ar.getValue(Constants.Aspects.LONGITUDE);
 
-	  //originally reported in billionths. MicroTask plugin adjusted by 1000.0
-	  mylat = mylat*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
-	  mylon = mylon*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
+          //originally reported in billionths. MicroTask plugin adjusted by 1000.0
+          mylat = mylat*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
+          mylon = mylon*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
 
-	  System.out.println("WeaponControlPlugin: My Lat, Lon: " +mylat+" "+mylon);
-	  RBCoordinate rb = EmitterLocator.FindRangeBearing(mylat, mylon,
-				    Double.parseDouble(latString),
-				    Double.parseDouble(lonString));
+          System.out.println("WeaponControlPlugin: My Lat, Lon: " +mylat+" "+mylon);
+          RBCoordinate rb = EmitterLocator.FindRangeBearing(mylat, mylon,
+                                    Double.parseDouble(latString),
+                                    Double.parseDouble(lonString));
 
-	  System.out.println("WeaponControlPlugin: Target Range: " +rb.range);
+          System.out.println("WeaponControlPlugin: Target Range: " +rb.range);
 
-	  //expand task
-	  NewTask subTask;
+          //expand task
+          NewTask subTask;
 
-	  NewWorkflow nwf = theLDMF.newWorkflow();
-	  nwf.setParentTask(t);
-	  subTask = theLDMF.newTask();
-	  subTask.setPlan(theLDMF.getRealityPlan());
-	  subTask.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.ENGAGEWEAPON]));
+          NewWorkflow nwf = theLDMF.newWorkflow();
+          nwf.setParentTask(t);
+          subTask = theLDMF.newTask();
+          subTask.setPlan(theLDMF.getRealityPlan());
+          subTask.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.ENGAGEWEAPON]));
 
-	  //set prepositions.
-	  Vector prepositions = new Vector();
+          //set prepositions.
+          Vector prepositions = new Vector();
 
-	  NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
-	  npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.TIMEPREP]);
-	  npp.setIndirectObject(toaString);
-	  prepositions.add(npp);
+          NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
+          npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.TIMEPREP]);
+          npp.setIndirectObject(toaString);
+          prepositions.add(npp);
 
-	  npp = theLDMF.newPrepositionalPhrase();
-	  npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.RANGEPREP]);
-	  npp.setIndirectObject(String.valueOf(rb.range));
-	  prepositions.add(npp);
+          npp = theLDMF.newPrepositionalPhrase();
+          npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.RANGEPREP]);
+          npp.setIndirectObject(String.valueOf(rb.range));
+          prepositions.add(npp);
 
-	  npp = theLDMF.newPrepositionalPhrase();
-	  npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.BEARINGPREP]);
-	  npp.setIndirectObject(String.valueOf(rb.bearing));
-	  prepositions.add(npp);
+          npp = theLDMF.newPrepositionalPhrase();
+          npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.BEARINGPREP]);
+          npp.setIndirectObject(String.valueOf(rb.bearing));
+          prepositions.add(npp);
 
-	  subTask.setPrepositionalPhrases(prepositions.elements());
-	  subTask.setParentTask(t);
-	  subTask.setWorkflow(nwf);
-	  subTask.setPlan(t.getPlan());
-	  subTask.setDirectObject(t.getDirectObject());
-	  //publishAdd(subTask);
-	  nwf.addTask(subTask);
+          subTask.setPrepositionalPhrases(prepositions.elements());
+          subTask.setParentTask(t);
+          subTask.setWorkflow(nwf);
+          subTask.setPlan(t.getPlan());
+          subTask.setDirectObject(t.getDirectObject());
+          //publishAdd(subTask);
+          nwf.addTask(subTask);
 
-	  Expansion expansion =
-	    theLDMF.createExpansion(t.getPlan(), t, nwf, null);
-	  publishAdd(expansion);
+          Expansion expansion =
+            theLDMF.createExpansion(t.getPlan(), t, nwf, null);
+          publishAdd(expansion);
 
-	  //System.out.println("WeaponControlPlugin: Allocating task to micro");
+          //System.out.println("WeaponControlPlugin: Allocating task to micro");
 
-	  Allocation allocation =
-	      theLDMF.createAllocation(subTask.getPlan(), subTask, micro, null, Role.ASSIGNED);
+          Allocation allocation =
+              theLDMF.createAllocation(subTask.getPlan(), subTask, micro, null, Role.ASSIGNED);
 
-	  publishAdd(allocation);
+          publishAdd(allocation);
 
-	  break;
-	}
+          break;
+        }
       }
     }
   }

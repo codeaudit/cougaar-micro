@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -24,14 +24,14 @@ package org.cougaar.microedition.se.robot;
 
 import org.cougaar.core.plugin.*;
 import org.cougaar.core.util.*;
-import org.cougaar.core.cluster.*;
+import org.cougaar.core.blackboard.*;
 
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.planning.ldm.asset.*;
 
 import org.cougaar.util.*;
 
-import org.cougaar.domain.glm.ldm.asset.*;
+import org.cougaar.glm.ldm.asset.*;
 
 import org.cougaar.microedition.shared.tinyxml.*;
 import org.cougaar.microedition.shared.*;
@@ -127,16 +127,16 @@ public class RobotAllocatorPlugin extends SimplePlugin {
           NewRobotPG rpg = (NewRobotPG)pg;
           double lat = ar.getValue(Constants.Aspects.LATITUDE);
           double lon = ar.getValue(Constants.Aspects.LONGITUDE);
-	  double heading = ar.getValue(Constants.Aspects.HEADING);
+          double heading = ar.getValue(Constants.Aspects.HEADING);
 
-	  //originally reported in billionths. MicroTask plugin adjusted by 1000.0
-	  lat = lat*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
-	  lon = lon*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
-	  heading = heading*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
+          //originally reported in billionths. MicroTask plugin adjusted by 1000.0
+          lat = lat*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
+          lon = lon*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
+          heading = heading*(Constants.Geophysical.BILLIONTHSTODEG*1000.0);
 
           rpg.setLatitude(lat);
           rpg.setLongitude(lon);
-	  rpg.setHeading(heading);
+          rpg.setHeading(heading);
 //	  System.out.println("RobotAllocatorPlugin: Robot Lat, Lon, Head: "
 //	                       +rpg.getLatitude() +" " +rpg.getLongitude() +" " +rpg.getHeading());
 //          o.addOtherPropertyGroup(rpg);

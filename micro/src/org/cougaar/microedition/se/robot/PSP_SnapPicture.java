@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -22,8 +22,6 @@
  */
 package org.cougaar.microedition.se.robot;
 
-import org.cougaar.domain.planning.ldm.plan.PlanElement;
-
 import org.cougaar.util.UnaryPredicate;
 import java.io.*;
 import java.util.*;
@@ -36,10 +34,10 @@ import org.cougaar.lib.planserver.HttpInput;
 import org.cougaar.lib.planserver.PlanServiceContext;
 import org.cougaar.lib.planserver.PlanServiceUtilities;
 import org.cougaar.lib.planserver.RuntimePSPException;
-import org.cougaar.core.cluster.Subscription;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.RootFactory;
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.Subscription;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.core.domain.RootFactory;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.microedition.shared.Constants;
 
 /**
@@ -70,13 +68,13 @@ public class PSP_SnapPicture extends PSP_BaseAdapter
     {
       public boolean execute(Object o)
       {
-	boolean ret=false;
-	if (o instanceof Task)
-	{
-	  Task mt = (Task)o;
-	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.GETIMAGE]));
-	}
-	return ret;
+        boolean ret=false;
+        if (o instanceof Task)
+        {
+          Task mt = (Task)o;
+          ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.GETIMAGE]));
+        }
+        return ret;
       }
     };
     return newPred;
@@ -84,7 +82,7 @@ public class PSP_SnapPicture extends PSP_BaseAdapter
 
   private static final String photofilename = "C:\\RobotPics\\PHOTO.JPG";
   private static final String jpegfileline =
-	  "<img src=\"file:///C|/RobotPics/PHOTO.JPG\">";
+          "<img src=\"file:///C|/RobotPics/PHOTO.JPG\">";
 
   /**
    * Called when a HTTP request is made of this PSP.
@@ -112,17 +110,17 @@ public class PSP_SnapPicture extends PSP_BaseAdapter
       IncrementalSubscription subscription = null;
 
       subscription = (IncrementalSubscription)psc
-	.getServerPluginSupport().subscribe(this, getImagePred());
+        .getServerPluginSupport().subscribe(this, getImagePred());
 
       Iterator iter = subscription.getCollection().iterator();
       if (iter.hasNext())
       {
-	Task task=null;
-	while (iter.hasNext())
-	{
-	  task = (Task)iter.next();
-	  psc.getServerPluginSupport().publishRemoveForSubscriber(task);
-	}
+        Task task=null;
+        while (iter.hasNext())
+        {
+          task = (Task)iter.next();
+          psc.getServerPluginSupport().publishRemoveForSubscriber(task);
+        }
       }
 
       if( query_parameters.existsParameter("fetch"))
@@ -131,66 +129,66 @@ public class PSP_SnapPicture extends PSP_BaseAdapter
         String robotipaddress = (String) query_parameters.getFirstParameterToken("fetch", '=');;
         InetAddress addr = InetAddress.getByName(robotipaddress);
 
-	System.out.println("PSP_SnapPicture Fetching..." +robotipaddress);
+        System.out.println("PSP_SnapPicture Fetching..." +robotipaddress);
 
         int port = 1230;
 
-	Socket imsocket = new Socket(addr, port);
+        Socket imsocket = new Socket(addr, port);
 
         DataInputStream datain = new DataInputStream(imsocket.getInputStream());
         int nbytes = datain.readInt();
         if(nbytes > 0)
         {
           byte [] imagedata = new byte[nbytes];
-	  int nread = 0;
-	  while(nread < nbytes)
-	  {
-	    int nval = datain.read(imagedata, nread, nbytes - nread);
-	    if (nval < 0) break;
+          int nread = 0;
+          while(nread < nbytes)
+          {
+            int nval = datain.read(imagedata, nread, nbytes - nread);
+            if (nval < 0) break;
 
-	    nread += nval;
-	    //System.out.println("RobotImageDisplay: nread "+nread+" of "+nbytes);
-	  }
+            nread += nval;
+            //System.out.println("RobotImageDisplay: nread "+nread+" of "+nbytes);
+          }
 
-	  if(nread != nbytes)
-	  {
-	    out.println("RobotImageDisplay: nread != nbytes "+nread+"!="+nbytes);
-	  }
-	  else
-	  {
-	    FileOutputStream fimage;
-	    try
+          if(nread != nbytes)
+          {
+            out.println("RobotImageDisplay: nread != nbytes "+nread+"!="+nbytes);
+          }
+          else
+          {
+            FileOutputStream fimage;
+            try
             {
-	      fimage = new FileOutputStream(photofilename);
-	      fimage.write(imagedata);
-	      fimage.flush();
-	      fimage.close();
+              fimage = new FileOutputStream(photofilename);
+              fimage.write(imagedata);
+              fimage.flush();
+              fimage.close();
             }
             catch(FileNotFoundException fnfe)
             {
-	      System.err.println(photofilename+" not found");
-	      fnfe.printStackTrace();
+              System.err.println(photofilename+" not found");
+              fnfe.printStackTrace();
             }
-	    catch (Exception e)
-	    {
-	      e.printStackTrace();
-	      System.err.println("Error writing image data to file.");
-	    }
-	    out.println(jpegfileline);
-	  }
+            catch (Exception e)
+            {
+              e.printStackTrace();
+              System.err.println("Error writing image data to file.");
+            }
+            out.println(jpegfileline);
+          }
 
         }
       }
       else
       {
-	out.println("PSP_SnapPicture Snapping... " + psc.getSessionAddress());
-	RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
+        out.println("PSP_SnapPicture Snapping... " + psc.getSessionAddress());
+        RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
-	NewTask t = theLDMF.newTask();
-	t.setPlan(theLDMF.getRealityPlan());
-	t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.GETIMAGE]));
+        NewTask t = theLDMF.newTask();
+        t.setPlan(theLDMF.getRealityPlan());
+        t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.GETIMAGE]));
 
-	psc.getServerPluginSupport().publishAddForSubscriber(t);
+        psc.getServerPluginSupport().publishAddForSubscriber(t);
       }
 
     }

@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -28,12 +28,12 @@ import org.cougaar.microedition.se.domain.*;
   It is based upon the SurveillancePlugin.
 */
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.util.UnaryPredicate;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.asset.*;
-import org.cougaar.domain.glm.ldm.asset.Organization;
-import org.cougaar.domain.glm.ldm.asset.OrganizationPG;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.glm.ldm.asset.Organization;
+import org.cougaar.glm.ldm.asset.OrganizationPG;
 import org.cougaar.microedition.shared.Constants;
 
 import java.util.*;
@@ -121,7 +121,7 @@ public class UGSSurveillancePlugin extends SimplePlugin
       {
         if (o instanceof Allocation)
             return ((Allocation)o).getTask().getVerb().equals(Constants.Robot.verbs[Constants.Robot.REPORTPOSITION]);
-	return false;
+        return false;
       }
     };
     return newPred;
@@ -163,7 +163,7 @@ public class UGSSurveillancePlugin extends SimplePlugin
       {
         if (o instanceof Allocation)
             return ((Allocation)o).getTask().getVerb().equals(Constants.Robot.verbs[Constants.Robot.REPORTTARGET]);
-	return false;
+        return false;
       }
     };
     return newPred;
@@ -259,9 +259,9 @@ public class UGSSurveillancePlugin extends SimplePlugin
 
       ((NewTask)t).setPrepositionalPhrases(prepositions.elements());
       System.out.println("...with prepositions "
-				  +String.valueOf(0)+" "
-				  +String.valueOf(0)+" "
-				  +String.valueOf(0));
+                                  +String.valueOf(0)+" "
+                                  +String.valueOf(0)+" "
+                                  +String.valueOf(0));
 //      System.out.println("...with prepositions "
 //				  +String.valueOf(pos.latitude)+" "
 //				  +String.valueOf(pos.longitude)+" "
@@ -308,8 +308,8 @@ public class UGSSurveillancePlugin extends SimplePlugin
 
     ((NewTask)t).setPrepositionalPhrases(prepositions.elements());
     System.out.println("...with prepositions "
-				+String.valueOf(pos.latitude)+" "
-				+String.valueOf(pos.longitude));
+                                +String.valueOf(pos.latitude)+" "
+                                +String.valueOf(pos.longitude));
 
     publishAdd(t);
 
@@ -328,7 +328,7 @@ public class UGSSurveillancePlugin extends SimplePlugin
       if (pg instanceof RobotPG)
       {
         RobotPG rpg = (RobotPG)pg;
-	return rpg;
+        return rpg;
       }
     }
     return null;
@@ -343,7 +343,7 @@ public class UGSSurveillancePlugin extends SimplePlugin
       if (pg instanceof UGSPG)
       {
         UGSPG upg = (UGSPG)pg;
-	return upg;
+        return upg;
       }
     }
     return null;
@@ -359,7 +359,7 @@ public class UGSSurveillancePlugin extends SimplePlugin
       Asset o = (Asset)e.nextElement();
 
       if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
-	continue; // don't start a targeting task on detector.
+        continue; // don't start a targeting task on detector.
 
       makeTargetingTask(o, pc, rb);
     }
@@ -418,14 +418,14 @@ public class UGSSurveillancePlugin extends SimplePlugin
     {
       while (e.hasMoreElements())
       {
-	Allocation a = (Allocation)e.nextElement();
-	Organization o = (Organization)a.getAsset();
-	if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
-	{
-	  Task t = a.getTask();
-	  System.out.println("nsofSurveillancePlugin::stopping targeting task on detector " +t.getUID());
-	  publishRemove(t);
-	}
+        Allocation a = (Allocation)e.nextElement();
+        Organization o = (Organization)a.getAsset();
+        if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
+        {
+          Task t = a.getTask();
+          System.out.println("nsofSurveillancePlugin::stopping targeting task on detector " +t.getUID());
+          publishRemove(t);
+        }
       }
     }
 
@@ -434,14 +434,14 @@ public class UGSSurveillancePlugin extends SimplePlugin
     {
       while (e.hasMoreElements())
       {
-	Allocation a = (Allocation)e.nextElement();
-	Organization o = (Organization)a.getAsset();
-	if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
-	{
-	  Task t = a.getTask();
-	  System.out.println("nsofSurveillancePlugin::stopping positioning task on detector " +t.getUID());
-	  publishRemove(t);
-	}
+        Allocation a = (Allocation)e.nextElement();
+        Organization o = (Organization)a.getAsset();
+        if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
+        {
+          Task t = a.getTask();
+          System.out.println("nsofSurveillancePlugin::stopping positioning task on detector " +t.getUID());
+          publishRemove(t);
+        }
       }
     }
   }
@@ -455,8 +455,8 @@ public class UGSSurveillancePlugin extends SimplePlugin
        Asset o = (Asset)e.nextElement();
        if (detectors.contains(o))
        {
-	  makeReportPositionTask(o);
-	  makeTargetingTask(o, null, null);
+          makeReportPositionTask(o);
+          makeTargetingTask(o, null, null);
        }
     }
   }
@@ -480,7 +480,7 @@ public class UGSSurveillancePlugin extends SimplePlugin
 
     if (FindIntersection(r1.getLatitude(), r1.getLongitude(), r1.getBearing(),
                          r2.getLatitude(), r2.getLongitude(), r2.getBearing(),
-			 t))
+                         t))
     {
       System.out.println("Location of Target: " +t.latitude +" " +t.longitude);
       return true;
@@ -616,27 +616,27 @@ public class UGSSurveillancePlugin extends SimplePlugin
       e = setGoTask.getAddedList();
       if(e.hasMoreElements())
       {
-	System.out.println("Got the GO signal...");
-	//launch the robots we can see
-	e = robotOrgs.elements();
-	while (e.hasMoreElements())
-	{
+        System.out.println("Got the GO signal...");
+        //launch the robots we can see
+        e = robotOrgs.elements();
+        while (e.hasMoreElements())
+        {
 
-	  Asset o = (Asset)e.nextElement();
+          Asset o = (Asset)e.nextElement();
 
-	  System.out.println("\nStarting REPORT POSITION and TARGETING tasks on " + o.toString());
+          System.out.println("\nStarting REPORT POSITION and TARGETING tasks on " + o.toString());
 //	  makeReportPositionTask(o);
-	  makeTargetingTask(o, null, null);
+          makeTargetingTask(o, null, null);
 
           // requested hack to vary times of turning active
          // if (o.toString().indexOf("1")>-1 || o.toString().indexOf("3")>-1)
             updateUGSStatus(o, status.setTarTask(true));
-	}
-	underway = true;
+        }
+        underway = true;
       }
       else
       {
-	// return; //no go signal was issued
+        // return; //no go signal was issued
       }
     }
     else
@@ -646,21 +646,21 @@ public class UGSSurveillancePlugin extends SimplePlugin
       if(e.hasMoreElements())
       {
         System.out.println("Got the STOP signal...");
-	removeTargetingTasks();
-	removePositioningTasks();
-	//removeWaypointTasks();
-	e = robotOrgs.elements();
-	while (e.hasMoreElements())
-	{
-	  Asset o = (Asset)e.nextElement();
+        removeTargetingTasks();
+        removePositioningTasks();
+        //removeWaypointTasks();
+        e = robotOrgs.elements();
+        while (e.hasMoreElements())
+        {
+          Asset o = (Asset)e.nextElement();
           updateUGSStatus(o, status.setTarTask(false));
-	}
+        }
 
-	//clean up
-	detectors.removeAllElements();
-	firsttimedetection = false;
-	underway = false;
-	waypointsset = false;
+        //clean up
+        detectors.removeAllElements();
+        firsttimedetection = false;
+        underway = false;
+        waypointsset = false;
         return;
       }
     }
@@ -672,23 +672,23 @@ public class UGSSurveillancePlugin extends SimplePlugin
     {
       while (e.hasMoreElements())
       {
-	Allocation a = (Allocation)e.nextElement();
-	AllocationResult ar = a.getReceivedResult();
-	if (ar != null)
-	{
+        Allocation a = (Allocation)e.nextElement();
+        AllocationResult ar = a.getReceivedResult();
+        if (ar != null)
+        {
           updateUGSPosition(a, ar);
-	  NewRobotPG rloc = (NewRobotPG)GetRobotStatus(a.getAsset());
+          NewRobotPG rloc = (NewRobotPG)GetRobotStatus(a.getAsset());
 //	  System.out.println("nsofSurveillancePlugin:: UGS " + a.getAsset().toString() + " position "
 //	                      +rloc.getLatitude() + " " + rloc.getLongitude());
-	  System.out.println("nsofSurveillancePlugin:: UGS " + a.getAsset().toString() + " position "
-	                      +ar.getValue(Constants.Aspects.LATITUDE) + " " + ar.getValue(Constants.Aspects.LONGITUDE));
+          System.out.println("nsofSurveillancePlugin:: UGS " + a.getAsset().toString() + " position "
+                              +ar.getValue(Constants.Aspects.LATITUDE) + " " + ar.getValue(Constants.Aspects.LONGITUDE));
           if (rloc !=null) {
-	    rloc.setLatitude(ar.getValue(Constants.Aspects.LATITUDE));
-	    rloc.setLongitude(ar.getValue(Constants.Aspects.LONGITUDE));
-	  System.out.println("nsofSurveillancePlugin:: UGS " + /* a.getAsset().toString() + */ " position "
-	                      +rloc.getLatitude() + " " + rloc.getLongitude());
+            rloc.setLatitude(ar.getValue(Constants.Aspects.LATITUDE));
+            rloc.setLongitude(ar.getValue(Constants.Aspects.LONGITUDE));
+          System.out.println("nsofSurveillancePlugin:: UGS " + /* a.getAsset().toString() + */ " position "
+                              +rloc.getLatitude() + " " + rloc.getLongitude());
           }
-	}
+        }
       }
     }
 /* -- */
@@ -750,15 +750,15 @@ public class UGSSurveillancePlugin extends SimplePlugin
 //  }
 
   private void addUGSDetection(Allocation a, AllocationResult ar) {
-	//which robot was this that detected
+        //which robot was this that detected
         Organization detector = (Organization)a.getAsset();
-	NewUGSPG upg = (NewUGSPG)GetUGSPG(detector);
+        NewUGSPG upg = (NewUGSPG)GetUGSPG(detector);
 
         // the next line is a hack which was requested
         updateUGSStatus(detector, status.setTarTask(true));
 
-	//no guarantee that the RobotAllocator Plug In has set this before
-	//Surveillance plug in has been notified.
+        //no guarantee that the RobotAllocator Plug In has set this before
+        //Surveillance plug in has been notified.
         double arDetection=getDetection(ar);
         Date arDetTime=getDetectionTime(ar);
         boolean detected=(arDetection > 0.001);
@@ -804,16 +804,16 @@ public class UGSSurveillancePlugin extends SimplePlugin
   }
 
       private void updateUGSPosition(Allocation a, AllocationResult ar) {
-	  NewUGSPG ugspg = (NewUGSPG)GetUGSPG(a.getAsset());
-	  System.out.println("nsofSurveillancePlugin:: UGS " + a.getAsset().toString() + " position "
-	                      +ar.getValue(Constants.Aspects.LATITUDE) + " " + ar.getValue(Constants.Aspects.LONGITUDE));
+          NewUGSPG ugspg = (NewUGSPG)GetUGSPG(a.getAsset());
+          System.out.println("nsofSurveillancePlugin:: UGS " + a.getAsset().toString() + " position "
+                              +ar.getValue(Constants.Aspects.LATITUDE) + " " + ar.getValue(Constants.Aspects.LONGITUDE));
           if (ugspg !=null) {
-	    ugspg.setLat(ar.getValue(Constants.Aspects.LATITUDE));
-	    ugspg.setLon(ar.getValue(Constants.Aspects.LONGITUDE));
+            ugspg.setLat(ar.getValue(Constants.Aspects.LATITUDE));
+            ugspg.setLon(ar.getValue(Constants.Aspects.LONGITUDE));
             updateUGSStatus(a.getAsset(), status.setPosAR(true));
 
-	  System.out.println("nsofSurveillancePlugin:: UGS " + /* a.getAsset().toString() + */ " position "
-	                      +ugspg.getLat() + " " + ugspg.getLon());
+          System.out.println("nsofSurveillancePlugin:: UGS " + /* a.getAsset().toString() + */ " position "
+                              +ugspg.getLat() + " " + ugspg.getLon());
 
           }
 
@@ -821,13 +821,13 @@ public class UGSSurveillancePlugin extends SimplePlugin
       }
 
       private void updateUGSStatus(Asset asset, Status newStatus) {
-	  NewUGSPG ugspg = (NewUGSPG)GetUGSPG(asset);
-	  System.out.println("nsofSurveillancePlugin:: updateUGSStatus ");
+          NewUGSPG ugspg = (NewUGSPG)GetUGSPG(asset);
+          System.out.println("nsofSurveillancePlugin:: updateUGSStatus ");
           if (ugspg !=null) {
-	    System.out.print("nsofSurveillancePlugin:: updateUGSStatus "
+            System.out.print("nsofSurveillancePlugin:: updateUGSStatus "
                       + asset + " Status change from "
-	                      +ugspg.getStatus()); System.out.flush();
-	    ugspg.setStatus(newStatus.getValue());
+                              +ugspg.getStatus()); System.out.flush();
+            ugspg.setStatus(newStatus.getValue());
             System.out.println(" to (" + status+") "+ugspg.getStatus());
           }
 
@@ -848,8 +848,8 @@ public class UGSSurveillancePlugin extends SimplePlugin
   }
 
   public boolean FindIntersection(double y1, double x1, double alpha,
-				  double y2, double x2, double beta,
-				  PositionCoordinate pc)
+                                  double y2, double x2, double beta,
+                                  PositionCoordinate pc)
   {
     // using linear algebra version from Bob Bieri
     pc.latitude = -999.0;

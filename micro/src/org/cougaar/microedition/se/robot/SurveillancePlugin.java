@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -23,12 +23,12 @@
 package org.cougaar.microedition.se.robot;
 
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.util.UnaryPredicate;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.asset.*;
-import org.cougaar.domain.glm.ldm.asset.Organization;
-import org.cougaar.domain.glm.ldm.asset.OrganizationPG;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.glm.ldm.asset.Organization;
+import org.cougaar.glm.ldm.asset.OrganizationPG;
 import org.cougaar.microedition.shared.*;
 import java.util.*;
 import java.lang.*;
@@ -83,7 +83,7 @@ public class SurveillancePlugin extends SimplePlugin
       {
         if (o instanceof Allocation)
             return ((Allocation)o).getTask().getVerb().equals(Constants.Robot.verbs[Constants.Robot.REPORTPOSITION]);
-	return false;
+        return false;
       }
     };
     return newPred;
@@ -139,7 +139,7 @@ public class SurveillancePlugin extends SimplePlugin
       {
         if (o instanceof Allocation)
             return ((Allocation)o).getTask().getVerb().equals(Constants.Robot.verbs[Constants.Robot.REPORTTARGET]);
-	return false;
+        return false;
       }
     };
     return newPred;
@@ -199,8 +199,8 @@ public class SurveillancePlugin extends SimplePlugin
       String param = (String)pnum.nextElement();
       if (param.toLowerCase().indexOf("minimumdetectors") >= 0)
       {
-	 minimumdetectors = extractinteger(param);
-	 System.out.println("SurveillancePlugin minimumdetectors "+minimumdetectors);
+         minimumdetectors = extractinteger(param);
+         System.out.println("SurveillancePlugin minimumdetectors "+minimumdetectors);
       }
     }
 
@@ -259,9 +259,9 @@ public class SurveillancePlugin extends SimplePlugin
 
       ((NewTask)t).setPrepositionalPhrases(prepositions.elements());
       System.out.println("...with prepositions "
-				  +String.valueOf(pos.latitude)+" "
-				  +String.valueOf(pos.longitude)+" "
-				  +String.valueOf(rb.bearing));
+                                  +String.valueOf(pos.latitude)+" "
+                                  +String.valueOf(pos.longitude)+" "
+                                  +String.valueOf(rb.bearing));
     }
     else
     {
@@ -344,8 +344,8 @@ public class SurveillancePlugin extends SimplePlugin
 
     ((NewTask)t).setPrepositionalPhrases(prepositions.elements());
     System.out.println("...with prepositions "
-				+String.valueOf(pos.latitude)+" "
-				+String.valueOf(pos.longitude));
+                                +String.valueOf(pos.latitude)+" "
+                                +String.valueOf(pos.longitude));
 
     publishAdd(t);
 
@@ -364,7 +364,7 @@ public class SurveillancePlugin extends SimplePlugin
       if (pg instanceof RobotPG)
       {
         RobotPG rpg = (RobotPG)pg;
-	return rpg;
+        return rpg;
       }
     }
     return null;
@@ -380,7 +380,7 @@ public class SurveillancePlugin extends SimplePlugin
       Asset o = (Asset)e.nextElement();
 
       if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
-	continue; // don't start a targeting task on detector.
+        continue; // don't start a targeting task on detector.
 
       makeTargetingTask(o, pc, rb);
     }
@@ -439,14 +439,14 @@ public class SurveillancePlugin extends SimplePlugin
     {
       while (e.hasMoreElements())
       {
-	Allocation a = (Allocation)e.nextElement();
-	Organization o = (Organization)a.getAsset();
-	if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
-	{
-	  Task t = a.getTask();
-	  System.out.println("SurveillancePlugin::stopping targeting task on detector " +t.getUID());
-	  publishRemove(t);
-	}
+        Allocation a = (Allocation)e.nextElement();
+        Organization o = (Organization)a.getAsset();
+        if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
+        {
+          Task t = a.getTask();
+          System.out.println("SurveillancePlugin::stopping targeting task on detector " +t.getUID());
+          publishRemove(t);
+        }
       }
     }
 
@@ -455,14 +455,14 @@ public class SurveillancePlugin extends SimplePlugin
     {
       while (e.hasMoreElements())
       {
-	Allocation a = (Allocation)e.nextElement();
-	Organization o = (Organization)a.getAsset();
-	if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
-	{
-	  Task t = a.getTask();
-	  System.out.println("SurveillancePlugin::stopping positioning task on detector " +t.getUID());
-	  publishRemove(t);
-	}
+        Allocation a = (Allocation)e.nextElement();
+        Organization o = (Organization)a.getAsset();
+        if (detectors.contains(o)) // for detectors dir=>none (suspend searching).
+        {
+          Task t = a.getTask();
+          System.out.println("SurveillancePlugin::stopping positioning task on detector " +t.getUID());
+          publishRemove(t);
+        }
       }
     }
   }
@@ -499,7 +499,7 @@ public class SurveillancePlugin extends SimplePlugin
 
     if (FindIntersection(r1.getLatitude(), r1.getLongitude(), r1.getBearing(),
                          r2.getLatitude(), r2.getLongitude(), r2.getBearing(),
-			 t))
+                         t))
     {
       System.out.println("Location of Target: " +t.latitude +" " +t.longitude);
       return true;
@@ -534,35 +534,35 @@ public class SurveillancePlugin extends SimplePlugin
       PrepositionalPhrase prep = gotask.getPrepositionalPhrase(Constants.Robot.verbs[Constants.Robot.SETWAYPOINT]);
       if (prep!=null)
       {
-	String coordtext =(String)prep.getIndirectObject();
-	System.out.println("Manually setting waypoint " +coordtext);
-	StringTokenizer st = new StringTokenizer(coordtext, ",");
-	if (st.hasMoreTokens())
-	{
-	    double lat = Double.parseDouble(st.nextToken());
-	    double lon = Double.parseDouble(st.nextToken());
-	    //System.out.println("Waypoint " +lat+" "+lon);
-	    waypointposition = new PositionCoordinate(lat, lon);
-	    waypointsset = true;
+        String coordtext =(String)prep.getIndirectObject();
+        System.out.println("Manually setting waypoint " +coordtext);
+        StringTokenizer st = new StringTokenizer(coordtext, ",");
+        if (st.hasMoreTokens())
+        {
+            double lat = Double.parseDouble(st.nextToken());
+            double lon = Double.parseDouble(st.nextToken());
+            //System.out.println("Waypoint " +lat+" "+lon);
+            waypointposition = new PositionCoordinate(lat, lon);
+            waypointsset = true;
             setWaypoint(waypointposition); //send waypoints to robots
-	}
+        }
       }
       else
       {
         if(!underway)
         {
-	  System.out.println("Got the GO signal...");
-	  //launch the robots we can see
-	  Enumeration eorgs = robotOrgs.elements();
-	  while (eorgs.hasMoreElements())
-	  {
-	    Asset o = (Asset)eorgs.nextElement();
-	    //System.out.println("\nStarting REPORT POSITION and TARGETING tasks on " + o.toString());
-	    makeReportPositionTask(o);
-	    makeTargetingTask(o, null, null);
-	  }
-	  underway = true;
-	}
+          System.out.println("Got the GO signal...");
+          //launch the robots we can see
+          Enumeration eorgs = robotOrgs.elements();
+          while (eorgs.hasMoreElements())
+          {
+            Asset o = (Asset)eorgs.nextElement();
+            //System.out.println("\nStarting REPORT POSITION and TARGETING tasks on " + o.toString());
+            makeReportPositionTask(o);
+            makeTargetingTask(o, null, null);
+          }
+          underway = true;
+        }
       }
     }
     else
@@ -572,15 +572,15 @@ public class SurveillancePlugin extends SimplePlugin
       if(e.hasMoreElements() == true)
       {
         System.out.println("Got the STOP signal...");
-	removeTargetingTasks();
-	removePositioningTasks();
-	removeWaypointTasks();
+        removeTargetingTasks();
+        removePositioningTasks();
+        removeWaypointTasks();
 
-	//clean up
-	detectors.removeAllElements();
-	firsttimedetection = false;
-	underway = false;
-	waypointsset = false;
+        //clean up
+        detectors.removeAllElements();
+        firsttimedetection = false;
+        underway = false;
+        waypointsset = false;
         return;
       }
     }
@@ -598,12 +598,12 @@ public class SurveillancePlugin extends SimplePlugin
       Enumeration eorgs = robotOrgs.elements();
       while (eorgs.hasMoreElements())
       {
-	Asset o = (Asset)eorgs.nextElement();
-	NewTask subTask = createLaunchSubTask(ltask, utctime);
-	subTask.setWorkflow(nwf);
-	nwf.addTask(subTask);
+        Asset o = (Asset)eorgs.nextElement();
+        NewTask subTask = createLaunchSubTask(ltask, utctime);
+        subTask.setWorkflow(nwf);
+        nwf.addTask(subTask);
         Allocation a = theLDMF.createAllocation(subTask.getPlan(), subTask, o, null, Role.ASSIGNED);
-	publishAdd(subTask);
+        publishAdd(subTask);
         publishAdd(a);
       }
 
@@ -625,25 +625,25 @@ public class SurveillancePlugin extends SimplePlugin
       AllocationResult ar = a.getReceivedResult();
       if (ar != null)
       {
-	//which robot was this that detected
+        //which robot was this that detected
         Organization detector = (Organization)a.getAsset();
 
-	NewRobotPG rpg = (NewRobotPG)GetRobotStatus(detector);
+        NewRobotPG rpg = (NewRobotPG)GetRobotStatus(detector);
 
-	//no guarantee that the RobotAllocator Plug In has set this before
-	//Surveillance plug in has been notified.
-	double absbear = ar.getValue(Constants.Aspects.BEARING);
-	rpg.setBearing(absbear);
-	rpg.setDetection((ar.getValue(Constants.Aspects.DETECTION) > 0.001));
+        //no guarantee that the RobotAllocator Plug In has set this before
+        //Surveillance plug in has been notified.
+        double absbear = ar.getValue(Constants.Aspects.BEARING);
+        rpg.setBearing(absbear);
+        rpg.setDetection((ar.getValue(Constants.Aspects.DETECTION) > 0.001));
 
-	if(rpg.getDetection())
-	{
-	  System.out.println("\nTarget reported at " +rpg.getBearing() +" degrees True from Robot " +detector.toString());
+        if(rpg.getDetection())
+        {
+          System.out.println("\nTarget reported at " +rpg.getBearing() +" degrees True from Robot " +detector.toString());
 
-	  // save identity of detecting robot(s)
-	  if (!detectors.contains(detector))
-	     detectors.add(detector);
-	}
+          // save identity of detecting robot(s)
+          if (!detectors.contains(detector))
+             detectors.add(detector);
+        }
       }
     }
 
@@ -653,29 +653,29 @@ public class SurveillancePlugin extends SimplePlugin
       PositionCoordinate tl = new PositionCoordinate();
       if(computeTargetLocation(tl) == true)
       {
-	//removePositioningTasks();
-	//removeTargetingTasks(); //no more looking around
-	waypointposition = tl;
-	waypointsset = true;
+        //removePositioningTasks();
+        //removeTargetingTasks(); //no more looking around
+        waypointposition = tl;
+        waypointsset = true;
         setWaypoint(waypointposition); //send waypoints to robots
       }
       else if(minimumdetectors == 1) //usually used to test end game with one robot
       {
-	waypointsset = true;
+        waypointsset = true;
         setWaypoint(tl); //send fake lat lon to robot
       }
       else
       {
-	System.out.println("Unable to triangulate. System stopped.");
-	//removePositioningTasks();
-	removeTargetingTasks();
-	removeWaypointTasks();
+        System.out.println("Unable to triangulate. System stopped.");
+        //removePositioningTasks();
+        removeTargetingTasks();
+        removeWaypointTasks();
 
-	//clean up
-	detectors.removeAllElements();
-	firsttimedetection = false;
-	underway = false;
-	waypointsset = false;
+        //clean up
+        detectors.removeAllElements();
+        firsttimedetection = false;
+        underway = false;
+        waypointsset = false;
       }
     }
   }
@@ -695,8 +695,8 @@ public class SurveillancePlugin extends SimplePlugin
   }
 
   public boolean FindIntersection(double y1, double x1, double alpha,
-				  double y2, double x2, double beta,
-				  PositionCoordinate pc)
+                                  double y2, double x2, double beta,
+                                  PositionCoordinate pc)
   {
     //System.out.println("FindIntersection: "+y1+" "+x1+" "+alpha);
     //System.out.println("FindIntersection: "+y2+" "+x2+" "+beta);

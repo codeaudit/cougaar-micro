@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -22,8 +22,6 @@
  */
 package org.cougaar.microedition.se.robot;
 
-import org.cougaar.domain.planning.ldm.plan.PlanElement;
-
 import org.cougaar.util.UnaryPredicate;
 import java.io.*;
 import java.util.*;
@@ -34,12 +32,12 @@ import org.cougaar.lib.planserver.HttpInput;
 import org.cougaar.lib.planserver.PlanServiceContext;
 import org.cougaar.lib.planserver.PlanServiceUtilities;
 import org.cougaar.lib.planserver.RuntimePSPException;
-import org.cougaar.core.cluster.Subscription;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.RootFactory;
+import org.cougaar.core.blackboard.Subscription;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.core.domain.RootFactory;
 import org.cougaar.microedition.shared.Constants;
 
-import org.cougaar.core.cluster.IncrementalSubscription;
+import org.cougaar.core.blackboard.IncrementalSubscription;
 
 /**
  * This PSP is meant for the PC 104 board which controls only a single TiniFlashlight
@@ -102,21 +100,21 @@ public class PSP_ControlLight extends PSP_BaseAdapter
          wantOn=onText.equalsIgnoreCase("true");
          System.out.println("want on is "+wantOn);
 
-	 RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
+         RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
-	 NewTask t = theLDMF.newTask();
-	 t.setPlan(theLDMF.getRealityPlan());
-	 t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.CONTROLFLASHLIGHT]));
+         NewTask t = theLDMF.newTask();
+         t.setPlan(theLDMF.getRealityPlan());
+         t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.CONTROLFLASHLIGHT]));
 
 
-	 psc.getServerPluginSupport().openLogPlanTransaction();
-	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
+         psc.getServerPluginSupport().openLogPlanTransaction();
+         NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
          npp.setPreposition("LightingMode");
-	 npp.setIndirectObject("toggle"); // turn on for now
-	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
-	 psc.getServerPluginSupport().closeLogPlanTransaction();
+         npp.setIndirectObject("toggle"); // turn on for now
+         t.setPrepositionalPhrase((PrepositionalPhrase)npp);
+         psc.getServerPluginSupport().closeLogPlanTransaction();
 
-	 psc.getServerPluginSupport().publishAddForSubscriber(t);
+         psc.getServerPluginSupport().publishAddForSubscriber(t);
 
 
       }
