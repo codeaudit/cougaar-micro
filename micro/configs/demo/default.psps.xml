@@ -44,7 +44,18 @@
     <Classname>org.cougaar.microedition.domain.PSP_GetImage</Classname>
     <PSPName>GETI.PSP</PSPName>
   </element>
-
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.domain.PSP_LaunchWeapon</Classname>
+    <PSPName>LAUNCHWEAPON.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.domain.PSP_TurnRobot</Classname>
+    <PSPName>TURNROBOT.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.domain.PSP_SnapPicture</Classname>
+    <PSPName>SNAPPICTURE.PSP</PSPName>
+  </element>
 </object>
 
 
