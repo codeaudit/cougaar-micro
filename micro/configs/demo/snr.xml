@@ -4,7 +4,7 @@
 
   <resource> org.cougaar.microedition.tini.TiniSONARController</resource>
 
-  <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="2.25" sleeptime="100"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+  <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="3.0" sleeptime="100"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
 
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.tini.TiniKillPlugIn</plugin>

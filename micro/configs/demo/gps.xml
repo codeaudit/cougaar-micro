@@ -2,7 +2,7 @@
 <NodeConfiguration>
   <description>PositionProvider,WeaponProvider</description>
 
-  <resource hfom="1.0"> org.cougaar.microedition.tini.TiniGPSLocationControllerResource</resource>
+  <resource hfom="2.0"> org.cougaar.microedition.tini.TiniGPSLocationControllerResource</resource>
 
   <plugin resource="TiniGPSLocationControllerResource" command="ReportPosition"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
 
