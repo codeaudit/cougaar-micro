@@ -18,6 +18,19 @@ import javax.comm.*;
 
 /**
  *  CougaarME Resource for controlling a MACH5 robot base from a TINI board.
+ *  Parameters are:
+ *  port=(serial0 or serial1)
+ *    If you use serial 0, you must do a downserver -s to kill the console server
+ *    If you use serial 1, you must move the jumper JP4 on the STEP board to the "RS232" position
+ *  debug=
+ *    If you define debug, you get loads of console text output
+ *
+ *  The cable for the TINI <--> Mach5 should be null modem, specifically:
+ *  TINI   Mach5
+ *   1  ---  1
+ *   2  ---  3
+ *   3  ---  2
+ *   7  ---  7
  */
 public class TiniMach5LocomotionResource extends LocomotionResource {
 
@@ -25,14 +38,18 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
   }
 
   private String portName = "serial1";
+  private boolean debug = false;
 
   /**
    *  The only paramater is "port" which defaults to "serial1"
    */
   public void setParameters(Hashtable params) {
     super.setParameters(params);
-    if (params.get("port") != null) {
-      portName = (String)params.get("port");
+    if (params != null) {
+      if (params.get("port") != null) {
+        portName = (String)params.get("port");
+      }
+      debug = (params.get("debug") != null);
     }
     startMonitorThread();
   }
@@ -45,14 +62,15 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
     speed = newSpeed;
   }
 
-  public void rotate(int direction){
+  public void rotate(int direction, double degrees){
     String msg = "";
+    int ticks = (int)(degrees * 2.25); // experimentally determined
     switch (direction) {
       case CLOCKWISE :
-        msg = "SPR 1 -1\n";
+        msg = "SPR "+ticks+" -"+ticks+"\n";
         break;
       case COUNTER_CLOCKWISE :
-        msg = "SPR -1 1\n";
+        msg = "SPR -"+ticks+" "+ticks+"\n";
         break;
       default:
         throw new IllegalArgumentException("LocomotionResource.rotate must be one of CLOCKWISE or COUNTERCLOCKWISE");
@@ -90,16 +108,20 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
       msg = getMsg();
     }
 
-    org.cougaar.microedition.util.StringTokenizer toker = new org.cougaar.microedition.util.StringTokenizer(msg, " ");
+    try {
+      org.cougaar.microedition.util.StringTokenizer toker = new org.cougaar.microedition.util.StringTokenizer(msg.trim(), " ");
 
-    // format should be "> NNNNNN NNNNNN ....."
-    int ntokens = toker.countTokens();
-    if (ntokens >= 3) { //  enough tokens
-      toker.nextToken();  // eat the ">"
-      String left = toker.nextToken();
-      String right = toker.nextToken();
-      ret[0] = Long.parseLong(left);
-      ret[1] = Long.parseLong(right);
+      // format should be "> NNNNNN NNNNNN ....."
+      int ntokens = toker.countTokens();
+      if (ntokens >= 3) { //  enough tokens
+        toker.nextToken();  // eat the ">"
+        String left = toker.nextToken();
+        String right = toker.nextToken();
+        ret[0] = Long.parseLong(left);
+        ret[1] = Long.parseLong(right);
+      }
+    } catch (NumberFormatException nfe) { // error parsing wheel position text
+      ret = null;
     }
     return ret;
   }
@@ -109,8 +131,9 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
 
 
   private void sendMsg(String msg) {
-    outgoingMsgs.addElement(msg);
     synchronized (outgoingMsgs) {
+      outgoingMsgs.addElement(msg);
+      if (debug) System.out.println("sendMsg: outQ= "+outgoingMsgs);
       outgoingMsgs.notifyAll();
     }
   }
@@ -144,6 +167,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
        InputStream input;
        OutputStream output;
 
+      if (debug) System.out.println("TiniMach5LocomotionResource started on "+portName);
       if (portName.equals("serial1")) {
         com.dalsemi.system.TINIOS.enableSerialPort1();
       }
@@ -170,13 +194,16 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
           synchronized (outgoingMsgs) {
             while (outgoingMsgs.isEmpty()) {
               try {
+                System.out.println("Waiting on "+outgoingMsgs);
                 outgoingMsgs.wait();
+                System.out.println("DONE Waiting on "+outgoingMsgs);
               } catch (InterruptedException ex) {}
             }
             msg = (String)outgoingMsgs.elementAt(0);
             outgoingMsgs.removeElementAt(0);
           }
           try {
+            if (debug) System.out.println("SEND:"+msg);
             output.write(msg.getBytes());
             output.flush();
           } catch (IOException ioe) {
@@ -196,6 +223,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
            } catch (IOException ioe) {
              ioe.printStackTrace();
            }
+            if (debug) System.out.println("RECV:"+new String(data));
            // only ones I'm interested in are the responses to the "QP"
            if (msg.startsWith("QP"))
              incomingMsgs.addElement(new String(data, 0, dataptr));
