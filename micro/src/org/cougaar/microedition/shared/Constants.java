@@ -33,7 +33,7 @@ public interface Constants {
 
     static String [] verbs = { "ReportPosition", "Advance", "TraverseWaypoints",
       "ReportTarget", "ControlFlashlight", "RotateTurret", "ReportDetection",
-      "GetImage", "StartSystem", "SetOrientation" };
+      "GetImage", "StartSystem", "SetOrientation", "DetectTarget" };
     static int REPORTPOSITION = 0;
     static int ADVANCE = 1;
     static int TRAVERSEWAYPOINTS = 2;
@@ -44,12 +44,17 @@ public interface Constants {
     static int GETIMAGE = 7;
     static int STARTSYSTEM = 8;
     static int SETORIENTATION = 9;
+    static int DETECTTARGET = 10;
 
-    static String [] prepositions = { "Degrees", "Speed", "Velocity", "TurretHemisphere" };
+    static String [] prepositions = { "Degrees", "Speed", "Velocity",
+      "TurretHemisphere", "Lat", "Lon", "Bearing" };
     final static int ORIENTATIONPREP= 0; // "Degrees"
     final static int SPEEDPREP= 1; // "Speed";
     final static int VELOCITYPREP=2; // "Velocity";
     final static int TURRETDIRECTIONPREP=3; // "TurretHemisphere"
+    final static int LATPREP=4; // "Lat"
+    final static int LONPREP=5; // "Lon"
+    final static int BEARINGPREP=6; // "Bearing"
 
     public static final String SEARCHLEFT = "left";
     public static final String SEARCHFRONT = "front";
