@@ -31,7 +31,7 @@ public class TiniThermometer extends ThermometerResource {
       if (u.equals(Units[i]))
         ok = true;
     if (!ok)
-      throw new IllegalArgumentException("bad units for TiniThermometer: " + u + " using " + Units[0]);
+      throw new IllegalArgumentException(getName() + ": bad units: " + u + "; using: " + Units[0]);
     units = u;
   }
 
@@ -46,15 +46,11 @@ public class TiniThermometer extends ThermometerResource {
       iButtonContainer10 tempSensor = (iButtonContainer10)adapter.getFirstiButton();
       if (tempSensor == null)
         return dval;
-      if (unit.equals("Fahrenheit")) {
-        System.out.print(unit);
+      if (unit.equals("Fahrenheit"))
         dval = tempSensor.readTemperatureFahrenheit();
-      }
-      else if (unit.equals("Celsius") || unit.equals("")) {
-        System.out.print(unit);
+      else
         dval = tempSensor.readTemperature();
-      }
-      System.out.println(" Temperature Reading: " + dval);
+      System.out.println(unit + " " + getName() + " Reading: " + dval);
       adapter.endExclusive();
     } catch (Exception e) {
       System.out.println("caught exception: " + e);

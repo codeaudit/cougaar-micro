@@ -22,7 +22,7 @@ public class TiniVoltmeter extends VoltmeterResource {
 
   public void setChan(int c) {
     if (c < 0 || 3 < c)
-      throw new IllegalArgumentException("bad chan for VoltmeterResource: " + c);
+      throw new IllegalArgumentException(getName() + ": bad chan: " + c + "; using: " + getChan());
     chan = c;
   }
 
@@ -53,7 +53,7 @@ public class TiniVoltmeter extends VoltmeterResource {
     adapter.endExclusive();
     }
 
-    System.out.println("Voltage Reading: Ch" + getChan() + " = " + curVoltage + " V");
+    System.out.println(getName() + " Reading: Ch" + getChan() + " = " + curVoltage + " V");
     return curVoltage;
   }
 

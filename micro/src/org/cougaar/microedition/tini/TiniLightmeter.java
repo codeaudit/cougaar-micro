@@ -25,7 +25,7 @@ public class TiniLightmeter extends LightmeterResource {
   public void setChan(int c) {
     chan = lightChan;
     if (c != lightChan)
-      throw new IllegalArgumentException("bad chan for LightmeterResource: " + c + " using " + lightChan);
+      throw new IllegalArgumentException(getName() + ": bad chan: " + c + "; using: " + lightChan);
   }
 
   public void setUnits(String u) {}
@@ -57,7 +57,7 @@ public class TiniLightmeter extends LightmeterResource {
     adapter.endExclusive();
     }
 
-    System.out.println("Light Reading: Ch" + getChan() + " = " + (range-curVoltage) + " V");
+    System.out.println(getName() + " Reading: Ch" + getChan() + " = " + (range-curVoltage) + " V");
     return range-curVoltage;
   }
 }
