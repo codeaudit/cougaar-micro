@@ -64,7 +64,7 @@ public class KvmValuemeter extends ValueResource {
 
     long ret = (long)ival;
 
-    return ret;
+    return ret  * getScalingFactor();
 
   }
 
