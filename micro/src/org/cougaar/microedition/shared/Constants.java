@@ -51,6 +51,10 @@ public interface Constants {
     final static int VELOCITYPREP=2; // "Velocity";
     final static int TURRETDIRECTIONPREP=3; // "TurretHemisphere"
 
+    public static final String SEARCHLEFT = "left";
+    public static final String SEARCHFRONT = "front";
+    public static final String SEARCHRIGHT = "right";
+
     public static final int TURRET_LEFT = 0;
     public static final int TURRET_MIDDLE = 1;
     public static final int TURRET_RIGHT = 2;
