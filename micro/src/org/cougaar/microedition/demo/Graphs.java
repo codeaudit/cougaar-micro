@@ -8,7 +8,6 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 import com.klg.jclass.swing.gauge.beans.*;
-import com.borland.jbcl.layout.*;
 import javax.swing.border.*;
 
 public class Graphs extends JApplet {
