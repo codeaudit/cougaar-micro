@@ -31,7 +31,7 @@ public interface Constants {
     static int TURRETCONTROLLER = 5;
     static int SONARSENSOR = 6;
 
-    static String [] verbs = { "ReportPosition", "Advance", "TraverseWaypoints", "ReportTarget", "ControlFlashlight", "RotateTurret", "ReportDetection", "GetImage" };
+    static String [] verbs = { "ReportPosition", "Advance", "TraverseWaypoints", "ReportTarget", "ControlFlashlight", "RotateTurret", "ReportDetection", "GetImage", "StartSystem" };
     static int REPORTPOSITION = 0;
     static int ADVANCE = 1;
     static int TRAVERSEWAYPOINTS = 2;
@@ -40,6 +40,7 @@ public interface Constants {
     static int ROTATETURRET = 5;
     static int REPORTDETECTION = 6;
     static int GETIMAGE = 7;
+    static int STARTSYSTEM = 8;
 
   }
 
