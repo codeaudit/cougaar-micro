@@ -83,11 +83,14 @@ public class MessageTransport {
     }
   }
 
-  public void sendMessage(Encodable msg, MicroCluster dest) {
+  public void sendMessage(Encodable msg, MicroCluster dest, String op) {
     StringBuffer buf = new StringBuffer();
     buf.append(nodeName + ":");
-    buf.append("<?xml version=\"1.0\"?>");
+    buf.append(msg.xmlPreamble);
+    buf.append("<message op=\""+op+"\">");
     msg.encode(buf);
+    buf.append("</message>");
+    buf.append('\0');
     String ipAddress = dest.getClusterId().getIpAddress();
     short port = dest.getClusterId().getPort();
 

@@ -11,7 +11,9 @@ public class KvmSocketME implements SocketME {
 
   public OutputStream getOutputStream( String server, int port ) throws IllegalArgumentException, IllegalAccessException, IOException {
 
+    System.out.println("Try to open:"+"socket://" + server + ":" + port);
     sock = (StreamConnection)Connector.open("socket://" + server + ":" + port);
+    System.out.println("DONE to open:"+"socket://" + server + ":" + port);
 
     return sock.openOutputStream();
 

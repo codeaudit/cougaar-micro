@@ -12,6 +12,7 @@ package cougaar.microedition.ldm;
 import java.util.*;
 
 import cougaar.microedition.io.*;
+import cougaar.microedition.cluster.*;
 
 /**
  * The Distributor registers PlugIn subscriptions, executing PlugIns based
@@ -30,20 +31,28 @@ public class Distributor {
 
   private Semaphore sem = new Semaphore();
 
-  String name;
+  private Node node;
 
   /**
    * @param name the cluster name to be accessed by plugins.
    */
-  public Distributor(String name) {
-    this.name = name;
+  public Distributor(Node node) {
+    this.node = node;
   }
 
   /**
    * @return the name of this cluster.
    */
-  public String getName() {
-    return name;
+  public String getNodeName() {
+    return node.getNodeName();
+  }
+
+  private long UIDcount = 1;
+  /**
+   * @return A newly-created unique identifier.
+   */
+  public synchronized String makeUID() {
+    return getNodeName() + '/' + UIDcount++;
   }
 
   private Object owner = null;

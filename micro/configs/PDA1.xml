@@ -2,5 +2,8 @@
 <NodeConfiguration>
   <description>value from KVM</description>
   <plugin>cougaar.microedition.kvm.KvmValuePlugIn</plugin>
+  <!-- Infrastructure PlugIns -->
   <plugin>cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
 </NodeConfiguration>
