@@ -155,7 +155,7 @@ public class TiniMotorController extends MotorControllerResource {
     }
   }
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
   }
 

@@ -164,7 +164,7 @@ public class TiniRotationAndLimitSensor extends RotationAndLimitSensorResource {
     }
   }
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
   }
 

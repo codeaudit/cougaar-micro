@@ -138,10 +138,10 @@ public class TiniTurretController extends TurretControllerResource
 //    return fullyConstructed;
 //  }
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
     oldbearing = bearing;
-    values[0] = bearing;
+    values[0] = (long)(scalingFactor*bearing);
   }
 
   public void getValueAspects(int [] aspects)

@@ -60,10 +60,10 @@ public class TiniSONARController extends ControllerResource {
   private long newreturnvalue = 0;
   private long oldreturnvalue = -1;
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
     oldreturnvalue = newreturnvalue;
-    values[0] = (double)newreturnvalue;
+    values[0] = (long)(scalingFactor*newreturnvalue);
   }
 
   public void getValueAspects(int [] aspects)

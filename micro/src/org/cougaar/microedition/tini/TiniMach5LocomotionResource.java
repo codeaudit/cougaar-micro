@@ -484,7 +484,7 @@ public class TiniMach5LocomotionResource extends ControllerResource
 
   }
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
 
   }

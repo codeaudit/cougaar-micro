@@ -37,9 +37,9 @@ public class TiniTurretBearingResource extends ControllerResource
     setName("TiniTurretBearingResource");
   }
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
-    values[0] = fixedturretbearing;
+    values[0] = (long)(scalingFactor*fixedturretbearing);
   }
 
   public void getValueAspects(int [] aspects)

@@ -126,12 +126,12 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
     return dgpsCal.getTime();
   }
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
-    values[0] = getLatitude();
-    values[1] = getLongitude();
+    values[0] = (long)(scalingFactor*getLatitude());
+    values[1] = (long)(scalingFactor*getLongitude());
     //values[2] = getAltitude();
-    values[2] = getHeading();
+    values[2] = (long)(scalingFactor*getHeading());
   }
 
   public void getValueAspects(int [] aspects)
@@ -177,7 +177,7 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
   public void setParameters(Hashtable params)
   {
     setName("TiniGPSLocationControllerResource");
-    setScalingFactor(Constants.Geophysical.DEGTOBILLIONTHS);
+    setScalingFactor((long)Constants.Geophysical.DEGTOBILLIONTHS);
 
     if (params != null) {
       if (params.get("port") != null) {

@@ -52,6 +52,7 @@ public class TiniMach5PositionResource extends ControllerResource implements Loc
   private double surveylongitude = 0.0;
   private double shsin = 0.0;
   private double shcos = 1.0;
+  private double [] poscoord = new double[3];
 
   /**
    *  The only paramater is "port" which defaults to "serial1"
@@ -60,7 +61,7 @@ public class TiniMach5PositionResource extends ControllerResource implements Loc
   {
     setName("TiniMach5PositionResource");
 
-    setScalingFactor(Constants.Geophysical.DEGTOBILLIONTHS);
+    setScalingFactor((long)Constants.Geophysical.DEGTOBILLIONTHS);
 
     if (params != null)
     {
@@ -201,9 +202,12 @@ public class TiniMach5PositionResource extends ControllerResource implements Loc
     return new Date();
   }
 
-  public void getValues(double [] values)
+  public void getValues(long [] values)
   {
-    getCoordinates(values);
+    getCoordinates(poscoord);
+    values[0] = (long)(scalingFactor*poscoord[0]);
+    values[1] = (long)(scalingFactor*poscoord[1]);
+    values[2] = (long)(scalingFactor*poscoord[2]);
   }
 
   public void getValueAspects(int [] aspects)
