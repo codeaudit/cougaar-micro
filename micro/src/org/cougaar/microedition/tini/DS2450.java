@@ -4,7 +4,7 @@
  *  Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
  *  Raytheon Systems Company (RSC) Consortium).
  *  This software to be used only in accordance with the
- *  COUGAAR licence agreement.
+ *  COUGAAR license agreement.
  * </copyright>
  */
 
@@ -159,6 +159,141 @@ public class DS2450
       System.out.println(e);
     }
   }
+
+/*
+  // test code
+  public static void main(String[] args)
+  {
+    double adresult = 0.0;
+    boolean alarmresult = false;
+    boolean debugging = false;
+    try
+    {
+      int adindex = 0;  // first DS2450 on 1-wire bus = 0, second = 1,...
+      int adchan = 0;   // channel
+      double adrange = 5.12;  // A/D voltage range
+      double adresolution = 0.01;  // A/D resolution
+      int alarmtype = 1;  // If using alarms, 1 = high alarm, 0 = low alarm
+      double alarmtrigger = 3.0;  // alarm threshold value
+      boolean alarmenable = true;
+      boolean adoutputenable = true;  // true if using A/D channel as output pin
+      boolean adoutputstate = true;  // true = not conducting to ground, logic 1
+
+      System.out.println("Starting....");
+      DS2450 ADConverters = new DS2450(args);
+      System.out.println("\nA/Ds Initialized.");
+
+      adchan = 0;
+      if (debugging) {
+        adindex = 0;
+        ADConverters.readStatus(adindex);
+      }
+      // turn off output enable feature
+      adoutputenable = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      // set up to do a/d
+      ADConverters.configureAD(adindex, adchan, adrange, adresolution);
+      // set up alarm
+      ADConverters.configureAlarm(adindex, adchan, alarmtype, alarmtrigger, alarmenable);
+
+      adchan = 1;
+      // set the output pin high
+      adoutputenable = true;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + ", channel " + adchan + " reconfigured:");
+
+      adchan = 2;
+      // turn off output enable feature
+      adoutputenable = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      // set up to do a/d
+      ADConverters.configureAD(adindex, adchan, adrange, adresolution);
+      // set up alarm
+      ADConverters.configureAlarm(adindex, adchan, alarmtype, alarmtrigger, alarmenable);
+
+      adchan = 3;
+      // set the output high
+      adoutputenable = true;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      if (debugging) {
+        ADConverters.readStatus(adindex);
+      }
+
+      // perform an a/d conversion with no regard for alarms
+      adchan = 0;
+      System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+      adchan = 2;
+      System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+
+      // drive the output pins low then high
+      adchan = 1;
+      adoutputstate = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      adoutputstate = true;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+
+      adchan = 3;
+      adoutputstate = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      adoutputstate = true;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+
+
+
+      // Perform A/D and check alarm on a single channel
+      adindex = 0;
+      adchan = 0;
+      adresult = ADConverters.readVoltage(adindex,adchan);
+      alarmresult = ADConverters.readAlarm(adindex, adchan, alarmtype);
+
+      // Perform a series of A/Ds and check channel alarms after every conversion
+      int junk = 0;
+      int adchanA = 0;
+      int adchanB = 2;
+      int adresetA = 1;
+      int adresetB = 3;
+      int RotationAndLimit = 0;
+      double adresultA = 0.0;
+      double adresultB = 0.0;
+      boolean allalarmsresult[] = {false, false, false, false};
+
+      for (int i = 0; i<10; i++) {
+        // do a/d
+        adresultA = ADConverters.readVoltage(RotationAndLimit,adchanA);
+        adresultB = ADConverters.readVoltage(RotationAndLimit,adchanB);
+        System.out.println(ADConverters.readDeviceName(RotationAndLimit) + ", Rotation A/D " + RotationAndLimit + " channel " + adchanA + " result = : " + adresultA + " volts.");
+        System.out.println(ADConverters.readDeviceName(RotationAndLimit) + ", Limit A/D " + RotationAndLimit + " channel " + adchanB + " result = : " + adresultB + " volts.");
+        // check alarms
+        allalarmsresult = ADConverters.readAllAlarms(RotationAndLimit, alarmtype);
+        System.out.println(ADConverters.readDeviceName(RotationAndLimit) + " alarms initial check result = : \n" + allalarmsresult[0] + ", "
+             + allalarmsresult[1] + ", " + allalarmsresult[2] + ", " + allalarmsresult[3] + ".");
+        // if alarm, notify user and reset F/F
+        if (allalarmsresult[adchanA]) {
+          System.out.println(ADConverters.readDeviceName(RotationAndLimit) + " alarm event occured on channel " + adchanA + ".");
+          // clear the associated F/F
+          adoutputstate = false;
+          ADConverters.configureADOutput(RotationAndLimit, adresetA, adoutputenable, adoutputstate);
+          adoutputstate = true;
+          ADConverters.configureADOutput(RotationAndLimit, adresetA, adoutputenable, adoutputstate);
+        }
+        if (allalarmsresult[adchanB]) {
+          System.out.println(ADConverters.readDeviceName(RotationAndLimit) + " Limit alarm event occured on channel " + adchanB + ".");
+          // clear the associated F/F
+          adoutputstate = false;
+          ADConverters.configureADOutput(RotationAndLimit, adresetB, adoutputenable, adoutputstate);
+          adoutputstate = true;
+          ADConverters.configureADOutput(RotationAndLimit, adresetB, adoutputenable, adoutputstate);
+        }
+      }
+      System.out.println("\nDone...");
+    }
+    catch (Throwable t)
+    {
+      System.out.println(t);
+    }
+  }
+*/
+
 
   /*
    * This method reads the A/D level on the indicated channel on the indicated
