@@ -207,6 +207,7 @@ public class Distributor {
         runme.getSubscription().clearLists();
         // collect changed subscriptions
         closeTransaction(runme);
+//        try {Thread.sleep(5000);} catch (Exception e) {}
       }
       waitForSomeWork();
     }

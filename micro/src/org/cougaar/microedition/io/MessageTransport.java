@@ -71,7 +71,7 @@ public class MessageTransport {
   public void addMessageListener(MessageListener ml) {
     if (!listeners.contains(ml))  {
       Vector newListeners = (Vector)listeners.clone();
-      newListeners.add(ml);
+      newListeners.addElement(ml);
       listeners = newListeners;
     }
   }
@@ -79,7 +79,7 @@ public class MessageTransport {
   public void removeMessageListener(MessageListener ml) {
     if (listeners.contains(ml))  {
       Vector newListeners = (Vector)listeners.clone();
-      newListeners.remove(ml);
+      newListeners.removeElement(ml);
       listeners = newListeners;
     }
   }
@@ -108,7 +108,7 @@ public class MessageTransport {
    *
    * @param   args    array of 3 strings, my port, remote host remote port
    * @return  none
-   */
+
   public static void main (String[] argv) {
     if (argv.length != 3)
       System.exit(0);
@@ -126,4 +126,5 @@ public class MessageTransport {
       m.sendMessage(host, port, outgoing);
     }
   }
+ */
 }

@@ -8,7 +8,7 @@ import java.io.*;
 
 public class KvmFileLoader implements FileLoader {
 
-	String pnp;
+	String pnp = "";
 
 	public KvmFileLoader() {}
 

@@ -8,7 +8,7 @@ import java.io.*;
 
 public class TiniFileLoader implements FileLoader {
 
-	String pnp;
+	String pnp = "";
 
 	public TiniFileLoader() {}
 
@@ -34,7 +34,10 @@ public class TiniFileLoader implements FileLoader {
 		URL path;
 		InputStream in = null;
 
-		path = new URL(pnp + fileName);
+                if (pnp.equals(""))
+                  path = new URL(fileName);
+                else
+		  path = new URL(pnp + fileName);
 		in = path.openStream();
 
 		while ((count = in.read(b, 0, 512)) > 0)

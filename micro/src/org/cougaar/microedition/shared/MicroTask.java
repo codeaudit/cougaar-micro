@@ -50,7 +50,7 @@ public class MicroTask implements Encodable {
   public void addPrepositionalPhrase(MicroPrepositionalPhrase mpp) {
     if (prepositionalPhrases == null)
       prepositionalPhrases = new Vector();
-    prepositionalPhrases.add(mpp);
+    prepositionalPhrases.addElement(mpp);
   }
 
   /**
