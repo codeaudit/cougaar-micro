@@ -14,7 +14,50 @@ package org.cougaar.microedition.tini;
 import org.cougaar.microedition.asset.*;
 import java.util.*;
 import java.io.*;
+import java.lang.*;
 import javax.comm.*;
+
+//this class keeps track of where the robot was in terms of
+//relative coordinates the last time the command state changed
+
+interface Mach5Command
+{
+    static String [] cmdstring = { "STOP", "GO FORWARD", "GO BACKWARD","ROTATE","READSTATE" };
+    static int STOP = 0;
+    static int GOFORWARD = 1;
+    static int GOBACKWARD = 2;
+    static int ROTATE = 3;
+    static int READSTATE = 4;
+}
+
+/*
+
+This structure keeps track of where the Mach 5 is in a relative coordinate frame.
+It assumes that the relative coordinate frame is defined by the robots position and
+orientation in a absolute coordinate frame at start up. For example, the robotbase
+will start at Xrel = Yrel = 0 and ThetaRel = 90.0
+
+*/
+class Mach5RelativePositionData
+{
+  public Mach5RelativePositionData()
+  {
+    leftwheelpos = 0;
+    rightwheelpos = 0;
+    Xrel = Yrel = 0.0;
+    Thetarel = Math.PI/2.0;
+    specifiedrotation = 0.0;
+    lastcommand = Mach5Command.STOP;
+  }
+
+  public long leftwheelpos; //Mach 5 wheel position in mm
+  public long rightwheelpos;
+  public double Xrel; // X position (mm) as measured from start point
+  public double Yrel; //Y position (mm) as measured from start point
+  public double Thetarel; //orientation measure from X axis, radians
+  public double specifiedrotation; //set when ordered to rotate
+  public int lastcommand; //the last command issued when updated
+}
 
 /**
  *  CougaarME Resource for controlling a MACH5 robot base from a TINI board.
@@ -32,7 +75,7 @@ import javax.comm.*;
  *   3  ---  2
  *   7  ---  7
  */
-public class TiniMach5LocomotionResource extends LocomotionResource {
+public class TiniMach5LocomotionResource extends LocomotionResource implements LocationResource {
 
   /**
    * Constructor.  Sets name default.
@@ -43,77 +86,225 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
 
   private String portName = "serial1";
   private boolean debug = false;
+  private Mach5RelativePositionData laststatechange = new Mach5RelativePositionData();
+  static final double TICKSPERDEGREE = 2.25; //experimentally determined
+  //static final double TICKSPERDEGREE = 2.1685716; //computed from wheel base
+
+  //these variables define the position, orientation of the relative coordinate
+  //frame (of the robot) with respect to an absolute from (geographic)
+  private double surveyheading = 0.0;
+  private double surveylatitude = 0.0;
+  private double surveylongitude = 0.0;
+  private double shsin = 0.0;
+  private double shcos = 1.0;
 
   /**
    *  The only paramater is "port" which defaults to "serial1"
    */
-  public void setParameters(Hashtable params) {
+  public void setParameters(Hashtable params)
+  {
     super.setParameters(params);
-    if (params != null) {
-      if (params.get("port") != null) {
+    if (params != null)
+    {
+      if (params.get("port") != null)
+      {
         portName = (String)params.get("port");
       }
       debug = (params.get("debug") != null);
+
+      if (params.get("SurveyLatitude") != null)
+      {
+	String pstr = (String)params.get("SurveyLatitude");
+        Double temp = new Double(pstr);
+        surveylatitude = temp.doubleValue();
+	surveylatitude *= (Math.PI/180.0); //radians
+      }
+      if (params.get("SurveyLongitude") != null)
+      {
+	String pstr = (String)params.get("SurveyLongitude");
+        Double temp = new Double(pstr);
+        surveylongitude = temp.doubleValue();
+	surveylongitude *= (Math.PI/180.0); //radians
+      }
+      if (params.get("SurveyHeading") != null)
+      {
+	String pstr = (String)params.get("SurveyHeading");
+        Double temp = new Double(pstr);
+        surveyheading = temp.doubleValue();
+	shcos = TiniTrig.tinicos((-1.0*Math.PI/180)*surveyheading);
+	shsin = TiniTrig.tinisin((-1.0*Math.PI/180)*surveyheading);
+      }
     }
+
     startMonitorThread();
   }
 
   private double speed = 0;
-  public long getSpeed() {
+
+  public long getSpeed()
+  {
     return (long)speed;
   }
-  public void setSpeed(long newSpeed){
+
+  public void setSpeed(long newSpeed)
+  {
     speed = newSpeed;
   }
 
-  static float HALF_DEGREE_TICK_CONSTANT= 2.25F; // experimentally determined
-  public long []  rotate(int direction, long degrees){
+  public long []  rotate(int direction, long degrees)
+  {
+    long [] ret = UpdatePositionState(Mach5Command.ROTATE);
+
     String msg = "";
-    int ticks = (int)(degrees * HALF_DEGREE_TICK_CONSTANT); // experimentally determined
-    switch (direction) {
+    int ticks = (int)((double)degrees * TICKSPERDEGREE); // experimentally determined
+    switch (direction)
+    {
       case CLOCKWISE :
         msg = "SPR "+ticks+" -"+ticks+"\n";
+	laststatechange.specifiedrotation = -1.0*degrees;
         break;
       case COUNTER_CLOCKWISE :
         msg = "SPR -"+ticks+" "+ticks+"\n";
+	laststatechange.specifiedrotation = degrees;
         break;
       default:
         throw new IllegalArgumentException("LocomotionResource.rotate must be one of CLOCKWISE or COUNTERCLOCKWISE");
     }
     sendMsg(msg);
-    return getWheelPositions();
-  }
 
+    return ret;
+  }
 
 
   /**
    * @returns heading relative to initial heading as determined by wheel positions
+   * Ken'
    */
   public double getWheelHeading() {
     long []wheelPos=getWheelPositions();
     long leftWheel=wheelPos[0]; // get left wheel ticks
     long rightWheel=wheelPos[1]; // get right wheel ticks
     long wheelDelta=leftWheel-rightWheel;
-    double heading=wheelDelta/(HALF_DEGREE_TICK_CONSTANT*2);
+    double heading=wheelDelta/(TICKSPERDEGREE*2);
     return heading;
   }
 
 
   public long [] stop() {
+    long [] ret = UpdatePositionState(Mach5Command.STOP);
     sendMsg("SV 0 0\n");
-    return getWheelPositions();
+    return ret;
   }
 
   public long []  forward() {
     int spd = (int)speed;
+    long [] ret = UpdatePositionState(Mach5Command.GOFORWARD);
     sendMsg("SV "+spd+" "+spd+"\n");
-    return getWheelPositions();
+    return ret;
   }
 
   public long []  backward() {
     int spd = 0 - (int)speed;
+    long [] ret = UpdatePositionState(Mach5Command.GOBACKWARD);
     sendMsg("SV "+spd+" "+spd+"\n");
-    return getWheelPositions();
+    return ret;
+  }
+
+  private long [] UpdatePositionState(int newcommand)
+  {
+   long [] wheelpos = getWheelPositions();
+
+   //compute change in wheel positioning since last command
+   long diffleft = wheelpos[0] - laststatechange.leftwheelpos;
+   long diffright = wheelpos[1] - laststatechange.rightwheelpos;
+   double mmrange = 0.0;
+
+   switch(laststatechange.lastcommand)
+   {
+    case Mach5Command.STOP:
+	 break;
+    case Mach5Command.GOFORWARD:
+    case Mach5Command.GOBACKWARD:
+	 //compute how far we have come
+	 //the diff should be the same on each wheel
+	 if(diffleft != diffright)
+	 {
+	    System.out.println("Different range indications " +diffleft +" " +diffright);
+	    mmrange = (diffleft + diffright) * 0.5;
+	 }
+	 else
+	 {
+	   mmrange = diffleft;
+	 }
+
+	 laststatechange.Xrel += mmrange * TiniTrig.tinicos(laststatechange.Thetarel);
+	 laststatechange.Yrel += mmrange * TiniTrig.tinisin(laststatechange.Thetarel);
+
+         break;
+    case Mach5Command.ROTATE:
+	 if((diffright + diffleft) != 0)
+	 {
+	    System.out.println("Different rotation indications " +diffleft +" " +diffright);
+	 }
+	 mmrange = (diffright - diffleft)*0.5; //averages the absolute value
+
+	 //double degreesrotated = mmrange/TICKSPERDEGREE;
+	 double degreesrotated = laststatechange.specifiedrotation; //because the wheels report wrong
+
+	 laststatechange.Thetarel += (degreesrotated*(Math.PI/180.0));
+	 if(laststatechange.Thetarel >= (Math.PI*2.0)) laststatechange.Thetarel -= (Math.PI*2.0);
+	 if(laststatechange.Thetarel < 0.0) laststatechange.Thetarel += (Math.PI*2.0);
+    	 break;
+   }
+
+   laststatechange.lastcommand = newcommand;
+   laststatechange.leftwheelpos = wheelpos[0];
+   laststatechange.rightwheelpos = wheelpos[1];
+
+   System.out.println("Current relative state: "
+			       +Mach5Command.cmdstring[laststatechange.lastcommand] +" "
+			       +laststatechange.rightwheelpos +" "
+			       +laststatechange.leftwheelpos +" "
+			       +laststatechange.Xrel +" "
+			       +laststatechange.Yrel +" "
+			       +laststatechange.Thetarel*(180.0/Math.PI));
+
+   return wheelpos;
+  }
+
+  private Mach5RelativePositionData ReadCurrentState()
+  {
+   Mach5RelativePositionData ret = new Mach5RelativePositionData();
+   long [] wheelpos = getWheelPositions();
+
+   //compute change in wheel positioning since last command
+   long diffleft = wheelpos[0] - laststatechange.leftwheelpos;
+   long diffright = wheelpos[1] - laststatechange.rightwheelpos;
+   double mmrange = 0.0;
+
+   switch(laststatechange.lastcommand)
+   {
+    case Mach5Command.GOFORWARD:
+    case Mach5Command.GOBACKWARD:
+	 //how far are we along this leg
+	 mmrange = (diffleft + diffright) * 0.5;
+	 ret.Xrel = laststatechange.Xrel + mmrange * TiniTrig.tinicos(laststatechange.Thetarel);
+	 ret.Yrel = laststatechange.Yrel + mmrange * TiniTrig.tinisin(laststatechange.Thetarel);
+	 ret.Thetarel = laststatechange.Thetarel;
+         break;
+    case Mach5Command.ROTATE:
+	 //include last rotation
+	 ret.Xrel = laststatechange.Xrel;
+	 ret.Yrel = laststatechange.Yrel;
+
+	 //mmrange = (diffright - diffleft)*0.5; //averages the absolute value
+	 //double degreesrotated = mmrange/TICKSPERDEGREE; //positive = CW
+	 ret.Thetarel = laststatechange.Thetarel + (laststatechange.specifiedrotation*(Math.PI/180.0));
+	 if(ret.Thetarel >= (Math.PI*2.0)) ret.Thetarel -= (Math.PI*2.0);
+	 if(ret.Thetarel < 0.0) ret.Thetarel += (Math.PI*2.0);
+    	 break;
+   }
+   return ret;
   }
 
   /**
@@ -167,6 +358,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
       synchronized (incomingMsgs) {
         ret = (String)incomingMsgs.elementAt(0);
         incomingMsgs.removeElementAt(0);
+	if (debug) System.out.println("getMsg: inQ= "+incomingMsgs);
       }
     }
     return ret;
@@ -218,9 +410,9 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
           synchronized (outgoingMsgs) {
             while (outgoingMsgs.isEmpty()) {
               try {
-                System.out.println("Waiting on "+outgoingMsgs);
+                if (debug) System.out.println("Waiting on "+outgoingMsgs);
                 outgoingMsgs.wait();
-                System.out.println("DONE Waiting on "+outgoingMsgs);
+                if (debug) System.out.println("DONE Waiting on "+outgoingMsgs);
               } catch (InterruptedException ex) {}
             }
             msg = (String)outgoingMsgs.elementAt(0);
@@ -282,5 +474,74 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
 
 
   }
-/* */
+
+  static final double EARTH_RADIUS = 6378137.0; //meters;
+
+  public double getLatitude()
+  {
+    //read the wheels to tell me where you are at
+    //use the same command to keep it going
+    Mach5RelativePositionData upd = ReadCurrentState();
+
+    //rotate the coordinate frame to align with absolute coordinate frame
+    double xpp = upd.Xrel*shcos - upd.Yrel*shsin;
+    double ypp = upd.Xrel*shsin + upd.Yrel*shcos;
+
+    xpp = xpp/1000.0;
+    ypp = ypp/1000.0; //meters
+
+    double lat = surveylatitude + ypp/EARTH_RADIUS;
+    lat *= (180.0/Math.PI); //convert to degrees
+
+    return lat;
+  }
+
+  public double getLongitude()
+  {
+
+    //read the wheels to tell me where you are at
+    //use the same command to keep it going
+    Mach5RelativePositionData upd = ReadCurrentState();
+
+    //rotate the coordinate frame to align with absolute coordinate frame
+    double xpp = upd.Xrel*shcos - upd.Yrel*shsin;
+    double ypp = upd.Xrel*shsin + upd.Yrel*shcos;
+
+    xpp = xpp/1000.0;
+    ypp = ypp/1000.0; //meters
+
+    double lat = surveylatitude + ypp/EARTH_RADIUS;
+    double lon = surveylongitude + xpp / (EARTH_RADIUS * TiniTrig.tinicos(0.5*(surveylatitude + lat)));
+
+    lon *= (180.0/Math.PI); //convert to degrees
+
+    return lon;
+  }
+
+  public double getAltitude()
+  {
+    return 0.0;
+  }
+
+  public double getHeading()
+  {
+
+    Mach5RelativePositionData upd = ReadCurrentState();
+
+    //convert h math coordinates to heading coordinates
+    double h = (Math.PI/2.0) - upd.Thetarel;
+    h *= (180.0/Math.PI);
+
+    //adjust by heading of coordinate frame
+    h += surveyheading;
+    if(h < 0.0) h += 360.0;
+    if(h >= 360.0) h -=360.0;
+
+    return h;
+  }
+
+  public Date getDate()
+  {
+    return new Date();
+  }
 }
