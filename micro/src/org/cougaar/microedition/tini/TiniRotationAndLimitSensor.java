@@ -38,7 +38,7 @@ public class TiniRotationAndLimitSensor extends RotationAndLimitSensorResource {
   public TiniRotationAndLimitSensor() {
     try
     {
-      SensorDevices = new DS2450();
+      SensorDevices = new DS2450(null);
       this.configureAD();
     }
     catch (Throwable t)

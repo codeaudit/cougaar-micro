@@ -20,7 +20,7 @@ import org.cougaar.microedition.tini.DS2406;
  * Asset for turret control.
  */
 
-public class TiniTurretController extends TurretControllerResource {
+public class TiniTurretController extends TurretControllerResource implements Runnable {
 
   public static final double TURRETRESOLUTION = 15.0;  // 1 full motor rotation = 15° turret rotation
   public static final int TURRET_RESOLUTION = 15;
@@ -64,53 +64,78 @@ public class TiniTurretController extends TurretControllerResource {
   static final int SUSPEND = 1;
   static final int STOP = 2;
 
-  private boolean debugging = true;
+  static private boolean debugging = true;
   private boolean debuggingpauses = false;
 
 
   // test code
-  public void main(String args[]) {
+  public static void main(String args[]) {
+    System.out.println("First line in main.");
+
     int BearingToAcquire = 45;
     TiniTurretController TTC = new TiniTurretController();
+    TTC.SweepSMRun=true;
     TTC.setHemisphere(LEFT);
     TTC.startScan();
-    longpause("MAIN: main thread paused...");
+
+//    /*
+    TTC.longpause("MAIN: main thread paused...");
     TTC.stopScan();
 
     TTC.setHemisphere(RIGHT);
     TTC.startScan();
-    longpause("MAIN: main thread paused...");
+    TTC.longpause("MAIN: main thread paused...");
     TTC.stopScan();
 
 
     TTC.startSeek(BearingToAcquire);
-    longpause("MAIN: main thread paused...");
+    TTC.longpause("MAIN: main thread paused...");
     TTC.stopSeek();
 
-
+//    */
     if (debugging) {System.out.println(Thread.currentThread().getName() + " is finished.");}
 
   }
 
 
   public TiniTurretController() {
+  }
+
+  public void run() {
     try
     {
+      if (debugging) { System.out.println("TiniTurretController ctor..."); }
       motor = new TiniMotorController();
+      if (debugging) { System.out.println("TiniTurretController ctor - motor controller constructed."); }
       motor.setDirection(MotorDirection);
-      if (debugging) {motor.readHWStatus();}
+      if (debugging) {System.out.println("set motor direction to "+MotorDirection); motor.readHWStatus();}
       sensors = new TiniRotationAndLimitSensor();
       if (debugging) {sensors.readHWStatus();}
       if (debugging) {System.out.println("\nMotor and Sensors Initialized.");}
+      setFullyConstructed(true);
+      startScan();
     }
     catch (Throwable t)
     {
-      if (debugging) {System.out.println(t);}
+      if (debugging) {System.out.println("Caught throwable in TiniTurretController ctor: "+t);}
     }
   }
 
-  public boolean startScan() {
+  boolean fullyConstructed=false;
+  synchronized public boolean isFullyConstructed() { return fullyConstructed; }
+  synchronized public void setFullyConstructed(boolean value) { fullyConstructed=value; notifyAll(); }
+//  synchronized public boolean waitUntilFullyConstructed() {
+//    while (!isFullyConstructed()) {
+//      System.out.println("Waiting for TiniTurretController to become fully Constructed...");
+//      try { wait(); } catch (Exception ex) {}
+//      System.out.println("Notified, so check if TiniTurretController became fully Constructed.");
+//    }
+//    return fullyConstructed;
+//  }
+
+  synchronized public boolean startScan() {
     if (BearingThreadState != STOP || SweepThreadState != STOP) {
+      if (debugging) {System.out.println("startScan returning false.");}
       return false;
     }
     ssm = new SweepStateMachine();
@@ -120,7 +145,12 @@ public class TiniTurretController extends TurretControllerResource {
     ST.start();
     ssm.setThreadState(RUN);
     SweepSMRun = true;  // kick off the Sweep State Machine
+    if (debugging) {System.out.println("startScan returning true.");}
     return true;
+  }
+
+  public boolean isRunning() {
+    return SweepSMRun;
   }
 
   public void stopScan() {
@@ -212,7 +242,9 @@ public class TiniTurretController extends TurretControllerResource {
     private synchronized boolean checkThreadState() {
       while (SweepThreadState == SUSPEND) {
         try {
+          if (debugging) System.out.println("checkThreadState going into wait...");
           wait();
+          if (debugging) System.out.println("checkThreadState came out of wait; SweepThreadState: "+SweepThreadState);
         } catch (InterruptedException e) {
           // ignore
         }
@@ -229,8 +261,11 @@ public class TiniTurretController extends TurretControllerResource {
       {
         if (debugging) {System.out.println(Thread.currentThread().getName() + " is running");}
         if ( !checkThreadState() ) {
+          if (debugging) { System.out.println("Breaking out of sweepstateloop due to !cheThreadState()"); }
           break sweepstateloop;
         }
+
+        if (debugging) { System.out.println("SweepStateIndex: "+SweepStateIndex); }
 
         switch (SweepStateIndex) {
 
@@ -238,6 +273,7 @@ public class TiniTurretController extends TurretControllerResource {
             while (!SweepSMRun) {
               try {
                 ST.sleep(250);
+                if (debugging) { System.out.println("ST.sleep"); }
               } catch (InterruptedException e) {
                 if (debugging) {System.out.println("SLEEP_WAIT: Sleep interrupted.");}
               }
