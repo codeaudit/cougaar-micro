@@ -80,13 +80,13 @@ public class DoorWindowSensorPlugin extends ComponentPlugin {
     Enumeration micros = assetSub.getAddedList();
     while (micros.hasMoreElements()) {
       MicroAgent micro = (MicroAgent)micros.nextElement();
-      loggingService.shout("Got a new micro asset: "+micro);
+      loggingService.info("Got a new micro asset: "+micro);
       makeTasks(micro);
     }
     micros = assetSub.getRemovedList();
     while (micros.hasMoreElements()) {
       MicroAgent micro = (MicroAgent)micros.nextElement();
-      loggingService.shout("Deleted a micro asset: "+micro);
+      loggingService.info("Deleted a micro asset: "+micro);
       removeTasks(micro);
     }
   }

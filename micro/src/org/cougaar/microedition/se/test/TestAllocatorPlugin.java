@@ -58,7 +58,7 @@ public class TestAllocatorPlugin extends SimplePlugin {
       if (indx < 0)
         continue;
       verbName = (param.substring(indx+1)).trim();
-      loggingService.shout("verbName: " + verbName);
+      loggingService.info("verbName: " + verbName);
     }
 
     assetSub = (IncrementalSubscription)subscribe(new UnaryPredicate() {
@@ -87,7 +87,7 @@ public class TestAllocatorPlugin extends SimplePlugin {
     Enumeration micros = assetSub.getAddedList();
     while (micros.hasMoreElements()) {
       MicroAgent micro = (MicroAgent)micros.nextElement();
-      loggingService.shout("Got a new micro asset: "+micro);
+      loggingService.info("Got a new micro asset: "+micro);
       Task t = makeTask();
       publishAdd(t);
       Allocation allo = makeAllocation(t, micro);
@@ -104,7 +104,7 @@ public class TestAllocatorPlugin extends SimplePlugin {
       int [] aspectTypes = ar.getAspectTypes();
       for (int i=0; i<aspectTypes.length; i++) {
         double tmp = ar.getValue(aspectTypes[i]);
-        loggingService.shout(verbName+" aspect "+aspectTypes[i]+" is: "+tmp);
+        loggingService.info(verbName+" aspect "+aspectTypes[i]+" is: "+tmp);
       }
 /*
       Task t = alloc.getTask();
