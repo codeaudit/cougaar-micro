@@ -67,7 +67,7 @@ public class TiniTurretController extends TurretControllerResource
   static final int SUSPEND = 1;
   static final int STOP = 2;
 
-  static private boolean debugging = false;
+  static private boolean debugging = true;
   private boolean debuggingpauses = false;
   private boolean valuechanged = true;
 
@@ -101,13 +101,18 @@ public class TiniTurretController extends TurretControllerResource
 
   }
 
-
   public TiniTurretController()
   {
+    //DON'T DO ANYTHING HERE. USE SET PARAMETERS TO INITIALIZE
+  }
+
+  public void setParameters(java.util.Hashtable t)
+  {
+
     setName("TiniTurretController");
     try
     {
-      if (debugging) { System.out.println("TiniTurretController ctor..."); }
+      if (debugging) { System.out.println("TiniTurretController::setParameters..."); }
       motor = new TiniMotorController();
       if (debugging) { System.out.println("TiniTurretController ctor - motor controller constructed."); }
       motor.setDirection(MotorDirection);
@@ -118,12 +123,11 @@ public class TiniTurretController extends TurretControllerResource
       setFullyConstructed(true);
       startScan();
     }
-    catch (Throwable t)
+    catch (Throwable thr)
     {
-      if (debugging) {System.out.println("Caught throwable in TiniTurretController ctor: "+t);}
+      if (debugging) {System.out.println("Caught throwable in TiniTurretController ctor: "+thr);}
     }
   }
-
   boolean fullyConstructed=false;
   synchronized public boolean isFullyConstructed() { return fullyConstructed; }
   synchronized public void setFullyConstructed(boolean value) { fullyConstructed=value; notifyAll(); }
