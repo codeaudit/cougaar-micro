@@ -14,9 +14,11 @@ import java.awt.event.*;
 public class RobotImageDisplay extends JFrame {
 
   static int xScreenLoc, yScreenLoc;
+  static double screenWidth, screenHeight;
   Image image;
   ImageObserver observer;
   String robotId;
+  String fullUrl;
   public RobotImageDisplay(String robotId) {
     this.setTitle("Image from "+robotId);
     this.robotId=robotId;
@@ -24,10 +26,8 @@ public class RobotImageDisplay extends JFrame {
     try {
       String urlBase=System.getProperty("imageUrlBase");
       String urlSuffix=System.getProperty("imageUrlSuffix");
-      String fullUrl=urlBase+robotId+urlSuffix;
+      fullUrl=urlBase+robotId+urlSuffix;
       System.out.println("Retrieving image from url: ["+fullUrl+"]");
-      //image=Toolkit.getDefaultToolkit().getImage(new URL("file:/home/krotherm/mc/pic.jpg"));
-      //image=Toolkit.getDefaultToolkit().getImage(new URL(fullUrl));
       image=Toolkit.getDefaultToolkit().createImage(new URL(fullUrl));
       addNotify();
       repaint();
@@ -36,10 +36,15 @@ public class RobotImageDisplay extends JFrame {
     }
 
     try {
+      screenWidth=Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+      screenHeight=Toolkit.getDefaultToolkit().getScreenSize().getHeight();
       xScreenLoc=Integer.parseInt(System.getProperty(robotId+".image.x"));
       yScreenLoc=Integer.parseInt(System.getProperty(robotId+".image.y"));
     } catch (Exception ex) {
     }
+
+    if (xScreenLoc > screenWidth) xScreenLoc=0;
+    if (yScreenLoc > screenHeight) yScreenLoc=0;
 
     setLocation(xScreenLoc, yScreenLoc);
     xScreenLoc+=50;
@@ -58,7 +63,7 @@ public class RobotImageDisplay extends JFrame {
     //System.out.println("imageUpdate "+img+" flags "+flags+" x y w h "+x+" "+y+" "+w+" "+h);
     repaint();
     if ((flags&ImageObserver.ERROR)!=0) {
-      System.out.println("Error loading image ");
+      System.err.println("Error loading image for robot ["+robotId+"] from URL ["+fullUrl+"]");
       if (!displayedError) {
         displayedError=true;
         jd=new JDialog();

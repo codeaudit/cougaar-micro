@@ -4,23 +4,31 @@ import javax.swing.UIManager;
 import java.awt.*;
 import java.util.Vector;
 import java.util.Iterator;
+import java.awt.event.*;
+import java.net.*;
+import java.io.*;
 
 /**
- *
+ * Displays demo UI and controls demo.
  */
-
 public class RobotDemoUI {
-  static long SLEEP_TIME=5000;
+  static long SLEEP_TIME=500;
   boolean packFrame = false;
   RobotDemoUIFrame frame;
   String url;
 
-  /**Construct the application*/
+  /**
+   * Construct the application and display the main window.
+   */
   public RobotDemoUI() {
     initializeSystemProperties();
     url=System.getProperty("robotDataUrl");
     System.out.println("Getting robot data from url: "+url);
     frame = new RobotDemoUIFrame(this);
+    frame.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) { System.exit(0);  }
+    });
+
     //Validate frames that have preset sizes
     //Pack frames that have useful preferred size info, e.g. from their layout
     if (packFrame) {
@@ -40,7 +48,6 @@ public class RobotDemoUI {
     }
     frame.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
     frame.setVisible(true);
-
   }
 
   /**
@@ -49,6 +56,10 @@ public class RobotDemoUI {
   String getUrl() { return url; }
 
   private static Vector robotProxies=new Vector();
+
+  /**
+   * Return an iterator of robot proxies.
+   */
   public static Iterator getRobotInfo() {
     return robotProxies.iterator();
   }
@@ -59,25 +70,89 @@ public class RobotDemoUI {
 
   //void addRobotInfo(RobotProxy rp) { robotProxies.add(rp); }
 
+  /**
+   * Start the demo.
+   */
   public void startUpdates() {
     if (robotUpdateThread !=null) {
       robotUpdateThread.finish();
     }
     robotUpdateThread=new RobotUpdateThread();
     robotUpdateThread.start();
+    setDemoActive(true);
   }
 
+  /**
+   * Halt the demo.
+   */
   public void stopUpdates() {
     if (robotUpdateThread!=null) {
       robotUpdateThread.finish();
     }
+    setDemoActive(false);
   }
+
+  private boolean demoActive=false;
+  /**
+   * Return the active state of the demo (true for active).
+   */
+  private boolean getDemoActive() { return demoActive; }
+
+  /**
+   * Set the active state for the demo and notify the COUGAAR society that
+   * it should begin.
+   */
+      private void setDemoActive(boolean toState) {
+      String urlBase="";
+      String urlSuffix="";
+      try {
+        urlBase=System.getProperty("startSystemUrlBase");
+      }
+      catch(Exception ex) {
+        System.err.println("Error:  Need to set laptopUrlBase");
+      }
+      try {
+        urlSuffix=System.getProperty("startSystemUrlSuffix");
+        //if (urlSuffix==null) urlSuffix="";
+      }
+      catch(Exception ex) {
+        System.err.println("Error:  Need to set laptopUrlSuffix");
+      }
+      String fullUrl=urlBase+urlSuffix+toState;
+      System.out.println("Retrieving data from url: ["+fullUrl+"]");
+      BufferedReader br=null;
+      try {
+        br=new BufferedReader(
+          new InputStreamReader(new URL(fullUrl).openStream()));
+        for (String line = br.readLine(); line!=null; line = br.readLine()) {
+          System.out.println(line);
+        }
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      } finally {
+        try {
+          if (br!=null) {
+            br.close();
+          }
+        } catch (Exception ex) {
+          ex.printStackTrace();
+        }
+      }
+    } // end hitPSP
 
     static int steps=0;  // just for testing stuff
 
+  /**
+   * Thread for continuously updating the display with current robot state
+   * data.  Robots are polled while keepPolling flag is set.
+   */
   class RobotUpdateThread extends Thread {
+
+    /**
+     * Construct object.
+     */
     RobotUpdateThread() {
-      synchronized  (this) {
+      synchronized  (robotProxies) {
         robotProxies.clear();
       }  // end sync
     } // end ctor
@@ -91,10 +166,16 @@ public class RobotDemoUI {
   =================== */
 
     boolean keepPolling=true;
+  /**
+   * Stop polling for updated robot data.
+   */
   public void finish() {
     keepPolling=false;
   }
 
+  /**
+   * Get robot proxy for the specified robot.
+   */
   RobotProxy getRobotInfo(String id) {
     RobotProxy rp, ret=null;
     for (Iterator it=robotProxies.iterator(); it.hasNext()&& ret==null; ) {
@@ -105,8 +186,19 @@ public class RobotDemoUI {
     }
     return ret;
   }
-  void addRobotInfo(RobotProxy rp) { robotProxies.add(rp);  }
 
+  /**
+   * Add robotProxy to the current set of robotProxies.
+   */
+  void addRobotInfo(RobotProxy rp) {
+    synchronized(robotProxies) {
+      robotProxies.add(rp);
+    }
+  }
+
+  /**
+   * Update current robot state information.
+   */
   synchronized public boolean updateRobot(RobotDataImport.RobotData rd) {
       Double d;
       String id=rd.getId();
@@ -126,14 +218,17 @@ public class RobotDemoUI {
         if (d!=null) { rp.setHeading(d.doubleValue()); }
         d=rd.getBearing();
         if (d!=null) { rp.setBearing(d.doubleValue()); }
+        else { rp.clearBearing(); }
       }
       return true;
     }
+
   /**
+   * UI test stub code.
    * Obtain updated information from robots
    * @return true if any robot had info updated
    */
-    synchronized public boolean updateRobots() {
+    synchronized public boolean updateRobots_test() {
       RobotProxy rp;
       // System.out.println("in update robots");
       double heading=0;
@@ -165,10 +260,13 @@ public class RobotDemoUI {
       return true;
     }
 
+    /**
+     * Query for robot data and update display.
+     */
     public void run() {
       System.out.println("Thread started "+this);
 
-//      while (keepGoing) {
+      // Run until exit(), but only poll while keepPolling is true
       while (true) {
 
         // Get new data from URL
@@ -183,6 +281,8 @@ public class RobotDemoUI {
               frame.repaint();
             }
           }
+        } else {
+          frame.repaint();
         }
         try {
           sleep(SLEEP_TIME);
@@ -193,17 +293,14 @@ public class RobotDemoUI {
     }
   }
 
+  /**
+   * Load application specific system properties from properties file.
+   */
   private void initializeSystemProperties() {
-    System.setProperty("imageUrlBase","file:/home/krotherm/mc/");
-    System.setProperty("imageUrlSuffix",".jpg");
-    /*
-    System.setProperty("name1.image.x","0");
-    System.setProperty("name1.image.y","0");
-    System.setProperty("name2.image.x","661");
-    System.setProperty("name2.image.y","0");
-    System.setProperty("name3.image.x","0");
-    System.setProperty("name3.image.y","481");
-    */
+    RuntimeParameters props=new RuntimeParameters("robotdemoui.properties");
+    props.load();
+    props.list(System.out);
+    props.addToSystemProperties();
   }
 
   /**Main method*/

@@ -147,8 +147,15 @@ public class RobotDataImport {
     /**
      * @return true indicates error
      */
+    static long countSaved=0;
+    void heartbeat() {
+      System.out.print("+");
+      if (++countSaved%30 == 0) System.out.println("("+countSaved+")");
+      else System.out.flush();
+    }
     private boolean saveCurrentItem() {
-      System.out.println("Saving item: "+ht);
+      // System.out.println("Saving item: "+ht);
+      heartbeat();
       double lat, lon, bearing=0, heading=0;
       String id;
       boolean picture=false, lighton=false;

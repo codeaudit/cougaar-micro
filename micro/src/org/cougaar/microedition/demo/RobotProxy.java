@@ -16,14 +16,15 @@ public class RobotProxy {
 
   double actualLength=18; //inches (about)
   double actualWidth=6; // inches (about)
-  double length=actualLength*2;
+  //double length=actualLength*2;
+  double length=actualLength;
   double width=actualWidth*2;
   String id=this.toString();
   double lon=20, lat=20;
 
   double heading=0;
   double headingLineLength=length;
-  double bearingLineLength=length*100;
+  double bearingLineLength=length*10;
 
   // test
   // static boolean testVar=true;
@@ -91,6 +92,8 @@ public class RobotProxy {
     p.drawRect(g2, lat, lon, (int)width, (int)length, heading,
       pictureAvailableRectangle.isPictureAvailable());
 
+    p.drawString(g2, lat, lon, 0, (int)length, heading, getId());
+
     // Draw heading line
     p.drawLine(g2, lat, lon, (int)headingLineLength, heading);
     // draw flashlight circle
@@ -110,9 +113,14 @@ public class RobotProxy {
     bearingLine=new BearingLine(centerX(), centerY(), bear, bearingLineLength);
   }
 
+  void clearBearing() {
+    if (bearingLine!=null) bearingLine.clearBearing();
+  }
+
   // update methods
   void update(double lat, double lon, boolean light, boolean pic) {
-   System.out.println("RP up : "+id+", "+lon+", "+lat+", l:"+light+", "+pic);
+    // System.out.println("RP up : "+id+", "+lon+", "+lat+", l:"+light+", "+pic);
+    System.out.print("."); System.out.flush();
     updateLocation(lon,lat);
     setLightOn(light);
     pictureAvailableRectangle.setPictureAvailable(pic);
@@ -177,7 +185,10 @@ public class RobotProxy {
     }
 
     boolean isLightOn() { return lightOn; }
-    void setLightOn(boolean value) { lightOn=value; System.out.println("LC setting light "+value);}
+    void setLightOn(boolean value) {
+      lightOn=value;
+      // System.out.println("LC setting light "+value);
+    }
     void draw(Graphics2D g2, AffineTransform at) {
       if (isLightOn()) {
         g2.fill(at.createTransformedShape(this));
@@ -319,6 +330,8 @@ public class RobotProxy {
 
       }
     }
+
+    public void clearBearing() { hasBearing=false; }
     /**
      * Newer better draw which delegates tot he RobotDemoPanel
      */
