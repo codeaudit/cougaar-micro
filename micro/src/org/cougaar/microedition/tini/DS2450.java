@@ -28,20 +28,9 @@ public class DS2450
   static int      timeout;
   boolean debugging = false;
 
-  public DS2450(String[] args)
+  public DS2450()
   {
     timeout = 20;
-
-    if (args.length > 0)
-    {
-      try
-      {
-        timeout = Integer.parseInt(args[0]);
-      }
-      catch (NumberFormatException e)
-      {
-      }
-    }
     // initialization
     try
     {
@@ -162,7 +151,7 @@ public class DS2450
 
 /*
   // test code
-  public static void main(String[] args)
+  public void main(String[] args)
   {
     double adresult = 0.0;
     boolean alarmresult = false;
