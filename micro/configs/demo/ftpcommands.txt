@@ -1,0 +1,4 @@
+user root tini
+bin
+put Node.tini
+quit
