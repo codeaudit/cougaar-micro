@@ -14,28 +14,23 @@ import java.util.*;
 /**
  * Base class for all ControllerResources.
  */
-public abstract class ControllerResource extends ResourceAdapter {
+public abstract class ControllerResource extends ResourceAdapter
+{
+  protected int chan = 0;
+  protected String units = "";
+  protected int scalingFactor = 1000;
 
-  public int chan = 0;
-  public String units = "";
-
+  public abstract long getValue(); //more of a sensor resource item, keep for now
+  public abstract long getValueAspect(); //more of a sensor resource item, keep for now
+  public boolean getSuccess() { return true; }
   public abstract void setChan(int c);
   public abstract void setUnits(String u);
-  public abstract long getValue();
+  public abstract boolean conditionChanged(); //indicates state has changed since last read.
 
-  public ControllerResource() {}
-
-  public void init() {
-    try {
-      Hashtable t = getParameters();
-      if (t == null)
-        return;
-      if (t.containsKey("units"))
-        setUnits((String)t.get("units"));
-      if (t.containsKey("chan"))
-        setChan(Integer.parseInt((String)t.get("chan")));
-    } catch (Exception e) {System.out.println("caught " + e);}
-  }
+  public abstract void startControl();
+  public abstract void stopControl();
+  public abstract boolean isUnderControl(); //by anything
+  public abstract void modifyControl(String controlparameter, String controlparametervalue);
 
   public int getChan() {
     return chan;
@@ -44,5 +39,22 @@ public abstract class ControllerResource extends ResourceAdapter {
   public String getUnits() {
     return units;
   }
+
+  public long getScalingFactor() {
+    return scalingFactor;
+  }
+  //this can be used to associated the resource to one item, task, object, etc.
+  private String associated_id = "";
+  public void setAssociation(String id)
+  {
+    associated_id = id;
+  }
+
+  public String getAssociation()
+  {
+    return associated_id;
+  }
+
+  public ControllerResource() {}
 
 }
