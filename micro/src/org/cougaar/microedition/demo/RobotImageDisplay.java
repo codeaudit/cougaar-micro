@@ -32,7 +32,11 @@ public class RobotImageDisplay extends JFrame {
       addNotify();
       repaint();
     } catch (Exception ex) {
-      ex.printStackTrace();
+        System.err.println("Error:  PSP for obtaining image from robot (ID: ["
+          +robotId+"]) indicated a failure.");
+        System.err.println("  Check that the PSP is configured correctly."
+          +"  Url used: ["+fullUrl+"]");
+        //       ex.printStackTrace();
     }
 
     try {

@@ -82,8 +82,8 @@ public class RobotDemoPanel extends JPanel {
     } // end mouseclicked
 
     private void toggleLight(RobotProxy rp) {
-      String urlBase;
-      String urlSuffix;
+      String urlBase="";
+      String urlSuffix="";
       boolean fromState=rp.isLightOn();
       boolean toState=!rp.isLightOn();
       System.out.println("Toggling light from "+fromState+" to "+toState+".");
@@ -102,8 +102,8 @@ public class RobotDemoPanel extends JPanel {
       catch(Exception ex) {
         System.err.println("Error:  Need to set lightUrlBase");
       }
-      urlBase="http://localhost:5555/ControlLight.PSP"+"?robotId=";
-      urlSuffix="?on=";
+      //urlBase="http://localhost:5555/ControlLight.PSP"+"?robotId=";
+      //urlSuffix="?on=";
       fullUrl=urlBase+robotId+urlSuffix+toState;
       System.out.println("Retrieving data from url: ["+fullUrl+"]");
       BufferedReader br=null;
