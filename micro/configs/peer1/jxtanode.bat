@@ -21,9 +21,9 @@ set MYPROPERTIES= -Dorg.cougaar.domain.micro=org.cougaar.microedition.se.domain.
 
 set JXTALIBPATHS=%JXTAJARLOC%;%JXTADIR%\log4j.jar;%JXTADIR%\jxtasecurity.jar;%JXTADIR%\beepcore.jar;%JXTADIR%\cryptix-asn1.jar;%JXTADIR%\cryptix32.jar;%JXTADIR%\jxtaptls.jar;%JXTADIR%\minimalBC.jar
 
-set COUGAARLIBPATHS=%ALP_INSTALL_PATH%\lib\core.jar;%ALP_INSTALL_PATH%\lib\glm.jar;%ALP_INSTALL_PATH%\lib\planserver.jar;%ALP_INSTALL_PATH%\lib\webserver.jar;%ALP_INSTALL_PATH%\lib\webtomcat.jar;%ALP_INSTALL_PATH%\sys\xerces.jar;%ALP_INSTALL_PATH%\sys\xalan.jar;%ALP_INSTALL_PATH%\sys\servlet.jar;%ALP_INSTALL_PATH%\sys\tomcat_core.jar;%ALP_INSTALL_PATH%\sys\etomcat.jar;%ALP_INSTALL_PATH%\sys\tomcat.jar;%ALP_INSTALL_PATH%\sys\core_util.jar;%ALP_INSTALL_PATH%\sys\tomcat_modules.jar;%ALP_INSTALL_PATH%\sys\tomcat_util.jar;%ALP_INSTALL_PATH%\sys\facade22.jar
+set COUGAARLIBPATHS=%ALP_INSTALL_PATH%\lib\core.jar;%ALP_INSTALL_PATH%\lib\glm.jar;%ALP_INSTALL_PATH%\lib\planserver.jar;%ALP_INSTALL_PATH%\lib\webserver.jar;%ALP_INSTALL_PATH%\lib\webtomcat.jar;%ALP_INSTALL_PATH%\sys\xerces.jar;%ALP_INSTALL_PATH%\sys\xalan.jar;%ALP_INSTALL_PATH%\sys\servlet.jar;%ALP_INSTALL_PATH%\sys\tomcat_core.jar;%ALP_INSTALL_PATH%\sys\etomcat.jar;%ALP_INSTALL_PATH%\sys\tomcat.jar;%ALP_INSTALL_PATH%\sys\core_util.jar;%ALP_INSTALL_PATH%\sys\tomcat_modules.jar;%ALP_INSTALL_PATH%\sys\tomcat_util.jar;%ALP_INSTALL_PATH%\sys\facade22.jar;%ALP_INSTALL_PATH%\lib\csmart.jar;%ALP_INSTALL_PATH%\sys\grappa1_2.jar
 
-set LIBPATHS=%PROJDIR%\micro\data\cougaarMEdomain.jar;%JXTALIBPATHS%;%COUGAARLIBPATHS%;%LIBPATHS%
+set LIBPATHS=%PROJDIR%\micro\data\cougaarMEdomain.jar;%JXTALIBPATHS%;%COUGAARLIBPATHS%
 
 @ECHO ON
 
