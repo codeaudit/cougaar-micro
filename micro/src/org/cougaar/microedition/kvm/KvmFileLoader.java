@@ -13,11 +13,11 @@ package org.cougaar.microedition.kvm;
 
 import org.cougaar.microedition.io.*;
 import javax.microedition.io.*;
-import java.io.DataInputStream;
+import java.io.*;
 
 public class KvmFileLoader implements FileLoader {
 
-	String pnp = "";
+	String pnp = "resource:";
 
 	public KvmFileLoader() {}
 
@@ -40,15 +40,19 @@ public class KvmFileLoader implements FileLoader {
 		int count = 0;
 		byte [] b = new byte[512];
 		StringBuffer content = new StringBuffer(512);
-		StreamConnection con = null;
-		DataInputStream in = null;
+		InputConnection con = null;
+		InputStream in = null;
 
-		con = (StreamConnection)Connector.open(pnp + fileName, Connector.READ_WRITE, false);
-		in = con.openDataInputStream();
+                Connection conn = Connector.open(pnp + fileName, Connector.READ_WRITE, false);
 
-		while ((count = in.read(b, 0, 512)) > 0)
+		con = (InputConnection)conn;
+		in = con.openInputStream();
+
+		while ((count = in.read(b, 0, 512)) > 0) {
 			for (i=0; i<count; i++)
 				content.append((char)b[i]);
+                }
+
 
 		in.close();
 		return content.toString();

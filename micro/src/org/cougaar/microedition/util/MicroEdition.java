@@ -54,4 +54,20 @@ public class MicroEdition {
     return factory.getObjectME(ofType);
   }
 
+  /**
+   * This static method returns the appropriate object given the ME type.
+   *
+   * @param   ofType The name of the abstract type of which to make a concrete instance.
+   * @return  Object which is an appropriate instantiation of the ofType argument.
+   */
+  public static Object getObjectME(String ofType) {
+    Object ret = null;
+    try {
+      ret = factory.getObjectME(Class.forName(ofType));
+    } catch (ClassNotFoundException cnfe) {
+      System.err.println("Error getting micro object "+ofType);
+    }
+    return ret;
+  }
+
 }

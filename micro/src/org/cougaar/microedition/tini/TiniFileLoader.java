@@ -17,7 +17,7 @@ import java.io.*;
 
 public class TiniFileLoader implements FileLoader {
 
-	String pnp = "";
+	String pnp = "file:";
 
 	public TiniFileLoader() {}
 
