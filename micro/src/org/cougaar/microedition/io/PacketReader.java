@@ -65,12 +65,14 @@ public class PacketReader {
               msg.append((char)bite);
             }
             bufr.close();
-            String message = msg.toString();
-            String source = getSource(message);
-            deliverer.takePacket(getMessage(message), source);
+            if (msg.length() > 0) {
+              String message = msg.toString();
+              String source = getSource(message);
+              deliverer.takePacket(getMessage(message), source);
+            }
             msg.setLength(0);
           } catch (Exception ex) {
-            System.err.println("Exception processing input message ");
+            System.err.println("Exception processing input message(len:"+msg.length()+"):\n'"+msg+"'");
             ex.printStackTrace();
           }
         }
