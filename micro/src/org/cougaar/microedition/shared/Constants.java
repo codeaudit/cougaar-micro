@@ -53,4 +53,12 @@ public interface Constants {
 
   }
 
+  public interface Geophysical {
+
+    static final double EARTH_RADIUS_METERS = 6378137.0; //meters;
+    static final double MAGNETIC_DECLINATION = 0.0; //degrees E=+ W=-
+    static final double DEGTOBILLIONTHS = 1000000000.0; //10^9
+    static final double BILLIONTHSTODEG = 0.000000001; //10^-9
+
+  }
 }

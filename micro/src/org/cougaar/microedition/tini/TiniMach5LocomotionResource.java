@@ -12,6 +12,7 @@
 package org.cougaar.microedition.tini;
 
 import org.cougaar.microedition.asset.*;
+import org.cougaar.microedition.shared.Constants;
 import java.util.*;
 import java.io.*;
 import java.lang.*;
@@ -483,8 +484,6 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
 
   }
 
-  static final double EARTH_RADIUS = 6378137.0; //meters;
-
   public double getLatitude()
   {
     //read the wheels to tell me where you are at
@@ -498,7 +497,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
     xpp = xpp/1000.0;
     ypp = ypp/1000.0; //meters
 
-    double lat = surveylatitude + ypp/EARTH_RADIUS;
+    double lat = surveylatitude + ypp/Constants.Geophysical.EARTH_RADIUS_METERS;
     lat *= (180.0/Math.PI); //convert to degrees
 
     return lat;
@@ -518,8 +517,8 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
     xpp = xpp/1000.0;
     ypp = ypp/1000.0; //meters
 
-    double lat = surveylatitude + ypp/EARTH_RADIUS;
-    double lon = surveylongitude + xpp / (EARTH_RADIUS * TiniTrig.tinicos(0.5*(surveylatitude + lat)));
+    double lat = surveylatitude + ypp/Constants.Geophysical.EARTH_RADIUS_METERS;
+    double lon = surveylongitude + xpp / (Constants.Geophysical.EARTH_RADIUS_METERS * TiniTrig.tinicos(0.5*(surveylatitude + lat)));
 
     lon *= (180.0/Math.PI); //convert to degrees
 
