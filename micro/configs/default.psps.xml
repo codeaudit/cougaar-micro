@@ -24,6 +24,14 @@
     <Classname>org.cougaar.lib.planserver.psp.PSP_PlugInLoader</Classname>
     <PSPName>alpine/demo/PLUGIN_LOADER.PSP</PSPName>
   </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.domain.PSP_StartSystem</Classname>
+    <PSPName>START_SYSTEM.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.demo.PSP_RobotData</Classname>
+    <PSPName>ROBOTDATA.PSP</PSPName>
+  </element>
 </object>
 
 
