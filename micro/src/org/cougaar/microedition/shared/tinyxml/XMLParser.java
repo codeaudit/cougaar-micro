@@ -15,7 +15,7 @@ package cougaar.microedition.shared.tinyxml;
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -32,7 +32,7 @@ import cougaar.microedition.shared.tinyxml.util.CharacterUtility;
  *  <ul>
  *  <li>ASCII</li>
  *  </ul>
- *  Christian Sauer: i deleted other encodings, because the method 'intern' 
+ *  Christian Sauer: i deleted other encodings, because the method 'intern'
  *  of class String to check the encoding of a platform is native and
  *  not implemented in CLDC/KVM 1.0B3.
  *
@@ -41,7 +41,7 @@ import cougaar.microedition.shared.tinyxml.util.CharacterUtility;
  *  XMLInputStream and another DocumentHandler before.</p>
  *
  *  @author Tom Gibara
- *  @version 0.7 
+ *  @version 0.7
  */
 
 public class XMLParser {
@@ -62,7 +62,7 @@ public class XMLParser {
  * XMLParser constructor.
  */
 public XMLParser() {}
-/** 
+/**
  * Checks if character is a %
  * if it is then it reads a Parameter Entity Reference
  * terminates when ; is read but automatically performs a reread
@@ -89,11 +89,11 @@ private void checkPEReference() throws ParseException {
 		}
 	}
 }
-/** 
+/**
  * returns true if this character  may legally
  * appear as the first letter of a name
  * as defined in the spec.
- * static method on Character was replaced with 
+ * static method on Character was replaced with
  * method on ccare.palm.util.CharacterUtility
  *
  * @param char the character to check
@@ -101,7 +101,7 @@ private void checkPEReference() throws ParseException {
 private static boolean isFirstNameChar(char c) {
 	return (CharacterUtility.isLetter(c) || c == ':' || c == '_');
 }
-/** 
+/**
  * Returns true if this character is a ' or "
  *
  * @param char the character to check
@@ -109,7 +109,7 @@ private static boolean isFirstNameChar(char c) {
 private static boolean isQuote(char c) {
 	return (c == '\'' || c == '"');
 }
-/** 
+/**
  * returns true if character is white space
  * as defined by XML spec.
  *
@@ -118,7 +118,7 @@ private static boolean isQuote(char c) {
 private static boolean isWhite(char c) {
 	return (c == 32) || (c == 9) || (c == 13) || (c == 10);
 }
-/** 
+/**
  * Called to parse the underlying XML document.
  * "Parsing events" are sent to the document handler
  * you have registrated before.
@@ -137,9 +137,9 @@ public void parse() throws ParseException {
 	genEntities = null;
 	xr = null;
 }
-/** 
- * assumes name of entity has been 'temporarily' stuffed into 
- * first index of array returns false if the responder 
+/**
+ * assumes name of entity has been 'temporarily' stuffed into
+ * first index of array returns false if the responder
  * declined to resolve it
  *
  * @param String[] the attributes
@@ -165,7 +165,7 @@ private boolean parseExternal(String[] attr) throws ParseException {
 	reader = oldReader;
 	return true;
 }
-/** 
+/**
  * Reads a single character from the underlying reader
  * throws an EOS exception if it was there are no more.
  */
@@ -298,8 +298,7 @@ private void readDocument() throws ParseException {
 					readPITag();
 					break;
 				case '!' :
-					// DTD stuff excluded in order to be smaller ;o)
-					//readBangTag(inProlog);
+					readBangTag();
 					break;
 				case '/' :
 					readClosingTag();
@@ -431,6 +430,29 @@ private void readPITag() throws ParseException {
 	}
 	xr.pi(name, sb.toString());
 }
+
+//reads Comment <!-- --> tags
+//expects ! to have been read
+private void readBangTag() throws ParseException {
+  read();
+  char under1 = cn;
+  read();
+  if ((under1 != '-') || (cn != '-'))
+    throw new ParseException("Unknown bang tag:\"!"+under1+cn+"\"");
+  // read until "-->"
+  char [] close = {'-','-','>'};
+  int idx = 0;
+
+  while (idx < close.length) {
+    read();
+    if (cn == close[idx])
+      idx++;
+    else
+      idx = 0;
+  }
+}
+
+
 //reads a system or public id (depending on boolean passed in
 //does not currently limit the characters in pubid and it should
 //expects first character to have been read (should be " or ')
