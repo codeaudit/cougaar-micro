@@ -70,6 +70,15 @@ public class TiniFileLoader implements FileLoader {
 		return content.toString();
 	}
 
+	public void sendFile(String fileName, String outstring) throws Exception
+	{
+		FileOutputStream fout = new FileOutputStream(fileName);
+
+		fout.write(outstring.getBytes());
+		fout.flush();
+		fout.close();
+	}
+
 	public static void main(String[] args) {
 
     String content = "";
