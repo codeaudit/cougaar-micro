@@ -188,7 +188,7 @@ public class TiniTurretController extends TurretControllerResource
       else
         setHemisphere(MIDDLE);
 
-      System.out.println("TiniTurretController: hemisphere set: " +Hemisphere);
+      System.out.println("TiniTurretController: hemisphere set: " +val);
     }
   }
 
@@ -307,17 +307,20 @@ public class TiniTurretController extends TurretControllerResource
       if (sensors.isLimitTriggered() != lastlimit)
       {
 	  lastlimit = sensors.isLimitTriggered();
-	  if(bearing < 30.0 || bearing > 330.0) // assume vicinity of limit switch
-	  {
-	    System.out.println("adjustbearing: adjusting to 0.0");
-	    bearing = 0.0;
-	  }
+	  System.out.println("Limit Switch autocal: bearing set to 0.0");
+	  bearing = 0.0;
       }
     }
   }
 
-  public void setHemisphere(int SearchZone) {
+  public void setHemisphere(int SearchZone)
+  {
+    if(Hemisphere == SearchZone) return; //already set
+
+    if(ssm != null) ssm.SetThreadIndex(SWEEP_WAIT);
+
     Hemisphere = SearchZone;
+
   }
 
   public boolean goToBearing(double bearing) {
@@ -329,10 +332,26 @@ public class TiniTurretController extends TurretControllerResource
   }
 
   public void calibrateTurret() {
+
+    if (debugging) {System.out.println("Turret Calibration...");}
+
+    if (debugging) {System.out.println("Over Shooting backward");}
+    //over shoot to calibrate quicker
+    sensors.refreshAlarms();
+    sensors.clearLimitAlarm();
+    sensors.clearRotationAlarm();
+    MotorDirection = BACKWARD;
+    motor.setDirection(MotorDirection);
+    motor.start();
+    while (sensors.isLimitTriggered())
+    {
+      motor.stop();
+    }
+
     // calibrate turret (rewind until limit sensor closes)
     int IncrementCounter = 0;
     int MotorRotations = 0;
-    if (debugging) {System.out.println("Turret Calibration is running");}
+
     sensors.refreshAlarms();
     sensors.clearLimitAlarm();
     sensors.clearRotationAlarm();
@@ -370,15 +389,21 @@ public class TiniTurretController extends TurretControllerResource
     sensors.clearRotationAlarm();
     setbearing(0.0);
     if (debugging) {System.out.println("TURRET_CALIBRATION: Calibration Complete. Bearing = " + bearing);}
-    if (debugging) {pause("Short pause...");}
     return;
   }
 
   private class SweepStateMachine implements Runnable {
 
+    private int SweepStateIndex = SWEEP_WAIT;
+
     public synchronized void setThreadState (int s) {
       SweepThreadState = s;
       if (s == RUN || s == STOP) {notify();}
+    }
+
+    public synchronized void SetThreadIndex (int index)
+    {
+      SweepStateIndex = index;
     }
 
     private synchronized boolean checkThreadState() {
@@ -396,7 +421,7 @@ public class TiniTurretController extends TurretControllerResource
     }
 
     public void run() {
-      int SweepStateIndex = SWEEP_WAIT;
+      SweepStateIndex = SWEEP_WAIT;
       int IncrementCounter = 0;
       int MotorRotations = 0;
       sweepstateloop: while (true)
