@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -31,26 +31,29 @@ public class KvmSocketME implements SocketME {
 
   StreamConnection sock = null;
 
-  public OutputStream getOutputStream( String server, int port ) throws IllegalArgumentException, IllegalAccessException, IOException {
+  public KvmSocketME(StreamConnection newsock)
+  {
+    sock = newsock;
+  }
 
-    //System.out.println("Try to open:"+"socket://" + server + ":" + port);
+  public void open( String server, int port ) throws IllegalArgumentException, IOException
+  {
     sock = (StreamConnection)Connector.open("socket://" + server + ":" + port);
-    //System.out.println("DONE to open:"+"socket://" + server + ":" + port);
+  }
 
+  public OutputStream getOutputStream() throws IOException
+  {
     return sock.openOutputStream();
-
   }
 
-  public InputStream getInputStream( ) throws IOException {
-
+  public InputStream getInputStream( ) throws IOException
+  {
     return sock.openInputStream();
-
   }
 
-  public void close() throws IOException {
-
+  public void close() throws IOException
+  {
     sock.close();
-
   }
 
 }

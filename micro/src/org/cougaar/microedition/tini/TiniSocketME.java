@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -31,9 +31,18 @@ public class TiniSocketME implements SocketME {
 
   Socket sock = null;
 
-  public OutputStream getOutputStream( String server, int port ) throws IllegalArgumentException, IllegalAccessException, IOException {
+  public TiniSocketME(Socket newsock)
+  {
+    sock = newsock;
+  }
 
+  public void open( String server, int port ) throws IllegalArgumentException, IOException
+  {
     sock = new Socket ( server, port );
+  }
+
+  public OutputStream getOutputStream() throws IOException
+  {
 
     return sock.getOutputStream();
 
@@ -45,7 +54,8 @@ public class TiniSocketME implements SocketME {
 
   }
 
-  public void close() throws IOException {
+  public void close() throws IOException
+  {
 
     sock.close();
 

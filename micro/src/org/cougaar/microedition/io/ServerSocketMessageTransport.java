@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -66,7 +66,8 @@ public class ServerSocketMessageTransport implements MessageTransport {
   while (!done) {
     try {
       SocketME sock = (SocketME)MicroEdition.getObjectME(Class.forName("org.cougaar.microedition.io.SocketME"));
-      OutputStream os = sock.getOutputStream(server, port);
+      sock.open(server, port);
+      OutputStream os = sock.getOutputStream();
       byte [] data = message.getBytes();
       os.write(data);
       os.flush();

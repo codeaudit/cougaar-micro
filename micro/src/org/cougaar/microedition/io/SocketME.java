@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -37,7 +37,10 @@ public interface SocketME {
    * @param  port         server socket port the recepient is listening on.
    * @return OutputStream for writing your message to.
    */
-  public OutputStream getOutputStream ( String server, int port ) throws IllegalArgumentException, IllegalAccessException, IOException;
+
+  public void open(String server, int port) throws IOException;
+
+  public OutputStream getOutputStream () throws IOException;
   public InputStream getInputStream() throws IOException;
   public void close() throws IOException;
 

@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -31,13 +31,21 @@ public class KvmServerSocketME implements ServerSocketME {
 
   private StreamConnectionNotifier ss;
 
-  public void openServerSocket( int myListenPort ) throws IllegalArgumentException, IllegalAccessException, IOException {
+  public void open( int myListenPort ) throws IllegalArgumentException, IllegalAccessException, IOException
+  {
     ss = (StreamConnectionNotifier)Connector.open("serversocket://:" + myListenPort);
   }
 
-  public InputStream acceptInputStream() throws IOException {
-    return(ss.acceptAndOpen().openInputStream());
+  public SocketME accept() throws IOException
+  {
+    StreamConnection newconn = ss.acceptAndOpen();
+    KvmSocketME kvmsocket = new KvmSocketME(newconn);
+    return (SocketME)kvmsocket;
+  }
 
+  public void close() throws IOException
+  {
+    ss.close();
   }
 
 }

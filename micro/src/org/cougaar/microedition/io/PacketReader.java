@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -72,7 +72,7 @@ public class PacketReader {
         ServerSocketME ss = null;
         if (bufr == null) {
           ss = (ServerSocketME) MicroEdition.getObjectME(Class.forName("org.cougaar.microedition.io.ServerSocketME"));
-          ss.openServerSocket(myListenPort);
+          ss.open(myListenPort);
           System.out.println("Listening on " + myListenPort);
         } else {
           try {Thread.sleep(3000);}catch (InterruptedException ie){}
@@ -82,7 +82,8 @@ public class PacketReader {
         while (true) {
           try {
             if (ss != null) {
-              bufr = ss.acceptInputStream();
+	      SocketME socketme = ss.accept();
+              bufr = socketme.getInputStream();
             }
             msg = readMessage(bufr);
             if (ss != null) {
@@ -103,9 +104,6 @@ public class PacketReader {
       } catch (IllegalAccessException iae) {
         System.err.println("Error configuring message recv: IllegalAccessException");
         iae.printStackTrace();
-//      } catch (InstantiationException ie) {
-//        System.err.println("Error configuring message recv: InstantiationException");
-//        ie.printStackTrace();
       } catch (IOException ioe) {
         System.err.println("Error configuring message recv: IOException");
         ioe.printStackTrace();

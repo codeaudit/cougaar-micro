@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -31,18 +31,21 @@ import java.io.*;
 public interface ServerSocketME {
 
   /**
-   * This method opens a ServerSocket
+   * This method opens,initializes a ServerSocket
    *
    * @param   port    server socket port to listen on
    * @return  none
    */
-  public void openServerSocket (int port) throws IllegalArgumentException, IllegalAccessException, IOException;
+  public void open(int port) throws IllegalAccessException, IOException;
 
   /**
-   * This method waits for a client to open a socket to me, and returns an InputStream
+   * This method waits for a client to open a socket to me, and returns a SocketME object
    *
    * @param   none
-   * @return  InputStream for reading purposes.
+   * @return  SocketME for reading purposes.
    */
-  public InputStream acceptInputStream () throws IOException ;
+
+  public SocketME accept() throws IOException;
+
+  public void close() throws IOException;
 }
