@@ -62,12 +62,14 @@ public class Distributor {
    * @param subscriber The object that will hold the "lock" on this transaction.
    */
   public synchronized void openTransaction(Thread thread) {
+    //System.out.println("OPEN TRANSACTION : " +thread.getName() +" owner= "+owner);
     if (thread == owner)
       throw new RuntimeException("Attempt to re-open transaction");
     while (owner != null) {
       try {
-//        System.out.println("waiting for owner to closeTransaction, if wedged, problems");
+        //System.out.println(thread.getName() +" waiting for "+owner.getName()+ " to closeTransaction, if wedged, problems");
         wait();
+	//System.out.println(thread.getName() +" fell out of wait");
       } catch (InterruptedException ie) {}
     }
     owner = thread;
@@ -100,6 +102,7 @@ public class Distributor {
    */
   public synchronized void closeTransaction(Thread thread, Object subscriber, boolean seeMyOwnChanges) {
 
+  //System.out.println("CLOSE TRANSACTION thread: " +thread.getName() +" owner" +owner.getName());
   if (owner == null || thread != owner )
     throw new RuntimeException("Attempt to close unopen transaction");
 
@@ -161,7 +164,8 @@ public class Distributor {
   }
 
   owner = null;
-  notify();
+  //System.out.println("CLOSE TRANSACTION: NOTIFY()");
+  notifyAll();
   distribute();
 
   }
@@ -271,7 +275,9 @@ public class Distributor {
 	  runnableSubscribers.removeElementAt(0);
 	  openTransaction(Thread.currentThread());
 	  try {
+	      //System.out.println("EXECUTE : " +runme.getPlugIn().getClass());
 	      runme.execute();
+	      //System.out.println("DONE EXECUTE : " +runme.getPlugIn().getClass());
 	  }
 	  catch (Throwable e) {
 	    System.out.println("Exception thrown from plugin: " +e);
