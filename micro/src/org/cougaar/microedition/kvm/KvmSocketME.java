@@ -48,17 +48,25 @@ public class KvmSocketME implements SocketME {
 
   public OutputStream getOutputStream() throws IOException
   {
+    if (sock == null) 
+      throw new IOException("Socket not opened");
+ 
     return sock.openOutputStream();
   }
 
   public InputStream getInputStream( ) throws IOException
   {
+    if (sock == null) 
+      throw new IOException("Socket not opened");
     return sock.openInputStream();
   }
 
   public void close() throws IOException
   {
-    sock.close();
+
+    if (sock != null) 
+      sock.close();
+		sock = null;
   }
 
 }

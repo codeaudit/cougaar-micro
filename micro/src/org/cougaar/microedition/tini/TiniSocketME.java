@@ -49,12 +49,16 @@ public class TiniSocketME implements SocketME {
   public OutputStream getOutputStream() throws IOException
   {
 
+    if (sock == null) 
+      throw new IOException("Socket not opened");
     return sock.getOutputStream();
 
   }
 
   public InputStream getInputStream( ) throws IOException {
 
+    if (sock == null) 
+      throw new IOException("Socket not opened");
     return sock.getInputStream();
 
   }
@@ -62,7 +66,9 @@ public class TiniSocketME implements SocketME {
   public void close() throws IOException
   {
 
-    sock.close();
+    if (sock != null)
+      sock.close();
+		sock = null;
 
   }
 
