@@ -4,9 +4,10 @@
 
   <resource> org.cougaar.microedition.tini.TiniTurretController</resource>
 
-  <plugin resource="TiniTurretController" command="RotateTurret" parameter="TurretHemisphere" parametervalue="front"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+  <plugin sleeptime="1000" resource="TiniTurretController" command="RotateTurret"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
 
   <!-- Infrastructure PlugIns -->
+  <plugin>org.cougaar.microedition.tini.TiniKillPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>

@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
-  <description>SONARSensor</description>
+  <description>PositionProvider</description>
 
-  <resource> org.cougaar.microedition.tini.TiniSONARController</resource>
+  <resource Latitude="38.87285" Longitude="-77.08385" Heading="145.0"> org.cougaar.microedition.tini.TiniBogusLocationResource</resource>
 
-  <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="2.25" sleeptime="100"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+  <plugin resource="TiniBogusLocationResource" command="ReportPosition"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
 
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.tini.TiniKillPlugIn</plugin>
