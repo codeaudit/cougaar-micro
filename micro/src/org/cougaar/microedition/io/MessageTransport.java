@@ -73,17 +73,13 @@ public class MessageTransport {
 
   public void addMessageListener(MessageListener ml) {
     if (!listeners.contains(ml))  {
-      Vector newListeners = (Vector)listeners.clone();
-      newListeners.addElement(ml);
-      listeners = newListeners;
+      synchronized (listeners) {listeners.addElement(ml);}
     }
   }
 
   public void removeMessageListener(MessageListener ml) {
     if (listeners.contains(ml))  {
-      Vector newListeners = (Vector)listeners.clone();
-      newListeners.removeElement(ml);
-      listeners = newListeners;
+      synchronized (listeners) {listeners.removeElement(ml);}
     }
   }
 
