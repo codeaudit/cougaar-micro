@@ -438,27 +438,41 @@ public class RobotDemoPanel extends JPanel {
     g2.setColor(fg);
   }
 
-
-//  public void paintComponent(Graphics g) {
-  public void paint(Graphics g) {
-    synchronized(this) {
-//    super.paintComponent(g);
-    super.paint(g);
-
-    //System.out.println("rbpanel paint");
-    Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-
-    adjustForBorder(g2);
-    fillBackground(g2);
-
-    RobotProxy rp;
-    for (Iterator iter=RobotDemoUI.getRobotInfo(); iter.hasNext();) {
-      rp=(RobotProxy)iter.next();
-      rp.draw(this, g2);
-    }
-    }
+  boolean invalidLat(double theLat)
+  {
+      return (theLat < -90 || theLat > 90);
   }
 
+  boolean invalidLon(double theLon)
+  {
+      return (theLon > 180 || theLon < -180);
+  }
+
+//  public void paintComponent(Graphics g) {
+  public void paint(Graphics g)
+  {
+    synchronized(this)
+    {
+//    super.paintComponent(g);
+      super.paint(g);
+
+      //System.out.println("rbpanel paint");
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+
+      adjustForBorder(g2);
+      fillBackground(g2);
+
+      RobotProxy rp;
+      for (Iterator iter=RobotDemoUI.getRobotInfo(); iter.hasNext();)
+      {
+	rp=(RobotProxy)iter.next();
+	if (rp.getId()!=null && !invalidLat(rp.getLat()) && !invalidLon(rp.getLon()))
+	{
+	  rp.draw(this, g2);
+	}
+      }
+    }
+  }
 }

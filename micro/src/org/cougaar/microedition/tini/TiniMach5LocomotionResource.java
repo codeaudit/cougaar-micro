@@ -483,6 +483,27 @@ public class TiniMach5LocomotionResource extends ControllerResource
    *  A worker thread to service the serial port
    */
   private class SerialManager implements Runnable {
+
+    public void flushstream(InputStream input)
+    {
+           //clear rubbish on serial port
+       byte [] junk = new byte[128];
+       int totalgarbage = 0;
+       int nread = 0;
+       try
+       {
+	 nread = input.read(junk, 0, 128);
+	 while(nread > 0)
+	 {
+	  totalgarbage += nread;
+	  nread = input.read(junk, 0, 128);
+	 }
+       }
+       catch(Exception e) {}
+
+       System.out.println("Serial port cleared..." +totalgarbage);
+    }
+
     public void run() {
       /*
        * Open serial port input and output streams
@@ -490,6 +511,7 @@ public class TiniMach5LocomotionResource extends ControllerResource
 //       InputStream input = System.in;
 //       OutputStream output = System.out;
 
+       boolean firstio = true;
        InputStream input;
        OutputStream output;
 
@@ -534,6 +556,11 @@ public class TiniMach5LocomotionResource extends ControllerResource
           }
           try {
             if (debug) System.out.println("SEND:"+msg);
+	    if(firstio)
+	    {
+	      flushstream(input);
+	      firstio = false;
+	    }
             output.write(msg.getBytes());
             output.flush();
           } catch (IOException ioe) {

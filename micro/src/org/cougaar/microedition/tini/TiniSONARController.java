@@ -26,11 +26,14 @@ public class TiniSONARController extends ControllerResource {
   static int debugLevel=10;
 
   private double sensorthreshold = 2.0; //average
+  private double maxave = 0.0;
   private DS2450 ds2450=null;
 
   int position=0;
-  int historySize=4;
+  int historySize=10;
   double [] historyQueue = null;
+  boolean lookforpeak = false;
+  boolean upswingseen = false;
 
   public void modifyControl(String controlparameter, String controlparametervalue)
   {
@@ -43,10 +46,17 @@ public class TiniSONARController extends ControllerResource {
   }
 
   private boolean isStarted = false;
-  public boolean isUnderControl() {return isStarted;}
+  public boolean isUnderControl()
+  {
+    return isStarted;
+  }
 
   public void startControl()
   {
+    for (int idx=0; idx<historySize; idx++)
+    {
+        historyQueue[idx] = 0.0;
+    }
     isStarted = true;
   }
 
@@ -55,13 +65,9 @@ public class TiniSONARController extends ControllerResource {
     isStarted = false;
   }
 
-  private long newreturnvalue = 0;
-  private long oldreturnvalue = -1;
-
   public void getValues(long [] values)
   {
-    oldreturnvalue = newreturnvalue;
-    values[0] = (long)(scalingFactor*newreturnvalue);
+    values[0] = (long)(scalingFactor*1);
   }
 
   public void getValueAspects(int [] aspects)
@@ -76,16 +82,13 @@ public class TiniSONARController extends ControllerResource {
 
   public boolean getSuccess()
   {
-    if(newreturnvalue > 0 )
-      return true;
-    else
-      return false;
+    return true;
   }
 
   public boolean conditionChanged()
   {
       double dsval = getDS2450Value();
-      historyQueue[position] = dsval;;
+      historyQueue[position] = dsval;
       position=(position+1)%historySize;
 
       double ave = 0.0;
@@ -98,12 +101,40 @@ public class TiniSONARController extends ControllerResource {
 
       //System.out.println("Sonar : "+dsval+" "+ave);
 
-      if (ave >= sensorthreshold)
-	 newreturnvalue = 1;
-      else
-	 newreturnvalue = 0;
+      if (ave >= sensorthreshold && upswingseen == false && lookforpeak == false)
+      {
+	System.out.println("Above threshold, looking for peak: "+ave);
+	upswingseen = true;
+	lookforpeak = true;
+	maxave = ave;
+	return false;
+      }
 
-      return (oldreturnvalue != newreturnvalue);
+      //looking for local maximum
+      if (lookforpeak == true)
+      {
+	if(ave > maxave)
+	{
+	  maxave = ave;
+	  return false; //still increasing
+	}
+	else
+	{
+	  System.out.println("Sonar peaked: "+maxave);
+	  lookforpeak = false; //upswing still true
+	  return true;
+	}
+      }
+
+      //peak reported, waiting to go back down below threshold to reset for another detection
+      if (ave < sensorthreshold && upswingseen == true && lookforpeak == false)
+      {
+	System.out.println("Sonar down: "+ave);
+	upswingseen = false;
+	maxave = 0.0;
+      }
+
+      return false;
   }
 
   /**

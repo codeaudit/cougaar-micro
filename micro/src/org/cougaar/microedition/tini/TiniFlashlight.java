@@ -22,9 +22,14 @@ public class TiniFlashlight extends ControllerResource {
   private boolean wasOnThen = false;
   private boolean changecondition = false;
   private DS2450 ds2450;
-  private int ds2450Index=0, ds2450Channel=0;
+  private int ds2450Index=0, ds2450Channel=3;
   private String owAddr;
   private int debugLevel = 0;
+
+  private static final int FLASHLIGHT_OFF = 0;
+  private static final int FLASHLIGHT_ON = 1;
+  private static final int FLASHLIGHT_FLASHING = 2;
+  private int flashlightstate = FLASHLIGHT_OFF;
 
 
   /**
@@ -90,11 +95,10 @@ public class TiniFlashlight extends ControllerResource {
   */
   public boolean setOn(boolean value)
   {
-    System.out.println("TiniFlashlight: setOn("+value+")");
+    //System.out.println("TiniFlashlight: setOn("+value+")");
     // setPinTo returns the value of the pin after the call (should be same as value)
     isOnNow=setPinTo(value);
-    System.out.println("TiniFlashlight: Leaving setOn("+value
-        +") and flashlight isOn() returns "+isOn());
+    //System.out.println("TiniFlashlight: Leaving setOn("+value+") and flashlight isOn() returns "+isOn());
 
     if(isOnNow != wasOnThen)
       changecondition = true;
@@ -181,9 +185,7 @@ public class TiniFlashlight extends ControllerResource {
 
   public void getValues(long [] values)
   {
-    changecondition = false; //reset
     wasOnThen = isOnNow;
-
     values[0] = (long)(1.0*scalingFactor);
   }
 
@@ -199,32 +201,53 @@ public class TiniFlashlight extends ControllerResource {
 
   public void setChan(int c) {}
   public void setUnits(String u) {}
-  public boolean conditionChanged() {return changecondition;}
-
-  private boolean isundercontrol = false;
+  public boolean conditionChanged()
+  {
+    if(flashlightstate == FLASHLIGHT_FLASHING)
+      setOn(!isOn());
+    if(flashlightstate == FLASHLIGHT_ON)
+      setOn(true);
+    if(flashlightstate == FLASHLIGHT_OFF)
+      setOn(false);
+    return false;
+  }
 
   public void startControl()
   {
-    setOn(true);
-    isundercontrol = true;
+    switch(flashlightstate)
+    {
+      case FLASHLIGHT_ON:
+      case FLASHLIGHT_FLASHING:
+	   setOn(true);
+      default:
+           setOn(false);
+    }
   }
 
   public void stopControl()
   {
-    setOn(false);
-    isundercontrol = false;
+    //setOn(false);
   }
 
   public boolean isUnderControl()
   {
-    return isundercontrol;
+    return false;
   }
 
-  public boolean getSuccess() { return isOnNow; }
+  public boolean getSuccess() { return true; }
 
   public void modifyControl(String controlparameter, String controlparametervalue)
   {
-
+    if(controlparameter.equalsIgnoreCase("LightingMode"))
+    {
+      if(controlparametervalue.equalsIgnoreCase("on"))
+	flashlightstate = FLASHLIGHT_ON;
+      else if(controlparametervalue.equalsIgnoreCase("flashing"))
+	flashlightstate = FLASHLIGHT_FLASHING;
+      else
+	flashlightstate = FLASHLIGHT_OFF;
+    }
+    System.out.println("TiniFlashlight state " +flashlightstate);
   }
 }
 

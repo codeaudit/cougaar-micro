@@ -19,8 +19,9 @@ public interface Constants {
 
     static int min = 2;
 
-    static String [] roles = { "SurveillanceProvider" };
+    static String [] roles = { "SurveillanceProvider", "ImageProvider"};
     static int SURVEILLANCEPROVIDER = 0;
+    static int IMAGEPROVIDER = 1;
 
     static String [] meRoles = { "Everything", "PositionProvider", "LocomotionController", "TargetingController", "FlashlightController", "TurretController", "SONARSensor" };
     static int EVERYTHING = 0;

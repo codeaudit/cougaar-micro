@@ -11,14 +11,17 @@
 
 package org.cougaar.microedition.tini;
 
-import org.cougaar.microedition.asset.*;
 import java.util.*;
 import java.io.*;
 import java.lang.*;
 import javax.comm.*;
 
+import org.cougaar.microedition.asset.LocationResource;
+import org.cougaar.microedition.asset.ControllerResource;
+import org.cougaar.microedition.shared.Constants;
 
-public class TiniBogusLocationResource implements LocationResource
+
+public class TiniBogusLocationResource extends ControllerResource implements LocationResource
 {
 
   private double longitude = 0.0;
@@ -31,10 +34,7 @@ public class TiniBogusLocationResource implements LocationResource
   /**
    * Constructor.  Sets name default.
    */
-  public TiniBogusLocationResource()
-  {
-    setName("TiniBogusLocationResource");
-  }
+  public TiniBogusLocationResource() {}
 
   public void setName(String n) {
     myName = n;
@@ -51,6 +51,8 @@ public class TiniBogusLocationResource implements LocationResource
 
   public void setParameters(Hashtable params)
   {
+    setName("TiniBogusLocationResource");
+    setScalingFactor((long)Constants.Geophysical.DEGTOBILLIONTHS);
     attrtable = params;
     if (params != null)
     {
@@ -80,6 +82,56 @@ public class TiniBogusLocationResource implements LocationResource
         altitude = temp.doubleValue();
       }
     }
+  }
+
+  public void getValues(long [] values)
+  {
+    values[0] = (long)(scalingFactor*getLatitude());
+    values[1] = (long)(scalingFactor*getLongitude());
+    values[2] = (long)(scalingFactor*getHeading());
+  }
+
+  public void getValueAspects(int [] aspects)
+  {
+    aspects[0] = Constants.Aspects.LATITUDE;
+    aspects[1] = Constants.Aspects.LONGITUDE;
+    aspects[2] = Constants.Aspects.HEADING;
+  }
+
+  public int getNumberAspects()
+  {
+    return 3;
+  }
+
+  public void setChan(int c) {}
+  public void setUnits(String u) {}
+  public boolean conditionChanged() {return true;}
+
+  private boolean isundercontrol = false;
+
+  public void startControl()
+  {
+    isundercontrol = true;
+  }
+
+  public void stopControl()
+  {
+    isundercontrol = false;
+  }
+
+  public boolean isUnderControl()
+  {
+    return isundercontrol;
+  }
+
+  public void modifyControl(String controlparameter, String controlparametervalue)
+  {
+
+  }
+
+  public boolean getSuccess()
+  {
+    return true;
   }
 
   public double getLatitude()

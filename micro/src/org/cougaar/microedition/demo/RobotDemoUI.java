@@ -48,6 +48,12 @@ public class RobotDemoUI {
     }
     frame.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
     frame.setVisible(true);
+
+    if (robotUpdateThread !=null) {
+      robotUpdateThread.finish();
+    }
+    robotUpdateThread=new RobotUpdateThread();
+    robotUpdateThread.start();
   }
 
   /**
@@ -73,22 +79,28 @@ public class RobotDemoUI {
   /**
    * Start the demo.
    */
-  public void startUpdates() {
+  public void startUpdates()
+  {
+    /*
     if (robotUpdateThread !=null) {
       robotUpdateThread.finish();
     }
     robotUpdateThread=new RobotUpdateThread();
     robotUpdateThread.start();
+    */
     setDemoActive(true);
   }
 
   /**
    * Halt the demo.
    */
-  public void stopUpdates() {
+  public void stopUpdates()
+  {
+    /*
     if (robotUpdateThread!=null) {
       robotUpdateThread.finish();
     }
+    */
     setDemoActive(false);
   }
 

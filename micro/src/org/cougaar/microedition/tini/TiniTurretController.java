@@ -24,14 +24,16 @@ public class TiniTurretController extends ControllerResource
   private static final double DELTADEG = 3.6; //degrees
   private double bearing = 0.0;
   private double scanspeed = 0.0;
-  private double startbearing = 0.0;
-  private double stopbearing = 0.0;
+  private double startbearing = -135.0;
+  private double stopbearing = 135.0;
 
   private BitPort in1; // TX1 (12) Input #1
   private BitPort in2; // CTX (8) Input #2
   private boolean debugging = false;
   private int currentIn1State = -1;
   private int currentIn2State = -1;
+  private boolean scanning = false;
+  private boolean scanningcomplete = false;
 
   public TiniTurretController()
   {
@@ -58,7 +60,7 @@ public class TiniTurretController extends ControllerResource
     {
       return false;
     }
-    if (debugging) System.out.println("Setting control bits: "+control1+":"+control2);
+    //if (debugging) System.out.println("Setting control bits: "+control1+":"+control2);
     if (control1 == 0)
       in1.clear();
     else
@@ -90,24 +92,58 @@ public class TiniTurretController extends ControllerResource
   public void setChan(int c) {}
   public void setUnits(String u) {}
 
-  public boolean conditionChanged()
+  public boolean getSuccess()
   {
+    if(scanningcomplete)
+    {
+      scanningcomplete = false;
+      scanning = false;
+      System.out.println("TiniTurretController: Get Success Sends False.");
+      return false;
+    }
+
     return true;
   }
 
-  private boolean isundercontrol = false;
+  public boolean conditionChanged()
+  {
+    return scanning; //I am now scanning
+  }
+
+  private boolean isundercontrol = false; //indicated turret is moing under thread control
 
   public void startControl()
   {
+    //kill any existing stepmotor thread
+    if(isundercontrol)
+    {
+      endmotorcontrolthread = true;
+      System.out.println("TiniTurretController startControl killing old thread");
+      while(isundercontrol)
+      {
+	try //wait then check again
+	{
+	  Thread.sleep(100);
+	}
+
+	catch (Exception ie)
+	{
+	  System.err.println("TiniTurretController Thread: Exception caught " +ie);
+	  ie.printStackTrace();
+	}
+      }
+      System.out.println("TiniTurretController startControl OK to control step motor");
+    }
+    System.out.println("TiniTurretController startControl");
+    endmotorcontrolthread = false;
+    scanningcomplete = false;
     Thread stepmotorthread = new Thread(new StepMotorControl());
     stepmotorthread.start();
-    isundercontrol = true;
   }
 
   public void stopControl()
   {
-    endmotorcontrolthread = true;
-    isundercontrol = false;
+    System.out.println("TiniTurretController: stopControl");
   }
 
   public boolean isUnderControl()
@@ -148,56 +184,97 @@ public class TiniTurretController extends ControllerResource
 
   class StepMotorControl implements Runnable
   {
+    private boolean aborted = false;
 
     public void run()
     {
       if(debugging) System.out.println("StepMotorControl: thread running");
 
-      int direction = DIRECTION_CLOCKWISE; //start clockwise
+      isundercontrol = true;
+      scanning = false;
 
-      setControlBits(1, 1); //prep
+      //advance turret to start position
+      int direction = DIRECTION_CLOCKWISE;
+      if(bearing > stopbearing) direction = DIRECTION_COUNTERCLOCKWISE;
 
-      while (true)
+      if(debugging) System.out.println("StepMotorControl: direction is "+direction);
+
+      setControlBits(direction, 1); //prep
+
+      double epsilon = 1.5*DELTADEG;
+      while (Math.abs(bearing - stopbearing) > epsilon)
       {
+	setControlBits(direction, 0); //move an increment
+	setControlBits(direction, 1);
+	bearing += ((1 - 2*direction) * DELTADEG);
+      }
+
+      //scan from start to stop bearings
+      direction = DIRECTION_COUNTERCLOCKWISE;
+
+      if(debugging) System.out.println("StepMotorControl: direction is "+direction);
+
+      scanning = true;
+      while (Math.abs(bearing - startbearing) > epsilon)
+      {
+	if(endmotorcontrolthread)
+	{
+	  if(debugging) System.out.println("StepMotorControl: aborted!!");
+	  aborted = true;
+	  break;
+	}
+
 	setControlBits(direction, 0); //move an increment
 	setControlBits(direction, 1);
 
 	bearing += ((1 - 2*direction) * DELTADEG);
 
-	//System.out.println("Bearing Value : " +bearing);
+	if(bearing <= stopbearing && bearing >= startbearing)
+	{
+	  if (debugging) System.out.println("In the Zone. Bearing Value : " +bearing);
+	  try
+	  {
+	    //approximate speed
+	    //msecs = 1000 msec/sec * sec/command
+	    long msecs = (long)((1000.0)/(Math.abs(scanspeed)/DELTADEG));
+	    if(msecs > 0)
+	      Thread.sleep(msecs);
+	  }
 
-	if(bearing >= stopbearing)
-	{
-	  System.out.println("Bearing Value : " +bearing);
-	  direction = DIRECTION_COUNTERCLOCKWISE;
-	}
-	if(bearing <= startbearing)
-	{
-	  System.out.println("Bearing Value : " +bearing);
-	  direction = DIRECTION_CLOCKWISE;
-	}
-
-        try
-	{
-	  //approximate speed
-	  //msecs = 1000 msec/sec * sec/command
-	  long msecs = (long)((1000.0)/(Math.abs(scanspeed)/DELTADEG));
-	  if(msecs > 0)
-	    Thread.sleep(msecs);
-	}
-
-	catch (Exception ie)
-	{
-	  System.err.println("ControlPlugin Thread: Exception caught " +ie);
-	  ie.printStackTrace();
-	}
-
-	//stop control of resource if I'm still associated with it.
-	if(endmotorcontrolthread == true)
-	{
-	  break;
+	  catch (Exception ie)
+	  {
+	    System.err.println("TiniTurretController Thread: Exception caught " +ie);
+	    ie.printStackTrace();
+	  }
 	}
       } //end while
+
+      if(aborted)
+      {
+	if(debugging) System.out.println("StepMotorControl: abort seen");
+	scanning = false;
+      }
+      else
+      {
+	System.out.println("StepMotorControl: scanning complete set to true ");
+	scanningcomplete = true;
+      }
+
+      direction = DIRECTION_CLOCKWISE;
+      if(bearing > 0) direction = DIRECTION_COUNTERCLOCKWISE;
+
+      if(debugging) System.out.println("StepMotorControl: direction is "+direction);
+
+      while (Math.abs(bearing) > epsilon)
+      {
+	setControlBits(direction, 0); //move an increment
+	setControlBits(direction, 1);
+
+	bearing += ((1 - 2*direction) * DELTADEG);
+      }
+
+      isundercontrol = false;
+      System.out.println("TiniTurretController: Returned to zero");
     }
   }
 }
