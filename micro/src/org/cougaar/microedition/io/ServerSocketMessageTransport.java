@@ -50,6 +50,8 @@ public class ServerSocketMessageTransport implements MessageTransport {
    */
   protected void sendMessage(String server, int port, String message) {
 
+  boolean done = false;
+  while (!done) {
     try {
       SocketME sock = (SocketME)MicroEdition.getObjectME("org.cougaar.microedition.kvm.KvmSocketME", "org.cougaar.microedition.tini.TiniSocketME");
       OutputStream os = sock.getOutputStream(server, port);
@@ -58,9 +60,15 @@ public class ServerSocketMessageTransport implements MessageTransport {
       os.flush();
       os.close();
       sock.close();
+      done = true;
     } catch (Exception e) {
       System.err.println("Unable to sendMessage " + e);
     }
+    if (!done) {
+      System.gc();
+      try {Thread.sleep(3000);} catch (InterruptedException ie){}
+    }
+  }
   }
 
   Vector listeners = new Vector();
