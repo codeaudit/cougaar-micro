@@ -4,7 +4,7 @@ package org.cougaar.microedition.kvm;
 
 import org.cougaar.microedition.io.*;
 import javax.microedition.io.*;
-import java.io.*;
+import java.io.DataInputStream;
 
 public class KvmFileLoader implements FileLoader {
 
@@ -45,6 +45,7 @@ public class KvmFileLoader implements FileLoader {
 		return content.toString();
 	}
 
+/*
 	public static void main(String[] args) {
 
     String content = "";
@@ -67,4 +68,5 @@ public class KvmFileLoader implements FileLoader {
 
 		System.exit(0);
 	}
+*/
 }
