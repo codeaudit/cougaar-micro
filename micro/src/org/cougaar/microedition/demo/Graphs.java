@@ -11,19 +11,15 @@ import com.klg.jclass.swing.gauge.beans.*;
 import javax.swing.border.*;
 
 public class Graphs extends JApplet {
+  Hashtable slg = new Hashtable();
+  Hashtable slf = new Hashtable();
   boolean isStandalone = false;
   String PSP;
   GridLayout gridLayout1 = new GridLayout();
   JPanel jPanel4 = new JPanel();
   JPanel jPanel1 = new JPanel();
-  JCCircularGaugeBean PDAGuage = new JCCircularGaugeBean();
+  JCCircularGaugeBean PDAGuage1 = new JCCircularGaugeBean();
   BorderLayout borderLayout1 = new BorderLayout();
-  JPanel jPanel2 = new JPanel();
-  JCCircularGaugeBean lightGuage = new JCCircularGaugeBean();
-  BorderLayout borderLayout2 = new BorderLayout();
-  JPanel jPanel3 = new JPanel();
-  JCCircularGaugeBean temperatureGuage = new JCCircularGaugeBean();
-  BorderLayout borderLayout3 = new BorderLayout();
   GridLayout gridLayout3 = new GridLayout();
   Border border1;
   TitledBorder titledBorder1;
@@ -31,9 +27,46 @@ public class Graphs extends JApplet {
   TitledBorder titledBorder2;
   Border border3;
   TitledBorder titledBorder3;
-  JLabel temperatureField = new JLabel();
-  JLabel lightField = new JLabel();
-  JLabel PDAField = new JLabel();
+  JLabel PDAField1 = new JLabel();
+  JLabel temperatureField3 = new JLabel();
+  JCCircularGaugeBean lightGuage3 = new JCCircularGaugeBean();
+  BorderLayout borderLayout4 = new BorderLayout();
+  GridLayout gridLayout4 = new GridLayout();
+  BorderLayout borderLayout5 = new BorderLayout();
+  JCCircularGaugeBean temperatureGuage3 = new JCCircularGaugeBean();
+  JLabel lightField3 = new JLabel();
+  JPanel jPanel6 = new JPanel();
+  JPanel jPanel7 = new JPanel();
+  JPanel jPanel8 = new JPanel();
+  JLabel temperatureField2 = new JLabel();
+  JCCircularGaugeBean lightGuage2 = new JCCircularGaugeBean();
+  BorderLayout borderLayout7 = new BorderLayout();
+  GridLayout gridLayout5 = new GridLayout();
+  BorderLayout borderLayout8 = new BorderLayout();
+  JCCircularGaugeBean temperatureGuage2 = new JCCircularGaugeBean();
+  JLabel lightField2 = new JLabel();
+  JPanel jPanel10 = new JPanel();
+  JPanel jPanel11 = new JPanel();
+  JPanel jPanel12 = new JPanel();
+  JLabel temperatureField1 = new JLabel();
+  JCCircularGaugeBean lightGuage1 = new JCCircularGaugeBean();
+  BorderLayout borderLayout10 = new BorderLayout();
+  GridLayout gridLayout6 = new GridLayout();
+  BorderLayout borderLayout11 = new BorderLayout();
+  JCCircularGaugeBean temperatureGuage1 = new JCCircularGaugeBean();
+  JLabel lightField1 = new JLabel();
+  JPanel jPanel14 = new JPanel();
+  JPanel jPanel15 = new JPanel();
+  JPanel jPanel16 = new JPanel();
+  TitledBorder titledBorder4;
+  Border border4;
+  TitledBorder titledBorder5;
+  Border border5;
+  TitledBorder titledBorder6;
+  Border border6;
+  TitledBorder titledBorder7;
+  Border border7;
+  TitledBorder titledBorder8;
   /**Get a parameter value*/
   public String getParameter(String key, String def) {
     return isStandalone ? System.getProperty(key, def) :
@@ -53,6 +86,7 @@ public class Graphs extends JApplet {
     }
     try {
       jbInit();
+      initializeHashtable();
       startListener();
     }
     catch(Exception e) {
@@ -67,74 +101,189 @@ public class Graphs extends JApplet {
     titledBorder2 = new TitledBorder(border2,"Light");
     border3 = BorderFactory.createEmptyBorder();
     titledBorder3 = new TitledBorder(border3,"PDA");
-    this.setSize(new Dimension(586, 146));
+    titledBorder4 = new TitledBorder("");
+    border4 = BorderFactory.createLineBorder(Color.black,2);
+    titledBorder5 = new TitledBorder(border4,"TINI One");
+    border5 = BorderFactory.createLineBorder(Color.black,2);
+    titledBorder6 = new TitledBorder(border5,"PDA Emulator");
+    border6 = BorderFactory.createLineBorder(Color.black,2);
+    titledBorder7 = new TitledBorder(border6,"TINI Two");
+    border7 = BorderFactory.createLineBorder(Color.black,2);
+    titledBorder8 = new TitledBorder(border7,"TINI Three");
+    this.getContentPane().setBackground(Color.white);
+    this.setSize(new Dimension(586, 710));
     this.getContentPane().setLayout(gridLayout1);
+    gridLayout1.setRows(4);
     gridLayout1.setColumns(3);
     jPanel1.setLayout(borderLayout1);
     jPanel1.setBorder(titledBorder3);
     jPanel1.setToolTipText("");
-    PDAGuage.setAutoTickGeneration(false);
-    PDAGuage.setDrawTickLabels(false);
-//    PDAGuage.getScale().setMin(-20);
-//    PDAGuage.getScale().setMax(20);
-    PDAGuage.setPaintCompleteBackground(true);
-    PDAGuage.setScaleColor(SystemColor.info);
-    PDAGuage.setScaleMax(20.0);
-    PDAGuage.setScaleMin(-20.0);
-    PDAGuage.setTickIncrement(4.0);
-    PDAGuage.setTickStartValue(-20.0);
-    PDAGuage.setTickStopValue(20.0);
-    PDAGuage.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
-    PDAGuage.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
-    PDAGuage.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
-    jPanel2.setLayout(borderLayout2);
-    jPanel2.setBorder(titledBorder2);
-    jPanel2.setPreferredSize(new Dimension(75, 75));
-    lightGuage.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
-    lightGuage.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
-    lightGuage.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
-    lightGuage.setScaleColor(SystemColor.info);
-    lightGuage.setScaleMax(5.0);
-    lightGuage.setTickIncrement(0.5);
-    lightGuage.setTickStopValue(5.0);
-    lightGuage.setPaintCompleteBackground(true);
-    lightGuage.setAutoTickGeneration(false);
-    lightGuage.setDrawTickLabels(false);
-//    lightGuage.getScale().setMax(5);
-    jPanel3.setLayout(borderLayout3);
-    temperatureGuage.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
-    temperatureGuage.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
-    temperatureGuage.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
-    temperatureGuage.setScaleColor(SystemColor.info);
-    temperatureGuage.setScaleMax(85.0);
-    temperatureGuage.setScaleMin(65.0);
-    temperatureGuage.setTickIncrement(2.0);
-    temperatureGuage.setTickStartValue(65.0);
-    temperatureGuage.setTickStopValue(85.0);
-    temperatureGuage.setPaintCompleteBackground(true);
-    temperatureGuage.setAutoTickGeneration(false);
-    temperatureGuage.setDrawTickLabels(false);
-//    temperatureGuage.getScale().setMin(60);
-//    temperatureGuage.getScale().setMax(90);
+    PDAGuage1.setAutoTickGeneration(false);
+    PDAGuage1.setDrawTickLabels(false);
+    PDAGuage1.setPaintCompleteBackground(true);
+    PDAGuage1.setScaleColor(SystemColor.info);
+    PDAGuage1.setScaleMax(20.0);
+    PDAGuage1.setScaleMin(-20.0);
+    PDAGuage1.setTickIncrement(4.0);
+    PDAGuage1.setTickStartValue(-20.0);
+    PDAGuage1.setTickStopValue(20.0);
+    PDAGuage1.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
+    PDAGuage1.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
+    PDAGuage1.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
     jPanel4.setLayout(gridLayout3);
-    jPanel3.setBorder(titledBorder1);
     titledBorder1.setTitleJustification(2);
     titledBorder2.setTitleJustification(2);
     titledBorder3.setTitleJustification(2);
-    jPanel4.setBorder(BorderFactory.createLineBorder(Color.black));
-    temperatureField.setHorizontalAlignment(SwingConstants.CENTER);
-    lightField.setHorizontalAlignment(SwingConstants.CENTER);
-    PDAField.setHorizontalAlignment(SwingConstants.CENTER);
+    jPanel4.setBorder(titledBorder6);
+    PDAField1.setHorizontalAlignment(SwingConstants.CENTER);
+    PDAField1.setText(" ");
+    temperatureField3.setHorizontalAlignment(SwingConstants.CENTER);
+    temperatureField3.setText(" ");
+    lightGuage3.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
+    lightGuage3.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
+    lightGuage3.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
+    lightGuage3.setScaleColor(SystemColor.info);
+    lightGuage3.setScaleMax(5.0);
+    lightGuage3.setTickIncrement(0.5);
+    lightGuage3.setTickStopValue(5.0);
+    lightGuage3.setPaintCompleteBackground(true);
+    lightGuage3.setAutoTickGeneration(false);
+    lightGuage3.setDrawTickLabels(false);
+    temperatureGuage3.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
+    temperatureGuage3.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
+    temperatureGuage3.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
+    temperatureGuage3.setScaleColor(SystemColor.info);
+    temperatureGuage3.setScaleMax(85.0);
+    temperatureGuage3.setScaleMin(65.0);
+    temperatureGuage3.setTickIncrement(2.0);
+    temperatureGuage3.setTickStartValue(65.0);
+    temperatureGuage3.setTickStopValue(85.0);
+    temperatureGuage3.setPaintCompleteBackground(true);
+    temperatureGuage3.setAutoTickGeneration(false);
+    temperatureGuage3.setDrawTickLabels(false);
+    lightField3.setHorizontalAlignment(SwingConstants.CENTER);
+    lightField3.setText(" ");
+    jPanel6.setLayout(gridLayout4);
+    jPanel6.setBorder(titledBorder8);
+    jPanel7.setLayout(borderLayout4);
+    jPanel7.setBorder(titledBorder1);
+    jPanel8.setLayout(borderLayout5);
+    jPanel8.setBorder(titledBorder2);
+    jPanel8.setPreferredSize(new Dimension(75, 75));
+    temperatureField2.setHorizontalAlignment(SwingConstants.CENTER);
+    temperatureField2.setText(" ");
+    lightGuage2.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
+    lightGuage2.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
+    lightGuage2.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
+    lightGuage2.setScaleColor(SystemColor.info);
+    lightGuage2.setScaleMax(5.0);
+    lightGuage2.setTickIncrement(0.5);
+    lightGuage2.setTickStopValue(5.0);
+    lightGuage2.setPaintCompleteBackground(true);
+    lightGuage2.setAutoTickGeneration(false);
+    lightGuage2.setDrawTickLabels(false);
+    temperatureGuage2.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
+    temperatureGuage2.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
+    temperatureGuage2.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
+    temperatureGuage2.setScaleColor(SystemColor.info);
+    temperatureGuage2.setScaleMax(85.0);
+    temperatureGuage2.setScaleMin(65.0);
+    temperatureGuage2.setTickIncrement(2.0);
+    temperatureGuage2.setTickStartValue(65.0);
+    temperatureGuage2.setTickStopValue(85.0);
+    temperatureGuage2.setPaintCompleteBackground(true);
+    temperatureGuage2.setAutoTickGeneration(false);
+    temperatureGuage2.setDrawTickLabels(false);
+    lightField2.setHorizontalAlignment(SwingConstants.CENTER);
+    lightField2.setText(" ");
+    jPanel10.setLayout(gridLayout5);
+    jPanel10.setBorder(titledBorder7);
+    jPanel11.setLayout(borderLayout7);
+    jPanel11.setBorder(titledBorder1);
+    jPanel12.setLayout(borderLayout8);
+    jPanel12.setBorder(titledBorder2);
+    jPanel12.setPreferredSize(new Dimension(75, 75));
+    temperatureField1.setHorizontalAlignment(SwingConstants.CENTER);
+    temperatureField1.setText(" ");
+    lightGuage1.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
+    lightGuage1.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
+    lightGuage1.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
+    lightGuage1.setScaleColor(SystemColor.info);
+    lightGuage1.setScaleMax(5.0);
+    lightGuage1.setTickIncrement(0.5);
+    lightGuage1.setTickStopValue(5.0);
+    lightGuage1.setPaintCompleteBackground(true);
+    lightGuage1.setAutoTickGeneration(false);
+    lightGuage1.setDrawTickLabels(false);
+    temperatureGuage1.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
+    temperatureGuage1.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
+    temperatureGuage1.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
+    temperatureGuage1.setScaleColor(SystemColor.info);
+    temperatureGuage1.setScaleMax(85.0);
+    temperatureGuage1.setScaleMin(65.0);
+    temperatureGuage1.setTickIncrement(2.0);
+    temperatureGuage1.setTickStartValue(65.0);
+    temperatureGuage1.setTickStopValue(85.0);
+    temperatureGuage1.setPaintCompleteBackground(true);
+    temperatureGuage1.setAutoTickGeneration(false);
+    temperatureGuage1.setDrawTickLabels(false);
+    lightField1.setHorizontalAlignment(SwingConstants.CENTER);
+    lightField1.setText(" ");
+    jPanel14.setLayout(gridLayout6);
+    jPanel14.setBorder(titledBorder5);
+    jPanel15.setLayout(borderLayout10);
+    jPanel15.setBorder(titledBorder1);
+    jPanel16.setLayout(borderLayout11);
+    jPanel16.setBorder(titledBorder2);
+    jPanel16.setPreferredSize(new Dimension(75, 75));
     this.getContentPane().add(jPanel4, null);
-    jPanel4.add(jPanel3, null);
-    jPanel3.add(temperatureGuage, BorderLayout.CENTER);
-    jPanel3.add(temperatureField, BorderLayout.SOUTH);
-    jPanel4.add(jPanel2, null);
-    jPanel2.add(lightField, BorderLayout.SOUTH);
-    jPanel2.add(lightGuage, BorderLayout.CENTER);
     jPanel4.add(jPanel1, null);
-    jPanel1.add(PDAGuage, BorderLayout.CENTER);
-    jPanel1.add(PDAField, BorderLayout.SOUTH);
+    jPanel1.add(PDAGuage1, BorderLayout.CENTER);
+    jPanel1.add(PDAField1, BorderLayout.SOUTH);
+    this.getContentPane().add(jPanel14, null);
+    jPanel14.add(jPanel15, null);
+    jPanel15.add(temperatureGuage1, BorderLayout.CENTER);
+    jPanel15.add(temperatureField1, BorderLayout.SOUTH);
+    jPanel14.add(jPanel16, null);
+    jPanel16.add(lightField1, BorderLayout.SOUTH);
+    jPanel16.add(lightGuage1, BorderLayout.CENTER);
+    this.getContentPane().add(jPanel10, null);
+    jPanel10.add(jPanel11, null);
+    jPanel11.add(temperatureGuage2, BorderLayout.CENTER);
+    jPanel11.add(temperatureField2, BorderLayout.SOUTH);
+    jPanel10.add(jPanel12, null);
+    jPanel12.add(lightField2, BorderLayout.SOUTH);
+    jPanel12.add(lightGuage2, BorderLayout.CENTER);
+    this.getContentPane().add(jPanel6, null);
+    jPanel6.add(jPanel7, null);
+    jPanel7.add(temperatureGuage3, BorderLayout.CENTER);
+    jPanel7.add(temperatureField3, BorderLayout.SOUTH);
+    jPanel6.add(jPanel8, null);
+    jPanel8.add(lightField3, BorderLayout.SOUTH);
+    jPanel8.add(lightGuage3, BorderLayout.CENTER);
+  }
+
+  public void initializeHashtable() {
+    slg.put("PDA1", PDAGuage1);
+    slf.put("PDA1", PDAField1);
+    slg.put("Temperature1", temperatureGuage1);
+    slf.put("Temperature1", temperatureField1);
+    slg.put("Temperature2", temperatureGuage2);
+    slf.put("Temperature2", temperatureField2);
+    slg.put("Temperature3", temperatureGuage3);
+    slf.put("Temperature3", temperatureField3);
+    slg.put("Light1", lightGuage1);
+    slf.put("Light1", lightField1);
+    slg.put("Light2", lightGuage2);
+    slf.put("Light2", lightField2);
+    slg.put("Light3", lightGuage3);
+    slf.put("Light3", lightField3);
+
+    titledBorder5.setTitleFont(new java.awt.Font("Dialog", 1, 16));
+    titledBorder6.setTitleFont(new java.awt.Font("Dialog", 1, 16));
+    titledBorder7.setTitleFont(new java.awt.Font("Dialog", 1, 16));
+    titledBorder8.setTitleFont(new java.awt.Font("Dialog", 1, 16));
+
   }
   /**Start the applet*/
   public void start() {
@@ -211,24 +360,25 @@ public class Graphs extends JApplet {
 
     private void parseLine(String line) {
       StringTokenizer st = new StringTokenizer(line, ":");
+      String src = st.nextToken();
       String label = st.nextToken();
       String value = st.nextToken();
-      if ((label == null) || (value == null)) return; // format error
+      if ((src == null) || (label == null) || (value == null)) return; // format error
+
+      String dest = null;
+      for (int i=0; i<src.length(); i++) {
+        if (Character.isDigit(src.charAt(i)))
+          dest = src.substring(i);
+      }
+      if (dest == null) return ; // format error
+      String key = label + dest;
+      if (!slg.containsKey(key)) return;
+      if (!slf.containsKey(key)) return;
+
       double val = Double.parseDouble(value);
       value = fmt.format(val);
-      if (label.equals("Temperature")) {
-        temperatureField.setText(value);
-        temperatureGuage.setNeedleValue(val);
-      }
-      else if (label.equals("Light")) {
-        lightField.setText(value);
-        lightGuage.setNeedleValue(val);
-      }
-      else if (label.equals("PDA")) {
-        PDAField.setText(value);
-        PDAGuage.setNeedleValue(val);
-      }
-
+      ((JLabel)slf.get(key)).setText(value);
+      ((JCCircularGaugeBean)slg.get(key)).setNeedleValue(val);
     }
   }
 
