@@ -69,8 +69,8 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
   private float dgpsGroundSpeed, dgpsVelocityNorth, dgpsVelocityEast,
                 dgpsVelocityVertical ;
 
-  public TiniGPSLocationControllerResource() {
-  }
+  public TiniGPSLocationControllerResource() {}
+
   // accessor methods for DGPS properties
 
   public double getHeading() { // returns true bearing, in degrees
@@ -174,9 +174,11 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
   }
 
   // Parameter handling
-  private Hashtable params;
-  public void setParameters(Hashtable params) {
-    this.params = params;
+  public void setParameters(Hashtable params)
+  {
+    setName("TiniGPSLocationControllerResource");
+    setScalingFactor(Constants.Geophysical.DEGTOBILLIONTHS);
+
     if (params != null) {
       if (params.get("port") != null) {
         portName = (String)params.get("port");
@@ -186,19 +188,6 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
     if (debug)System.out.println("TiniGPSLocationControllerResource:setParams:"+params);
     startMonitorThread();
   }
-
-  public Hashtable getParameters() {
-    return params;
-  }
-
-  private String name;
-  public void setName(String name) {
-    this.name = name;
-  }
-  public String getName() {
-    return name;
-  }
-
 
   private void startMonitorThread() {
     Thread t = new Thread(new SerialManager());
@@ -354,9 +343,11 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
     startMonitorThread();
   }
 
+/*
   public static void main(String args[])
   {
     TiniGPSLocationControllerResource tgpsres = new TiniGPSLocationControllerResource();
     tgpsres.debugfunc();
   }
+  */
 }
