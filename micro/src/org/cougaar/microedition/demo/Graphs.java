@@ -74,6 +74,8 @@ public class Graphs extends JApplet {
     jPanel1.setBorder(titledBorder3);
     jPanel1.setToolTipText("");
     PDAGuage.setDrawTickLabels(false);
+    PDAGuage.getScale().setMin(-20);
+    PDAGuage.getScale().setMax(20);
     PDAGuage.setPaintCompleteBackground(true);
     PDAGuage.setScaleColor(SystemColor.info);
     PDAGuage.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
@@ -88,6 +90,7 @@ public class Graphs extends JApplet {
     lightGuage.setScaleColor(SystemColor.info);
     lightGuage.setPaintCompleteBackground(true);
     lightGuage.setDrawTickLabels(false);
+    lightGuage.getScale().setMax(5);
     jPanel3.setLayout(borderLayout3);
     temperatureGuage.setDirection(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.DIRECTION_CLOCKWISE);
     temperatureGuage.setType(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TYPE_TOP_HALF_CIRCLE);
@@ -95,6 +98,8 @@ public class Graphs extends JApplet {
     temperatureGuage.setScaleColor(SystemColor.info);
     temperatureGuage.setPaintCompleteBackground(true);
     temperatureGuage.setDrawTickLabels(false);
+    temperatureGuage.getScale().setMin(20);
+    temperatureGuage.getScale().setMax(30);
     jPanel4.setLayout(gridLayout3);
     jPanel3.setBorder(titledBorder1);
     titledBorder1.setTitleJustification(2);
