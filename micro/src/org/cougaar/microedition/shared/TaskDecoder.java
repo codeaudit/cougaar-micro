@@ -90,7 +90,7 @@ public class TaskDecoder extends HandlerBase {
    */
   private void getAllocationAttrs(Hashtable attr) {
     if (t.getAllocation() == null)
-      t.setAllocation(new MicroAllocation());
+      t.setAllocation(new MicroAllocation(null, t));
   }
 
   /**

@@ -30,11 +30,28 @@ public class Distributor {
 
   private Semaphore sem = new Semaphore();
 
-  public Distributor() {
+  String name;
+
+  /**
+   * @param name the cluster name to be accessed by plugins.
+   */
+  public Distributor(String name) {
+    this.name = name;
+  }
+
+  /**
+   * @return the name of this cluster.
+   */
+  public String getName() {
+    return name;
   }
 
   private Object owner = null;
 
+  /**
+   * Begin modifications to the blackboard.
+   * @param subscriber The object that will hold the "lock" on this transaction.
+   */
   public synchronized void openTransaction(Object subscriber) {
     if (subscriber == owner)
       return;
@@ -49,6 +66,13 @@ public class Distributor {
     removedList.removeAllElements();
   }
 
+  /**
+   * Commit (finish) modifications to the blackboard.  Delta lists are updated
+   * for all subscribers.
+   * @param subscriber The object that currently holds the "lock" on this transaction.
+   * @exception RuntimeException if the subscriber parameter does not equal the last
+   * subscriber given to openTransaction.
+   */
   public synchronized void closeTransaction(Object subscriber) {
 
   if (subscriber != owner)
@@ -115,24 +139,39 @@ public class Distributor {
 
   }
 
+  /**
+   * Add an object to the blackboard.
+   * @return true
+   */
   public boolean publishAdd(Object o) {
     if (!addedList.contains(o))
       addedList.addElement(o);
     return true;
   }
 
+  /**
+   * Advertise a change to an object that already exists on the blackboard.
+   * @return true
+   */
   public boolean publishChange(Object o) {
     if (!changedList.contains(o))
       changedList.addElement(o);
     return true;
   }
 
+  /**
+   * Remove an object from the blackboard.
+   * @return true
+   */
   public boolean publishRemove(Object o) {
     if (!removedList.contains(o))
       removedList.addElement(o);
     return true;
   }
 
+  /**
+   * Add a subscriber to be notified of changes to the blackboard.
+   */
   public boolean addSubscriber(Subscriber s) {
     if (!allSubscribers.contains(s))
       allSubscribers.addElement(s);
@@ -148,6 +187,9 @@ public class Distributor {
     return true;
   }
 
+  /**
+   * Remove a subscriber.  It will no longer be notified of changes to the blackboard.
+   */
   public boolean removeSubscriber(Subscriber s) {
     allSubscribers.removeElement(s);
     return true;

@@ -11,11 +11,14 @@
 package cougaar.microedition.shared;
 
 /**
- * Describes the disposition of a MicroTask.
+ * Describes the disposition of a MicroTask to an Asset.
  */
 public class MicroAllocation implements Encodable {
 
-  public MicroAllocation() {
+  public MicroAllocation(MicroAsset asset, MicroTask task) {
+    setAsset(asset);
+    setTask(task);
+    task.setAllocation(this);
   }
   private cougaar.microedition.shared.MicroAllocationResult reportedResult;
 
@@ -34,6 +37,8 @@ public class MicroAllocation implements Encodable {
   }
 
   protected static String tag = "MicroAllocation";
+  private cougaar.microedition.shared.MicroAsset asset;
+  private cougaar.microedition.shared.MicroTask task;
   /**
    * XML encode this object and all sub-objects.
    */
@@ -46,5 +51,31 @@ public class MicroAllocation implements Encodable {
     str.append("</");
     str.append(tag);
     str.append(">");
+  }
+
+  /**
+   * Set the asset associated with this allocation.
+   */
+  public void setAsset(cougaar.microedition.shared.MicroAsset newAsset) {
+    asset = newAsset;
+  }
+  /**
+   * Get the asset associated with this allocation.
+   */
+  public cougaar.microedition.shared.MicroAsset getAsset() {
+    return asset;
+  }
+
+  /**
+   * Set the MicroTask associated with this allocation.
+   */
+  public void setTask(cougaar.microedition.shared.MicroTask newTask) {
+    task = newTask;
+  }
+  /**
+   * Get the MicroTask associated with this allocation.
+   */
+  public cougaar.microedition.shared.MicroTask getTask() {
+    return task;
   }
 }

@@ -29,7 +29,7 @@ public class Subscription {
   private java.util.Vector removedList;
   private java.util.Vector memberList;
 
-  public void clearLists() {
+  protected void clearLists() {
     addedList.removeAllElements();
     changedList.removeAllElements();
     removedList.removeAllElements();
@@ -51,36 +51,61 @@ public class Subscription {
     return predicate;
   }
 
-  public void setAddedList(java.util.Vector newAddedList) {
+  protected void setAddedList(java.util.Vector newAddedList) {
     addedList = newAddedList;
   }
 
+  /**
+   * Get the list of objects matching the predicate
+   * added to the blackboard since the last execute().
+   */
   public java.util.Vector getAddedList() {
     return addedList;
   }
 
-  public void setChangedList(java.util.Vector newChangedList) {
+  protected void setChangedList(java.util.Vector newChangedList) {
     changedList = newChangedList;
   }
 
+  /**
+   * Get the list of objects matching the predicate
+   * changed on the blackboard since the last execute().
+   */
   public java.util.Vector getChangedList() {
     return changedList;
   }
 
-  public void setRemovedList(java.util.Vector newRemovedList) {
+  protected void setRemovedList(java.util.Vector newRemovedList) {
     removedList = newRemovedList;
   }
 
+  /**
+   * Get the list of objects matching the predicate
+   * removed from the blackboard since the last execute().
+   */
   public java.util.Vector getRemovedList() {
     return removedList;
   }
 
-  public void setMemberList(java.util.Vector newMemberList) {
+  protected void setMemberList(java.util.Vector newMemberList) {
     memberList = newMemberList;
   }
 
+  /**
+   * Get the list of objects that currently match the subscription predicate.
+   */
   public java.util.Vector getMemberList() {
     return memberList;
+  }
+
+  /**
+   * Returns true if any of the delta lists (added, changed, removed) have
+   * objects on them.
+   */
+  public boolean hasChanged() {
+    return ((addedList.size()   != 0) ||
+            (changedList.size() != 0) ||
+            (removedList.size() != 0));
   }
 
 }
