@@ -21,12 +21,13 @@ public interface Constants {
     static String [] roles = { "SurveillanceProvider" };
     static int SURVEILLANCEPROVIDER = 0;
 
-    static String [] meRoles = { "PositionProvider", "LocomotionController", "TargetingController", "TurretController", "SONARSensor" };
-    static int POSITIONPROVIDER = 0;
-    static int LOCOMOTIONCONTROLLER = 1;
-    static int TARGETINGCONTROLLER = 2;
-    static int TURRETCONTROLLER = 3;
-    static int SONARSENSOR = 4;
+    static String [] meRoles = { "Everything", "PositionProvider", "LocomotionController", "TargetingController", "TurretController", "SONARSensor" };
+    static int EVERYTHING = 0;
+    static int POSITIONPROVIDER = 1;
+    static int LOCOMOTIONCONTROLLER = 2;
+    static int TARGETINGCONTROLLER = 3;
+    static int TURRETCONTROLLER = 4;
+    static int SONARSENSOR = 5;
 
     static String [] verbs = { "ReportPosition", "Advance", "ReportTarget", "TraverseWaypoints", "GetImage", "ControlFlashlight" };
     static int REPORTPOSITION = 0;
@@ -36,9 +37,10 @@ public interface Constants {
     static int GETIMAGE = 4;
     static int CONTROLFLASHLIGHT = 5;
 
-    static String [] subVerbs = { "Forward", "AcquireTargetBearing" };
-    static int FORWARD = 0;
-    static int ACQUIRETARGETBEARING = 1;
+    static String [] subVerbs = { "MonitorLocation", "Forward", "AcquireTargetBearing" };
+    static int MONITORLOCATION = 0;
+    static int FORWARD = 1;
+    static int ACQUIRETARGETBEARING = 2;
 
   }
 
