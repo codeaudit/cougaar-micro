@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<nodeinfo>
+<mom_ipaddress>192.233.51.240</mom_ipaddress>
+<mom_server_port>5555</mom_server_port>
+<node_name>Temperature</node_name>
+<node_description>Ambient Temp in Degrees Celsius</node_description>
+<node_server_port>2888</node_server_port>
+</nodeinfo>
