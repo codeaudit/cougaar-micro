@@ -8,9 +8,9 @@ CALL %COUGAAR_INSTALL_PATH%\bin\setarguments.bat
 set MYARGUMENTS= -c -n "%1"
 
 set MYPROPERTIES=%MYPROPERTIES%
-#set LIBPATHS=..\..\..\data\cougaarMEDomain.jar;%LIBPATHS%
+set LIBPATHS=..\..\..\data\cougaarMEDomain.jar;%LIBPATHS%
 #set LIBPATHS=.\classes\;%LIBPATHS%
-set LIBPATHS=c:\alp\micro\classes\;%LIBPATHS%
+#set LIBPATHS=c:\alp\micro\classes\;%LIBPATHS%
 #set MYPROPERTIES=%MYPROPERTIES% -Dorg.cougaar.core.society.bootstrapper.loud=shout
 
 @ECHO ON
