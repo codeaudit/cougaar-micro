@@ -109,6 +109,7 @@ public class Distributor {
 
   owner = null;
   notify();
+  distribute();
 
   }
 
@@ -171,6 +172,27 @@ public class Distributor {
   }
 
   /**
+   *  Check for subscribers who have something to do.
+   */
+  public void distribute() {
+    synchronized (runnableSubscribers) {
+      runnableSubscribers.notify();
+    }
+  }
+
+  /**
+   * Pause until a subscriber has something to do.
+   */
+  private void waitForSomeWork() {
+    synchronized (runnableSubscribers) {
+      try {
+        if (runnableSubscribers.size() == 0) {
+          runnableSubscribers.wait();
+        }
+      } catch (InterruptedException ie) {}
+    }
+  }
+  /**
    * Manage PlugIn subscriptions and executions
    */
   public void cycle() {
@@ -185,8 +207,8 @@ public class Distributor {
         runme.getSubscription().clearLists();
         // collect changed subscriptions
         closeTransaction(runme);
-//        try {Thread.sleep( 1000 );} catch (Exception e) {}
       }
+      waitForSomeWork();
     }
   }
 }
