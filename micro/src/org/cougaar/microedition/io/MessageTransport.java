@@ -73,13 +73,13 @@ public class MessageTransport {
 
   public void addMessageListener(MessageListener ml) {
     if (!listeners.contains(ml))  {
-      synchronized (listeners) {listeners.addElement(ml);}
+      listeners.addElement(ml);
     }
   }
 
   public void removeMessageListener(MessageListener ml) {
     if (listeners.contains(ml))  {
-      synchronized (listeners) {listeners.removeElement(ml);}
+      listeners.removeElement(ml);
     }
   }
 
