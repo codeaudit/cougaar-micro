@@ -25,14 +25,12 @@ public class TiniSONARController extends ControllerResource {
   static int sonarChan = 0 ;
   static int debugLevel=10;
 
-  private double sensorthreshold;
+  private double sensorthreshold = 2.0; //average
   private DS2450 ds2450=null;
 
   int position=0;
-  int triggeringthreshold=3;
   int historySize=4;
-  Vector historyQueue =null;
-  int score=0;
+  double [] historyQueue = null;
 
   public void modifyControl(String controlparameter, String controlparametervalue)
   {
@@ -75,6 +73,7 @@ public class TiniSONARController extends ControllerResource {
   {
     return 1;
   }
+
   public boolean getSuccess()
   {
     if(newreturnvalue > 0 )
@@ -85,16 +84,21 @@ public class TiniSONARController extends ControllerResource {
 
   public boolean conditionChanged()
   {
-      Boolean historyValue = (Boolean)historyQueue.elementAt(position);
-      if (historyValue.booleanValue())
-        score-- ;
-      boolean thisTime = (getDS2450Value() > sensorthreshold);
-      if (thisTime)
-        score++ ;
-      historyQueue.setElementAt((thisTime)?Boolean.TRUE:Boolean.FALSE, position);
+      double dsval = getDS2450Value();
+      historyQueue[position] = dsval;;
       position=(position+1)%historySize;
 
-      if (score >= triggeringthreshold)
+      double ave = 0.0;
+      for (int idx=0; idx<historySize; idx++)
+      {
+        ave += historyQueue[idx];
+      }
+
+      ave /= (double)historySize;
+
+      //System.out.println("Sonar : "+dsval+" "+ave);
+
+      if (ave >= sensorthreshold)
 	 newreturnvalue = 1;
       else
 	 newreturnvalue = 0;
@@ -112,10 +116,10 @@ public class TiniSONARController extends ControllerResource {
    */
   public void setParameters(java.util.Hashtable t) {
     setName("TiniSONARController");
-    historyQueue=new Vector();
+    historyQueue=new double[historySize];
     for (int idx=0; idx<historySize; idx++)
     {
-        historyQueue.addElement(Boolean.FALSE);
+        historyQueue[idx] = 0.0;
     }
     initDS2450();
 
