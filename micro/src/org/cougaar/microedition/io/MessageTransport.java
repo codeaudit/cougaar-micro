@@ -54,6 +54,7 @@ public class MessageTransport {
       os.write(data);
       os.flush();
       os.close();
+      sock.close();
     } catch (Exception e) {
       System.err.println("Unable to sendMessage " + e);
     }
@@ -94,7 +95,7 @@ public class MessageTransport {
     String ipAddress = dest.getIpAddress();
     short port = dest.getPort();
 
-    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
+//    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
 
     sendMessage(ipAddress, port, buf.toString());
   }
