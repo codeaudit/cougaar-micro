@@ -7,10 +7,10 @@
  *  COUGAAR licence agreement.
  * </copyright>
  */
-package cougaar.microedition.asset;
+package org.cougaar.microedition.asset;
 
-import cougaar.microedition.io.*;
-import cougaar.microedition.shared.MicroAsset;
+import org.cougaar.microedition.io.*;
+import org.cougaar.microedition.shared.MicroAsset;
 
 /**
  * An asset is anything that can be allocated to.

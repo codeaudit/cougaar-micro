@@ -1,4 +1,4 @@
-package cougaar.microedition.demo;
+package org.cougaar.microedition.demo;
 import java.awt.*;
 import java.awt.event.*;
 import java.applet.*;

@@ -5,9 +5,9 @@
  *
  */
 
-package cougaar.microedition.io;
+package org.cougaar.microedition.io;
 
-import cougaar.microedition.util.*;
+import org.cougaar.microedition.util.*;
 import java.io.*;
 
 /**
@@ -51,7 +51,7 @@ public class PacketReader {
       int bite;
 
       try {
-        ServerSocketME ss = (ServerSocketME) MicroEdition.getObjectME("cougaar.microedition.kvm.KvmServerSocketME", "cougaar.microedition.tini.TiniServerSocketME");
+        ServerSocketME ss = (ServerSocketME) MicroEdition.getObjectME("org.cougaar.microedition.kvm.KvmServerSocketME", "org.cougaar.microedition.tini.TiniServerSocketME");
         ss.openServerSocket(myListenPort);
         System.out.println("Listening on " + myListenPort);
 

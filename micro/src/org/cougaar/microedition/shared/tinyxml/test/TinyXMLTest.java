@@ -1,4 +1,4 @@
-package cougaar.microedition.shared.tinyxml.test;
+package org.cougaar.microedition.shared.tinyxml.test;
 
 /*
  *  TinyXMLTest: a tiny application which outputs the structure of XML files
@@ -24,10 +24,10 @@ import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
-import cougaar.microedition.shared.tinyxml.HandlerBase;
-import cougaar.microedition.shared.tinyxml.ParseException;
-import cougaar.microedition.shared.tinyxml.XMLInputStream;
-import cougaar.microedition.shared.tinyxml.XMLParser;
+import org.cougaar.microedition.shared.tinyxml.HandlerBase;
+import org.cougaar.microedition.shared.tinyxml.ParseException;
+import org.cougaar.microedition.shared.tinyxml.XMLInputStream;
+import org.cougaar.microedition.shared.tinyxml.XMLParser;
 
 /**
  * This class uses the xml data from TestData to test

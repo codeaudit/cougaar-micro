@@ -5,7 +5,7 @@
  *
  */
 
-package cougaar.microedition.io;
+package org.cougaar.microedition.io;
 
 /**
  * This interface provides a description of a generic file loader.

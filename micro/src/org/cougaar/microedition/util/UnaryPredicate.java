@@ -9,7 +9,7 @@
  */
 
 
-package cougaar.microedition.util;
+package org.cougaar.microedition.util;
 
 /** 
  * UnaryPredicate is an interface for implementing Unary testing operations.

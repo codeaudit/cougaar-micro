@@ -7,12 +7,12 @@
  *  COUGAAR licence agreement.
  * </copyright>
  */
-package cougaar.microedition.ldm;
+package org.cougaar.microedition.ldm;
 
 import java.util.*;
 
-import cougaar.microedition.io.*;
-import cougaar.microedition.cluster.*;
+import org.cougaar.microedition.io.*;
+import org.cougaar.microedition.cluster.*;
 
 /**
  * The Distributor registers PlugIn subscriptions, executing PlugIns based

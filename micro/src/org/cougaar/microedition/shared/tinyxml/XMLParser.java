@@ -1,4 +1,4 @@
-package cougaar.microedition.shared.tinyxml;
+package org.cougaar.microedition.shared.tinyxml;
 
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 
-import cougaar.microedition.shared.tinyxml.util.CharacterUtility;
+import org.cougaar.microedition.shared.tinyxml.util.CharacterUtility;
 
 /** <p>Class which parses XML without validation.  The parsing offered
  *  by this class is not quite conformant. Refer to the development

@@ -8,7 +8,7 @@
  * be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
  */
-package cougaar.microedition.shared;
+package org.cougaar.microedition.shared;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ public class MicroTask implements Encodable {
   }
   private String verb;
   private java.util.Vector prepositionalPhrases;
-  private cougaar.microedition.shared.MicroAllocation allocation;
+  private org.cougaar.microedition.shared.MicroAllocation allocation;
 
   public void setMe(MicroTask mt) {
     uniqueID = mt.uniqueID;
@@ -70,14 +70,14 @@ public class MicroTask implements Encodable {
   /**
    * Associate an allocation (disposition) with this task.
    */
-  public void setAllocation(cougaar.microedition.shared.MicroAllocation newAllocation) {
+  public void setAllocation(org.cougaar.microedition.shared.MicroAllocation newAllocation) {
     allocation = newAllocation;
   }
 
   /**
    * Get the allocation associated with this task.
    */
-  public cougaar.microedition.shared.MicroAllocation getAllocation() {
+  public org.cougaar.microedition.shared.MicroAllocation getAllocation() {
     return allocation;
   }
 

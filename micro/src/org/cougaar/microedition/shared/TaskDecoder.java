@@ -8,8 +8,8 @@
  * be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
  */
-package cougaar.microedition.shared;
-import cougaar.microedition.shared.tinyxml.*;
+package org.cougaar.microedition.shared;
+import org.cougaar.microedition.shared.tinyxml.*;
 import java.util.*;
 
 /**

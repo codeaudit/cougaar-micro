@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>testResponse among other things</description>
-  <plugin>cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
-  <plugin>cougaar.microedition.plugin.test.TestResponderPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.test.TestResponderPlugIn</plugin>
 </NodeConfiguration>

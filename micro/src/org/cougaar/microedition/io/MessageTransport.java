@@ -5,11 +5,11 @@
  *
  */
 
-package cougaar.microedition.io;
+package org.cougaar.microedition.io;
 
-import cougaar.microedition.util.*;
-import cougaar.microedition.shared.*;
-import cougaar.microedition.asset.*;
+import org.cougaar.microedition.util.*;
+import org.cougaar.microedition.shared.*;
+import org.cougaar.microedition.asset.*;
 import java.io.*;
 import java.util.*;
 
@@ -48,7 +48,7 @@ public class MessageTransport {
   protected void sendMessage(String server, int port, String message) {
 
     try {
-      SocketME sock = (SocketME)MicroEdition.getObjectME("cougaar.microedition.kvm.KvmSocketME", "cougaar.microedition.tini.TiniSocketME");
+      SocketME sock = (SocketME)MicroEdition.getObjectME("org.cougaar.microedition.kvm.KvmSocketME", "org.cougaar.microedition.tini.TiniSocketME");
       OutputStream os = sock.getOutputStream(server, port);
       byte [] data = message.getBytes();
       os.write(data);

@@ -1,7 +1,7 @@
 
-package cougaar.microedition.kvm;
+package org.cougaar.microedition.kvm;
 
-import cougaar.microedition.io.*;
+import org.cougaar.microedition.io.*;
 import javax.microedition.io.*;
 import java.io.*;
 

@@ -12,7 +12,7 @@
  * you entered into with Sun.
  */
 
-package cougaar.microedition.util;
+package org.cougaar.microedition.util;
 
 import java.lang.*;
 import java.util.*;

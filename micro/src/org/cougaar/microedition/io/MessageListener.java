@@ -1,4 +1,4 @@
-package cougaar.microedition.io;
+package org.cougaar.microedition.io;
 
 public interface MessageListener {
 

@@ -7,7 +7,7 @@
  *  COUGAAR licence agreement.
  * </copyright>
  */
-package cougaar.microedition.ldm;
+package org.cougaar.microedition.ldm;
 
 import java.util.*;
 
@@ -22,8 +22,8 @@ public class Subscription {
     setRemovedList(new Vector());
     setMemberList(new Vector());
   }
-  private cougaar.microedition.ldm.Subscriber subscriber;
-  private cougaar.microedition.util.UnaryPredicate predicate;
+  private org.cougaar.microedition.ldm.Subscriber subscriber;
+  private org.cougaar.microedition.util.UnaryPredicate predicate;
   private java.util.Vector addedList;
   private java.util.Vector changedList;
   private java.util.Vector removedList;
@@ -35,19 +35,19 @@ public class Subscription {
     removedList.removeAllElements();
   }
 
-  public cougaar.microedition.ldm.Subscriber getSubscriber() {
+  public org.cougaar.microedition.ldm.Subscriber getSubscriber() {
     return subscriber;
   }
 
-  public void setSubscriber(cougaar.microedition.ldm.Subscriber newSubscriber) {
+  public void setSubscriber(org.cougaar.microedition.ldm.Subscriber newSubscriber) {
     subscriber = newSubscriber;
   }
 
-  public void setPredicate(cougaar.microedition.util.UnaryPredicate newPredicate) {
+  public void setPredicate(org.cougaar.microedition.util.UnaryPredicate newPredicate) {
     predicate = newPredicate;
   }
 
-  public cougaar.microedition.util.UnaryPredicate getPredicate() {
+  public org.cougaar.microedition.util.UnaryPredicate getPredicate() {
     return predicate;
   }
 

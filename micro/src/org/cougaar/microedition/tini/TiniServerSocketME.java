@@ -1,7 +1,7 @@
 
-package cougaar.microedition.tini;
+package org.cougaar.microedition.tini;
 
-import cougaar.microedition.io.*;
+import org.cougaar.microedition.io.*;
 import java.io.*;
 import java.net.*;
 

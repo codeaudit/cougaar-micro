@@ -8,11 +8,11 @@
  * be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
  */
-package cougaar.microedition.io;
+package org.cougaar.microedition.io;
 
 import java.util.*;
-import cougaar.microedition.shared.*;
-import cougaar.microedition.shared.tinyxml.*;
+import org.cougaar.microedition.shared.*;
+import org.cougaar.microedition.shared.tinyxml.*;
 
 public class XMLTokenList {
 

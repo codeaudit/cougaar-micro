@@ -7,7 +7,7 @@
  *  COUGAAR licence agreement.
  * </copyright>
  */
-package cougaar.microedition.ldm;
+package org.cougaar.microedition.ldm;
 
 /**
  * A Subscriber is an entity that has a single subscription to the blackboard
@@ -16,31 +16,31 @@ public class Subscriber {
 
   public Subscriber() {
   }
-  private cougaar.microedition.ldm.Distributor distributor;
-  private cougaar.microedition.plugin.PlugIn plugin;
-  private cougaar.microedition.ldm.Subscription subscription;
+  private org.cougaar.microedition.ldm.Distributor distributor;
+  private org.cougaar.microedition.plugin.PlugIn plugin;
+  private org.cougaar.microedition.ldm.Subscription subscription;
 
-  public cougaar.microedition.ldm.Distributor getDistributor() {
+  public org.cougaar.microedition.ldm.Distributor getDistributor() {
     return distributor;
   }
 
-  public void setDistributor(cougaar.microedition.ldm.Distributor newDistributor) {
+  public void setDistributor(org.cougaar.microedition.ldm.Distributor newDistributor) {
     distributor = newDistributor;
   }
 
-  public void setPlugIn(cougaar.microedition.plugin.PlugIn newPlugIn) {
+  public void setPlugIn(org.cougaar.microedition.plugin.PlugIn newPlugIn) {
     plugin = newPlugIn;
   }
 
-  public cougaar.microedition.plugin.PlugIn getPlugIn() {
+  public org.cougaar.microedition.plugin.PlugIn getPlugIn() {
     return plugin;
   }
 
-  public void setSubscription(cougaar.microedition.ldm.Subscription newSubscription) {
+  public void setSubscription(org.cougaar.microedition.ldm.Subscription newSubscription) {
     subscription = newSubscription;
   }
 
-  public cougaar.microedition.ldm.Subscription getSubscription() {
+  public org.cougaar.microedition.ldm.Subscription getSubscription() {
     return subscription;
   }
 

@@ -6,7 +6,7 @@
  */
 
 
-package cougaar.microedition.util;
+package org.cougaar.microedition.util;
 
 /**
  * This class contains one static method which returns the appropriate object given the ME type.

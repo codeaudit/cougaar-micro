@@ -8,20 +8,21 @@
  * </copyright>
  */
 
-package cougaar.microedition.demo;
+package org.cougaar.microedition.demo;
 
 import java.io.*;
 import java.util.*;
 import java.net.URL;
 import java.net.URLConnection;
 
-import alp.ui.planserver.*;
-import alp.plugin.*;
-import alp.util.*;
-import alp.cluster.*;
-import alp.ldm.plan.*;
+import org.cougaar.lib.planserver.*;
+import org.cougaar.core.plugin.*;
+import org.cougaar.core.util.*;
+import org.cougaar.util.*;
+import org.cougaar.core.cluster.*;
+import org.cougaar.domain.planning.ldm.plan.*;
 
-import cougaar.microedition.domain.*;
+import org.cougaar.microedition.domain.*;
 
 public class PSP_MicroData extends PSP_BaseAdapter implements PlanServiceProvider, KeepAlive, UseDirectSocketOutputStream, UISubscriber
 {

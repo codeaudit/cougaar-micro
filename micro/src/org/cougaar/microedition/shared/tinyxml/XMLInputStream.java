@@ -1,4 +1,4 @@
-package cougaar.microedition.shared.tinyxml;
+package org.cougaar.microedition.shared.tinyxml;
 
 /*
  *  This program is free software; you can redistribute it and/or modify

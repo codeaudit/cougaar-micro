@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>Ambient Temp in Degrees Celsius</description>
-  <plugin>cougaar.microedition.plugin.test.TestAllocatorPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.test.TestAllocatorPlugIn</plugin>
   <!-- Infrastructure PlugIns -->
-  <plugin>cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
 </NodeConfiguration>

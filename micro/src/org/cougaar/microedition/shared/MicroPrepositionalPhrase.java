@@ -8,7 +8,7 @@
  * be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
  */
-package cougaar.microedition.shared;
+package org.cougaar.microedition.shared;
 
 /**
  * Qualifier describing how a task should be carried out.  These are two

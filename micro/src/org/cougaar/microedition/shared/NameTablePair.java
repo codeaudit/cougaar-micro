@@ -1,4 +1,4 @@
-package cougaar.microedition.shared;
+package org.cougaar.microedition.shared;
 
 import java.util.*;
 

@@ -5,7 +5,7 @@
  *
  */
 
-package cougaar.microedition.io;
+package org.cougaar.microedition.io;
 
 import java.io.*;
 
