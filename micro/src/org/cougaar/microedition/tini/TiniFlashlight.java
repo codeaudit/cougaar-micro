@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -42,6 +42,7 @@ public class TiniFlashlight extends ControllerResource {
   private static final int FLASHLIGHT_OFF = 0;
   private static final int FLASHLIGHT_ON = 1;
   private static final int FLASHLIGHT_FLASHING = 2;
+  private static final int FLASHLIGHT_TOGGLE = 3;
   private int flashlightstate = FLASHLIGHT_OFF;
 
 
@@ -222,6 +223,19 @@ public class TiniFlashlight extends ControllerResource {
       setOn(true);
     if(flashlightstate == FLASHLIGHT_OFF)
       setOn(false);
+    if(flashlightstate == FLASHLIGHT_TOGGLE)
+    {
+       if(isOn())
+       {
+	 setOn(false);
+	 flashlightstate = FLASHLIGHT_OFF;
+       }
+       else
+       {
+	 setOn(true);
+	 flashlightstate = FLASHLIGHT_ON;
+       }
+    }
     return false;
   }
 
@@ -232,6 +246,19 @@ public class TiniFlashlight extends ControllerResource {
       case FLASHLIGHT_ON:
       case FLASHLIGHT_FLASHING:
 	   setOn(true);
+	   break;
+      case FLASHLIGHT_TOGGLE:
+	   if(isOn())
+	   {
+	     setOn(false);
+	     flashlightstate = FLASHLIGHT_OFF;
+	   }
+	   else
+	   {
+	     setOn(true);
+	     flashlightstate = FLASHLIGHT_ON;
+	   }
+	   break;
       default:
            setOn(false);
     }
@@ -257,6 +284,8 @@ public class TiniFlashlight extends ControllerResource {
 	flashlightstate = FLASHLIGHT_ON;
       else if(controlparametervalue.equalsIgnoreCase("flashing"))
 	flashlightstate = FLASHLIGHT_FLASHING;
+      else if(controlparametervalue.equalsIgnoreCase("toggle"))
+	flashlightstate = FLASHLIGHT_TOGGLE;
       else
 	flashlightstate = FLASHLIGHT_OFF;
     }

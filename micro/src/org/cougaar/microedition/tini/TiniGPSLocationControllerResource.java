@@ -76,13 +76,27 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 
   //private Date dgpsDate = new Date();
   private boolean dgpsHealthy=false;
-  private int dgpsSatellites;
-  private double dgpsHeading, dgpsLatitude, dgpsLongitude, dgpsAltitude;
+  private int dgpsSatellites = 0;
+  private double dgpsHeading = 0.0;
+  private double dgpsLatitude = 38.0;
+  private double dgpsLongitude = -77.0;
+  private double dgpsAltitude = 0.0;
+  private int dgpsHour = 1;
+  private int dgpsMinute = 0;
+  private int dgpsDay = 1;
+  private int dgpsMonth = 1;
+  private int dgpsYear = 1980;
+  private double dgpsSeconds = 0.0;
   private float dgpsGroundSpeed, dgpsVelocityNorth, dgpsVelocityEast,
                 dgpsVelocityVertical ;
+
   private double computedheading = 0.0;
   private double computedspeed = 0.0;
   private static final double DGPSVELACCURACY = 0.035; //meters per sec
+  private static final double MINVELOCITY = DGPSVELACCURACY; //meters per second
+  private static final double MAXVELOCITY = 10.0;
+  private double MAXHFOM = 1.0; //meters 95% accuracy
+
   private static final int MINSATS = 4;
   private static final int MAXSATS = 12;
 
@@ -92,6 +106,13 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 
   public double getHeading() { // returns true bearing, in degrees
     return computedheading;        // (zero is true North)
+  }
+
+  public void adjustHeading(double adjustmentdeg)
+  {
+    computedheading += adjustmentdeg;
+    if(computedheading > 360.0) computedheading -= 360.0;
+    if(computedheading < 0.0) computedheading += 360.0;
   }
 
   public double getAltitude() { // returns altitude, in meters above SL
@@ -130,16 +151,13 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
     return dgpsHealthy;        // the number of Satellite Vehicles >3, and the
   }                            // year was valid)
 
-  private int dgpsHour, dgpsMinute, dgpsDay, dgpsMonth, dgpsYear;
-  private double dgpsSeconds;
-
   public Date getDate() {
   /**
    * On-demand parse the time data from the last message into a date
    */
     Calendar dgpsCal = Calendar.getInstance();
-    dgpsCal.set(dgpsYear,dgpsMonth,dgpsDay,dgpsHour,dgpsMinute,(int)dgpsSeconds);
-    //Date dgpsDate = new Date(dgpsYear,dgpsMonth,dgpsDay,dgpsHour,dgpsMinute,(int)dgpsSeconds);
+    dgpsCal.clear();
+    dgpsCal.set(dgpsYear,(dgpsMonth-1),dgpsDay,dgpsHour,dgpsMinute,(int)dgpsSeconds);
     return dgpsCal.getTime();
   }
 
@@ -147,21 +165,22 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
   {
     values[0] = (long)(scalingFactor*getLatitude());
     values[1] = (long)(scalingFactor*getLongitude());
-    //values[2] = getAltitude();
     values[2] = (long)(scalingFactor*getHeading());
+    Date d = getDate();
+    values[3] = d.getTime();
   }
 
   public void getValueAspects(int [] aspects)
   {
     aspects[0] = Constants.Aspects.LATITUDE;
     aspects[1] = Constants.Aspects.LONGITUDE;
-    //aspects[2] = Constants.Aspects.ALTITUDE;
     aspects[2] = Constants.Aspects.HEADING;
+    aspects[3] = Constants.Aspects.TIME;
   }
 
   public int getNumberAspects()
   {
-    return 3;
+    return 4;
   }
 
   public void setChan(int c) {}
@@ -187,7 +206,13 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 
   public void modifyControl(String controlparameter, String controlparametervalue)
   {
-
+      if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]))
+      {
+	Double temp = new Double(controlparametervalue);
+	double rotationdegrees = (long)temp.doubleValue();
+	System.out.println("TiniGPSLocationControllerResource: rotation: " +rotationdegrees +" degrees");
+	adjustHeading(rotationdegrees);
+      }
   }
 
   // Parameter handling
@@ -200,9 +225,15 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
       if (params.get("port") != null) {
         portName = (String)params.get("port");
       }
+      if (params.get("hfom") != null) {
+        String hfomstring = (String)params.get("hfom");
+	MAXHFOM = Double.valueOf(hfomstring).doubleValue();
+      }
       debug = (params.get("debug") != null);
     }
-    if (debug)System.out.println("TiniGPSLocationControllerResource:setParams:"+params);
+    if (debug)
+       System.out.println("TiniGPSLocationControllerResource:setParams:"+params);
+
     startMonitorThread();
   }
 
@@ -319,9 +350,16 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 	    * Extract the number of satellites and date/time from the message,
 	    * and use this information to determine the health of the message.
 	    */
+	  byte [] dbl = new byte[8];
+	  byte [] flt = new byte[4];
+
 	  int numSatellites = mblockmessage[71];
 	  int readYear = (int)unsigned(mblockmessage[16]) + (int)unsigned(mblockmessage[17])*256;
-	  if((numSatellites > MINSATS) && (numSatellites < MAXSATS) && (readYear==ThisYear))
+
+	  System.arraycopy(mblockmessage, 62, flt, 0, 4);
+	  float hfom = makeFloat(flt);
+
+	  if((numSatellites > MINSATS) && (numSatellites < MAXSATS) && (readYear==ThisYear) && (hfom < MAXHFOM))
 	  {
 	    dgpsHealthy = true;
 	  }
@@ -338,7 +376,7 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 	    dgpsDay=mblockmessage[14];
 	    dgpsHour=mblockmessage[4];
 	    dgpsMinute=mblockmessage[5];
-	    byte [] dbl = new byte[8];
+
 	    System.arraycopy(mblockmessage, 6, dbl, 0, 8);
 	    dgpsSeconds = makeDouble(dbl);
 
@@ -350,7 +388,6 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 	    dgpsLatitude = (180.0/Math.PI)*makeDouble(dbl);
 	    System.arraycopy(mblockmessage, 26, dbl, 0, 8);
 	    dgpsLongitude = (180.0/Math.PI)*makeDouble(dbl);
-	    byte [] flt = new byte[4];
 	    System.arraycopy(mblockmessage, 34, flt, 0, 4);
 	    dgpsAltitude = (double)makeFloat(flt);
 	    System.arraycopy(mblockmessage, 38, flt, 0, 4);
@@ -364,8 +401,10 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 	    System.arraycopy(mblockmessage, 54, flt, 0, 4);
 	    dgpsVelocityVertical = makeFloat(flt);
 
-	    if(Math.abs(dgpsVelocityNorth) > DGPSVELACCURACY && Math.abs(dgpsVelocityEast) > DGPSVELACCURACY)
+	    if(Math.abs(dgpsVelocityNorth) > MINVELOCITY && Math.abs(dgpsVelocityEast) > MINVELOCITY &&
+	       Math.abs(dgpsVelocityNorth) < MAXVELOCITY && Math.abs(dgpsVelocityEast) < MAXVELOCITY)
 	    {
+	      //assume motion is reasonable
 	     computedheading = TiniTrig.tiniatan2((double)dgpsVelocityNorth, (double)dgpsVelocityEast); //radians from -pi to pi
 	     computedheading *= (180.0/Math.PI); //degrees from -180 to 180 as measured from east vector (CCW = +)
 	     computedheading = 90.0 - computedheading; //true heading
@@ -391,13 +430,20 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 	      int isecs = (int)dgpsSeconds;
 	      int iheading = (int)computedheading;
 	      int mmpersec = (int)(computedspeed*1000.0);
-	      System.out.println("N:"+numSatellites+" "+dgpsHour+":"+dgpsMinute+":"+isecs+" "+mmpersec+":"+iheading);
+	      //System.out.println("N:"+numSatellites+" "+dgpsHour+":"+dgpsMinute+":"+isecs+" "+mmpersec+":"+iheading);
 
 	      //Warning!!!!!   too much printing causes problems while keepinmg up with port reads
 
-	      //System.out.println("GPS: nSat: "+numSatellites);
-	      //System.out.println("     date "+dgpsYear+":"+dgpsMonth+":"+dgpsDay);
-	      //System.out.println("     time "+dgpsHour+":"+dgpsMinute+":"+dgpsSeconds);
+	      System.out.println("GPS: nSat: "+numSatellites+" HFOM "+hfom);
+	      System.out.println("     date "+dgpsYear+":"+dgpsMonth+":"+dgpsDay);
+	      System.out.println("     time "+dgpsHour+":"+dgpsMinute+":"+dgpsSeconds);
+
+	      Date nowdate = getDate();
+	      long msecs = nowdate.getTime();
+	      TimeZone tz = TimeZone.getDefault();
+	      //System.out.println("Timezone: " +tz.getID());
+	      //System.out.println("  UTC : "+msecs);
+
 	      //System.out.println("     lat:"+dgpsLatitude+" long:"+dgpsLongitude+" alt:"+dgpsAltitude);
 	      //System.out.println("     velN:"+dgpsVelocityNorth+" velE:"+dgpsVelocityEast);
 	      //System.out.println("     computed heading:"+computedheading+" speed:"+computedspeed);
@@ -405,7 +451,7 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 	  } // if healthy
 	  else
 	  {
-	    if (debug) System.out.println("Unhealthy NAV message received "+numSatellites+" "+readYear);
+	    if (debug) System.out.println("Unhealthy NAV message received "+numSatellites+" "+readYear+" "+hfom);
 	  }
 	} //if msg = 20
       } // while

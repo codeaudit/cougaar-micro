@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -43,6 +43,8 @@ import javax.swing.JLabel;
 import javax.swing.Box;
 import java.awt.geom.Rectangle2D;
 
+import org.cougaar.microedition.shared.*;
+
 /**
  * Panel for drawing robot locations.
  */
@@ -55,55 +57,87 @@ public class RobotDemoPanel extends JPanel {
   Border blackline;
   Border paneEdge;
 
-
-
-  class MouseHandler extends MouseAdapter {
+  class MouseHandler extends MouseAdapter
+  {
     int MOUSE_REGION=20;
-    String fullUrl;
-    public void mouseClicked(MouseEvent e) {
+
+    public void mouseClicked(MouseEvent e)
+    {
       double x, y;
       double lat, lon;
-      Point p=new Point();
-      System.out.println("Mouse clicked at: "+e.getPoint());
-      x=e.getX();
-      y=e.getY();
-      RobotProxy rp;
 
-      System.out.println("mouse 1: "+(e.getModifiers()&e.BUTTON1_MASK));
-      System.out.println("mouse 2: "+(e.getModifiers()&e.BUTTON2_MASK));
-      System.out.println("mouse 3: "+(e.getModifiers()&e.BUTTON3_MASK));
-      for (Iterator iter=RobotDemoUI.getRobotInfo(); iter.hasNext();) {
-        rp=(RobotProxy)iter.next();
-        //p=inverseTransform(x,y, p);
-        lat=p.getY();
-        lon=p.getX();
-        RobotDemoPanel src=(RobotDemoPanel)e.getSource();
-        p=src.transformCoordinates(rp.getLat(), rp.getLon(), p);
-        double rpx=p.getX();
-        double rpy=p.getY();
-            System.out.println("Checking to see if mouse click touched close to robot: "+rp);
-            System.out.println("   which has [x,y] of ["+rpx+", "+rpy+"]");
-        if (x <= rpx+MOUSE_REGION && x >= rpx-MOUSE_REGION) {
-          if (y <= rpy+MOUSE_REGION && y >= rpy-MOUSE_REGION*2) {
-            System.out.println("Looks like mouse click touched close to robot: "+rp);
-            System.out.println("   which has [x,y] of ["+rpx+", "+rpy+"]");
-            if ((e.getModifiers() & InputEvent.BUTTON1_MASK)== InputEvent.BUTTON1_MASK) {
-              toggleLight(rp);
-            }
-            if ((e.getModifiers() & (InputEvent.BUTTON3_MASK|InputEvent.BUTTON2_MASK))!= 0) {
-              System.out.println("Toggling pic from "+rp.isPictureAvailable()+" to "+!rp.isPictureAvailable()+".");
-              rp.setPictureAvailable(!rp.isPictureAvailable());
-              RobotImageDisplay rid=new RobotImageDisplay(rp.getId());
-              rid.setVisible(true);
-            }
-            src.repaint();
-            //src.update(src.getGraphics());
-          }
-        }
+      System.out.println("Mouse clicked at: "+e.getPoint());
+      x = e.getX();
+      y = e.getY();
+
+      PositionCoordinate pc = inverseTransform(e.getPoint());
+      System.out.println("Transformed to: "+pc.latitude+" "+pc.longitude);
+
+      if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK)
+      {
+	RobotProxy rp;
+
+	for (Iterator iter=RobotDemoUI.getRobotInfo(); iter.hasNext();)
+	{
+	  rp=(RobotProxy)iter.next();
+	  RobotDemoPanel src=(RobotDemoPanel)e.getSource();
+	  Point p = src.transformCoordinates(rp.getLat(), rp.getLon());
+	  double rpx=p.getX();
+	  double rpy=p.getY();
+	  if (x <= rpx+MOUSE_REGION && x >= rpx-MOUSE_REGION)
+	  {
+	    if (y <= rpy+MOUSE_REGION && y >= rpy-MOUSE_REGION*2)
+	    {
+	      if(e.isControlDown())
+	      {
+	        System.out.println("Get Image from Robot "+rp.getId());
+	        RobotImageDisplay rid=new RobotImageDisplay(rp.getId());
+	        rid.setVisible(true);
+	      }
+	      else
+	      {
+		System.out.println("Activate Laser Beam "+rp.getId());
+		toggleLight(rp);
+	      }
+	    }
+	  }
+	}
+      }
+
+      if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK)
+      {
+	String urlBase="";
+	String urlSuffix="";
+	try
+	{
+	  urlBase=System.getProperty("startSystemUrlBase");
+	  urlSuffix=System.getProperty("waypointSuffix");
+	}
+	catch(Exception ex)
+	{
+	  System.err.println("Error:  Check waypoint URL 1");
+	}
+
+	String fullUrl=urlBase+urlSuffix+Double.toString(pc.latitude)+","+Double.toString(pc.longitude);
+
+	System.out.println("Retrieving data from url: ["+fullUrl+"]");
+
+	try
+	{
+	  BufferedReader br=new BufferedReader(new InputStreamReader(new URL(fullUrl).openStream()));
+	  for (String line = br.readLine(); line!=null; line = br.readLine())
+	      System.out.println(line);
+	}
+        catch (Exception ex)
+	{
+	  System.err.println("Error:  Check waypoint URL 2");
+	}
       }
     } // end mouseclicked
 
-    private void toggleLight(RobotProxy rp) {
+    private void toggleLight(RobotProxy rp)
+    {
+      String fullUrl;
       String urlBase="";
       String urlSuffix="";
       boolean fromState=rp.isLightOn();
@@ -126,7 +160,7 @@ public class RobotDemoPanel extends JPanel {
       }
       //urlBase="http://localhost:5555/ControlLight.PSP"+"?robotId=";
       //urlSuffix="?on=";
-      fullUrl=urlBase+robotId+urlSuffix+toState;
+      fullUrl=urlBase+"$"+robotId+urlSuffix+robotId+"?on=true";
       System.out.println("Retrieving data from url: ["+fullUrl+"]");
       BufferedReader br=null;
       try {
@@ -207,35 +241,27 @@ public class RobotDemoPanel extends JPanel {
   }
 
 
-  Point transformCoordinates(double lat, double lon, Point p) {
-
+  Point transformCoordinates(double lat, double lon)
+  {
     double x=getWidth()/(lon2-lon1)*(lon-lon1);
     double y=getHeight()/(lat2-lat1)*(lat-lat1);
 
-    if (p==null) {
-      p = new Point();
-    }
+    Point p = new Point();
     p.setLocation(x, y);
-
-    //System.out.println("Transform lat, lon of ("+lat+", "+lon+") at [x,y] of ["+x+", "+y+"]");
 
     return p;
   }
-  Point inverseTransform(double x, double y, Point p) {
+
+  PositionCoordinate inverseTransform(Point pt)
+  {
 
     double w=getWidth();
     double h=getHeight();
 
-    double lat= (y*(lat2-lat1)/h)+lat1;
-    double lon= (x*(lon2-lon1)/w)+lon1;
+    double lat= (pt.getY()*(lat2-lat1)/h)+lat1;
+    double lon= (pt.getX()*(lon2-lon1)/w)+lon1;
 
-    if (p==null) {
-      p = new Point();
-    }
-    p.setLocation(lon, lat);
-
-    //System.out.println("Invert to lat, lon of ("+lat+", "+lon+") from [x,y] of ["+x+", "+y+"]");
-
+    PositionCoordinate p = new PositionCoordinate(lat, lon);
     return p;
   }
 
@@ -267,31 +293,7 @@ public class RobotDemoPanel extends JPanel {
     performTransformedAction(g2,
         new DrawLineAction(lat, lon, len, orientation, wantDashes));
   }
-//  void drawLine_prev(Graphics2D g2, double lat, double lon, int len, double orientation, boolean wantDashes) {
-//    int x,y;
-//    Point p=new Point();
-//
-//    p = transformCoordinates(lat, lon, p);
-//    x=(int)p.getX();
-//    y=(int)p.getY();
-//
-//    System.out.println("Drawing lat, lon of ("+lat+", "+lon+") at [x,y] of ["+x+", "+y+"]");
-//    AffineTransform at = new AffineTransform();
-//    at.rotate(Math.toRadians(orientation), x, y);
-//    AffineTransform orig=g2.getTransform();
-//    g2.setTransform(at);
-//
-//        Stroke initStroke=g2.getStroke();
-//    if (wantDashes) {
-//        Stroke dashStroke=new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, (new float[] { 10f }), 0 );
-//        g2.setStroke(dashStroke);
-//    }
-//    g2.drawLine(x, y, x, y-len);
-//    if (wantDashes) {
-//        g2.setStroke(initStroke);
-//    }
-//    g2.setTransform(orig);
-//  }
+
 
   /**
    * Abstract base class for actions which are performed by RobotDemoPanel on
@@ -394,14 +396,14 @@ public class RobotDemoPanel extends JPanel {
     }
   }
 
-  void performTransformedAction(Graphics2D g2, TransformAction ta) {
+  void performTransformedAction(Graphics2D g2, TransformAction ta)
+  {
     int x,y;
-    Point p=new Point();
     double lat=ta.getLat();
     double lon=ta.getLon();
     double orientation=ta.getOrientation();
 
-    p = transformCoordinates(lat, lon, p);
+    Point p = transformCoordinates(lat, lon);
     x=(int)p.getX();
     y=(int)p.getY();
 

@@ -25,7 +25,7 @@
     <PSPName>alpine/demo/PLUGIN_LOADER.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.microedition.domain.PSP_StartSystem</Classname>
+    <Classname>org.cougaar.microedition.se.robot.PSP_StartSystem</Classname>
     <PSPName>START_SYSTEM.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
@@ -33,27 +33,27 @@
     <PSPName>ROBOTDATA.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.microedition.domain.PSP_ControlLight</Classname>
+    <Classname>org.cougaar.microedition.se.robot.PSP_ControlLight</Classname>
     <PSPName>CONTROL_LIGHT.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.microedition.domain.PSP_MakeTask</Classname>
+    <Classname>org.cougaar.microedition.se.robot.PSP_MakeTask</Classname>
     <PSPName>MakeTask.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.microedition.domain.PSP_GetImage</Classname>
+    <Classname>org.cougaar.microedition.se.robot.PSP_GetImage</Classname>
     <PSPName>GETI.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.microedition.domain.PSP_LaunchWeapon</Classname>
+    <Classname>org.cougaar.microedition.se.robot.PSP_LaunchWeapon</Classname>
     <PSPName>LAUNCHWEAPON.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.microedition.domain.PSP_TurnRobot</Classname>
+    <Classname>org.cougaar.microedition.se.robot.PSP_TurnRobot</Classname>
     <PSPName>TURNROBOT.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.microedition.domain.PSP_SnapPicture</Classname>
+    <Classname>org.cougaar.microedition.se.robot.PSP_SnapPicture</Classname>
     <PSPName>SNAPPICTURE.PSP</PSPName>
   </element>
 </object>

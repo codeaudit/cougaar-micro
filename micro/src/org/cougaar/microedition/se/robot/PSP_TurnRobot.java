@@ -29,36 +29,27 @@ import org.cougaar.microedition.shared.Constants;
 
 /**
  */
-public class PSP_StartSystem extends PSP_BaseAdapter
+public class PSP_TurnRobot extends PSP_BaseAdapter
   implements PlanServiceProvider, UISubscriber
 {
-  /** A zero-argument constructor is required for dynamically loaded PSPs,
-   *         required by Class.newInstance()
-   **/
-  public PSP_StartSystem()
+
+  public PSP_TurnRobot()
   {
     super();
   }
 
-  /**
-   * This constructor includes the URL path as arguments
-   */
-  public PSP_StartSystem( String pkg, String id ) throws RuntimePSPException
+  public PSP_TurnRobot( String pkg, String id ) throws RuntimePSPException
   {
     setResourceLocation(pkg, id);
   }
 
-  /**
-   * Some PSPs can respond to queries -- URLs that start with "?"
-   * I don't respond to queries
-   */
   public boolean test(HttpInput query_parameters, PlanServiceContext sc)
   {
     super.initializeTest(); // IF subclass off of PSP_BaseAdapter.java
     return false;  // This PSP is only accessed by direct reference.
   }
 
-  UnaryPredicate sysstartPred()
+  UnaryPredicate advancePred()
   {
     UnaryPredicate newPred = new UnaryPredicate()
     {
@@ -68,7 +59,7 @@ public class PSP_StartSystem extends PSP_BaseAdapter
 	if (o instanceof Task)
 	{
 	  Task mt = (Task)o;
-	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.STARTSYSTEM]));
+	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.ADVANCE]));
 	}
 	return ret;
       }
@@ -88,71 +79,67 @@ public class PSP_StartSystem extends PSP_BaseAdapter
                        PlanServiceContext psc,
                        PlanServiceUtilities psu ) throws Exception
   {
-    boolean system_on = false;
+
     try
     {
-      String onParam = "go";
-      String waypointParam = "waypoint";
-      String onText = "false";
-      String verbText = Constants.Robot.verbs[Constants.Robot.STARTSYSTEM];
-      out.println("PSP_StartSystem called from " + psc.getSessionAddress());
-      System.out.println("PSP_StartSystem called from " + psc.getSessionAddress());
+      String degreesparam = "degrees";
+      String mmparam = "millimeters";
 
-      if( query_parameters.existsParameter(waypointParam) )
+      out.println("PSP_TurnRobot called from " + psc.getSessionAddress());
+      System.out.println("PSP_TurnRobot called from " + psc.getSessionAddress());
+
+      //remove other rotation/advancement tasks
+      IncrementalSubscription subscription = null;
+
+      subscription = (IncrementalSubscription)psc
+	.getServerPlugInSupport().subscribe(this, advancePred());
+
+      Iterator iter = subscription.getCollection().iterator();
+      if (iter.hasNext())
       {
-         String coordtext = (String) query_parameters.getFirstParameterToken(waypointParam, '=');
-         System.out.println("Waypoint: ["+coordtext+"]");
+	Task task=null;
+	while (iter.hasNext())
+	{
+	  task = (Task)iter.next();
+	  psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
+	}
+      }
+
+      //now pop open a rotation task
+      if( query_parameters.existsParameter(degreesparam) )
+      {
+         out.println();
+         String degreestext = (String) query_parameters.getFirstParameterToken(degreesparam, '=');
+         out.println("Rotate: ["+degreestext+"]");
+
+	 String mmtext = (String) query_parameters.getFirstParameterToken(mmparam, '=');
+         out.println("Translate: ["+mmtext+"]");
 
 	 RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
 
 	 NewTask t = theLDMF.newTask();
 	 t.setPlan(theLDMF.getRealityPlan());
-	 t.setVerb(Verb.getVerb(verbText));
+	 t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.ADVANCE]));
+
+	 Vector prepositions = new Vector();
+
+	 psc.getServerPlugInSupport().openLogPlanTransaction();
 
 	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
-         npp.setPreposition(Constants.Robot.verbs[Constants.Robot.SETWAYPOINT]);
-	 npp.setIndirectObject(coordtext);
-	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
+	 npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]);
+	 npp.setIndirectObject(degreestext);
+	 prepositions.add(npp);
+
+	 npp = theLDMF.newPrepositionalPhrase();
+	 npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.TRANSLATEPREP]);
+	 npp.setIndirectObject(mmtext);
+	 prepositions.add(npp);
+
+	 t.setPrepositionalPhrases(prepositions.elements());
+	 psc.getServerPlugInSupport().closeLogPlanTransaction();
 
 	 psc.getServerPlugInSupport().publishAddForSubscriber(t);
 
-      }
-
-      if( query_parameters.existsParameter(onParam) )
-      {
-         onText = (String) query_parameters.getFirstParameterToken(onParam, '=');
-         System.out.println("Input "+onParam+" parm for onText: ["+onText+"]");
-         system_on=onText.equalsIgnoreCase("true");
-         System.out.println("system on is "+system_on);
-
-	if (system_on)
-	{
-	  RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
-
-	  NewTask t = theLDMF.newTask();
-	  t.setPlan(theLDMF.getRealityPlan());
-	  t.setVerb(Verb.getVerb(verbText));
-
-	  psc.getServerPlugInSupport().publishAddForSubscriber(t);
-	}
-	else
-	{
-	  IncrementalSubscription subscription = null;
-
-	  subscription = (IncrementalSubscription)psc
-	    .getServerPlugInSupport().subscribe(this, sysstartPred());
-
-	  Iterator iter = subscription.getCollection().iterator();
-	  if (iter.hasNext())
-	  {
-	    Task task=null;
-	    while (iter.hasNext())
-	    {
-	      task = (Task)iter.next();
-	      psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
-	    }
-	  }
-	}
       }
     }
     catch (Exception ex)

@@ -39,6 +39,7 @@ public class RobotDemoUIFrame extends JFrame {
   JPanel jPanel2 = new JPanel();
   JButton jButton1 = new JButton();
   JButton jButton2 = new JButton();
+  JButton launchbutton = new JButton();
   RobotDemoUI robotDemo;
 
   /**Construct the frame*/
@@ -74,6 +75,12 @@ public class RobotDemoUIFrame extends JFrame {
         robotDemo.startUpdates();
       }
     });
+    launchbutton.setText("Launch ");
+    launchbutton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        robotDemo.launchCommand();
+      }
+    });
     contentPane.setPreferredSize(new Dimension(600, 400));
     //jPanel1.setPreferredSize(new Dimension(600, 400));
     contentPane.add(statusBar, BorderLayout.NORTH);
@@ -81,6 +88,7 @@ public class RobotDemoUIFrame extends JFrame {
     contentPane.add(jPanel2, BorderLayout.SOUTH);
     jPanel2.add(jButton2, null);
     jPanel2.add(jButton1, null);
+    jPanel2.add(launchbutton, null);
   }
   /**Overridden so we can exit when window is closed*/
   protected void processWindowEvent(WindowEvent e) {

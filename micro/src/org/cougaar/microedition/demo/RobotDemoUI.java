@@ -95,8 +95,43 @@ public class RobotDemoUI {
 
   RobotUpdateThread robotUpdateThread;
 
-
-  //void addRobotInfo(RobotProxy rp) { robotProxies.add(rp); }
+  public void launchCommand()
+  {
+    String launchurl="";
+    try
+    {
+      launchurl=System.getProperty("launchUrl");
+      System.out.println("Launch URL = " +launchurl);
+    }
+    catch(Exception ex)
+    {
+      System.err.println("Error:  Need to set launchUrl");
+      return;
+    }
+    BufferedReader br=null;
+    try
+    {
+      br=new BufferedReader(
+        new InputStreamReader(new URL(launchurl).openStream()));
+      for (String line = br.readLine(); line!=null; line = br.readLine()) {
+        System.out.println(line);
+      }
+    }
+    catch (Exception ex)
+    {
+      System.err.println("");
+    }
+    finally
+    {
+      try {
+        if (br!=null) {
+          br.close();
+        }
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
 
   /**
    * Start the demo.

@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -35,7 +35,7 @@ public interface Constants {
     static int IMAGE = 106;
     static int FLASHLIGHT = 107;
     static int DETECTION_TIME = 108;
-
+    static int TIME = 109;
   }
 
   public interface Robot  {
@@ -46,7 +46,8 @@ public interface Constants {
     static int SURVEILLANCEPROVIDER = 0;
     static int IMAGEPROVIDER = 1;
 
-    static String [] meRoles = { "Everything", "PositionProvider", "LocomotionController", "TargetingController", "FlashlightController", "TurretController", "SONARSensor" };
+    static String [] meRoles = { "Everything", "PositionProvider", "LocomotionController", "TargetingController",
+      "FlashlightController", "TurretController", "SONARSensor", "CameraController", "WeaponProvider"};
     static int EVERYTHING = 0;
     static int POSITIONPROVIDER = 1;
     static int LOCOMOTIONCONTROLLER = 2;
@@ -54,10 +55,13 @@ public interface Constants {
     static int FLASHLIGHTCONTROLLER = 4;
     static int TURRETCONTROLLER = 5;
     static int SONARSENSOR = 6;
+    static int CAMERACONTROLLER = 7;
+    static int WEAPONPROVIDER = 8;
 
     static String [] verbs = { "ReportPosition", "Advance", "TraverseWaypoints",
       "ReportTarget", "ControlFlashlight", "RotateTurret", "ReportDetection",
-      "GetImage", "StartSystem", "SetOrientation", "DetectTarget", "SetWaypoint" };
+      "GetImage", "StartSystem", "SetOrientation", "DetectTarget", "SetWaypoint",
+      "LaunchWeapon", "SetLaunchTime", "EngageWeapon"};
     static int REPORTPOSITION = 0;
     static int ADVANCE = 1;
     static int TRAVERSEWAYPOINTS = 2;
@@ -70,10 +74,13 @@ public interface Constants {
     static int SETORIENTATION = 9;
     static int DETECTTARGET = 10;
     static int SETWAYPOINT = 11;
+    static int LAUNCHWEAPON = 12;
+    static int SETLAUNCHTIME = 13;
+    static int ENGAGEWEAPON = 14;
 
     static String [] prepositions = { "Degrees", "Speed", "Velocity",
       "TurretHemisphere", "Lat", "Lon", "Bearing", "Rotation", "Translation",
-      "StartAngle", "StopAngle"};
+      "StartAngle", "StopAngle", "Time", "Range"};
     final static int ORIENTATIONPREP= 0; // "Degrees"
     final static int SPEEDPREP= 1; // "Speed";
     final static int VELOCITYPREP=2; // "Velocity";
@@ -85,6 +92,8 @@ public interface Constants {
     final static int TRANSLATEPREP=8;
     final static int STARTANGLEPREP=9;
     final static int STOPANGLEPREP=10;
+    final static int TIMEPREP=11;
+    final static int RANGEPREP=12;
 
     public static final String SEARCHLEFT = "left";
     public static final String SEARCHFRONT = "front";

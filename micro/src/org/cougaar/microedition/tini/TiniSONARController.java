@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -43,10 +43,10 @@ public class TiniSONARController extends ControllerResource {
   private DS2450 ds2450=null;
 
   int position=0;
-  int historySize=10;
+  int historySize=5;
   double [] historyQueue = null;
-  boolean lookforpeak = false;
   boolean upswingseen = false;
+  boolean abovethreshold = false;
 
   public void modifyControl(String controlparameter, String controlparametervalue)
   {
@@ -80,7 +80,7 @@ public class TiniSONARController extends ControllerResource {
 
   public void getValues(long [] values)
   {
-    values[0] = (long)(scalingFactor*1);
+    values[0] = (long)(scalingFactor*maxave);
   }
 
   public void getValueAspects(int [] aspects)
@@ -114,37 +114,48 @@ public class TiniSONARController extends ControllerResource {
 
       //System.out.println("Sonar : "+dsval+" "+ave);
 
-      if (ave >= sensorthreshold && upswingseen == false && lookforpeak == false)
+      if( ave < sensorthreshold)
       {
-	System.out.println("Above threshold, looking for peak: "+ave);
+	 //reset flags since we've dropped below threshold
+	 abovethreshold = false;
+	 upswingseen = false;
+	 maxave = 0.0;
+      }
+
+      if (ave >= sensorthreshold && abovethreshold == false)
+      {
+	//first time above threshold
+	System.out.println("Reach above threshold, looking for peak: "+ave);
+
+	abovethreshold = true;
 	upswingseen = true;
-	lookforpeak = true;
 	maxave = ave;
 	return false;
       }
-
-      //looking for local maximum
-      if (lookforpeak == true)
+      else // ave above threshold already, were looking and reporting peaks
       {
-	if(ave > maxave)
+	if (upswingseen == true)
 	{
-	  maxave = ave;
-	  return false; //still increasing
+	  if(ave > maxave)
+	  {
+	    maxave = ave;
+	    return false; //level still increasing
+	  }
+	  else
+	  {
+	    System.out.println("Sonar peaked: "+maxave);
+	    upswingseen = false;  //wait until we swing up again
+	    return true;
+	  }
 	}
 	else
 	{
-	  System.out.println("Sonar peaked: "+maxave);
-	  lookforpeak = false; //upswing still true
-	  return true;
+	  if(ave > maxave)
+	  {
+	    upswingseen = true; //look for a peak again
+	    return false;
+	  }
 	}
-      }
-
-      //peak reported, waiting to go back down below threshold to reset for another detection
-      if (ave < sensorthreshold && upswingseen == true && lookforpeak == false)
-      {
-	System.out.println("Sonar down: "+ave);
-	upswingseen = false;
-	maxave = 0.0;
       }
 
       return false;

@@ -29,6 +29,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.net.*;
 import java.awt.event.*;
+import java.io.*;
 
 /**
  */
@@ -41,24 +42,56 @@ public class RobotImageDisplay extends JFrame {
   ImageObserver observer;
   String robotId;
   String fullUrl;
-  public RobotImageDisplay(String robotId) {
+  public RobotImageDisplay(String robotId)
+  {
     this.setTitle("Image from "+robotId);
     this.robotId=robotId;
     setSize(660,480);
     try {
-      String urlBase=System.getProperty("imageUrlBase");
-      String urlSuffix=System.getProperty("imageUrlSuffix");
-      fullUrl=urlBase+robotId+urlSuffix;
-      System.out.println("Retrieving image from url: ["+fullUrl+"]");
-      image=Toolkit.getDefaultToolkit().createImage(new URL(fullUrl));
-      addNotify();
-      repaint();
-    } catch (Exception ex) {
-        System.err.println("Error:  PSP for obtaining image from robot (ID: ["
+
+      String ipproperty = robotId+"_IPAddress";
+      String robotipaddress = System.getProperty(ipproperty);
+      InetAddress addr = InetAddress.getByName(robotipaddress);
+
+      String importproperty = robotId+"_ImageFilePort";
+      Integer intport = Integer.getInteger(importproperty);
+      int port = intport.intValue();
+
+      System.out.println("RobotImageDisplay: open socket to " +robotipaddress+":"+port);
+
+      Socket imsocket = new Socket(addr, port);
+
+      DataInputStream datain = new DataInputStream(imsocket.getInputStream());
+      int nbytes = datain.readInt();
+      if(nbytes > 0)
+      {
+        byte [] imagedata = new byte[nbytes];
+	int nread = 0;
+	while(nread < nbytes)
+	{
+	  int nval = datain.read(imagedata, nread, nbytes - nread);
+	  if (nval < 0) break;
+
+	  nread += nval;
+	  System.out.println("RobotImageDisplay: nread "+nread+" of "+nbytes);
+	}
+
+	if(nread != nbytes)
+	{
+	  System.out.println("RobotImageDisplay: nread != nbytes "+nread+"!="+nbytes);
+	}
+	else
+	{
+          image=Toolkit.getDefaultToolkit().createImage(imagedata);
+          addNotify();
+          repaint();
+	}
+      }
+    }
+    catch (Exception ex)
+    {
+        System.err.println("Error: obtaining image from robot (ID: ["
           +robotId+"]) indicated a failure.");
-        System.err.println("  Check that the PSP is configured correctly."
-          +"  Url used: ["+fullUrl+"]");
-        //       ex.printStackTrace();
     }
 
     try {

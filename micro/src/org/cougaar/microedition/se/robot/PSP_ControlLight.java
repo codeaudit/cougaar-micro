@@ -1,23 +1,10 @@
 /*
  * <copyright>
- * 
- * Copyright 1997-2001 BBNT Solutions, LLC.
- * under sponsorship of the Defense Advanced Research Projects
- * Agency (DARPA).
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the Cougaar Open Source License as published by
- * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- * ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- * HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- * DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- * TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- * PERFORMANCE OF THE COUGAAR SOFTWARE.
+ *  Copyright 1997-2000 Defense Advanced Research Projects
+ *  Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
+ *  Raytheon Systems Company (RSC) Consortium).
+ *  This software to be used only in accordance with the
+ *  COUGAAR licence agreement.
  * </copyright>
  */
 package org.cougaar.microedition.se.robot;
@@ -35,11 +22,9 @@ import org.cougaar.lib.planserver.PlanServiceContext;
 import org.cougaar.lib.planserver.PlanServiceUtilities;
 import org.cougaar.lib.planserver.RuntimePSPException;
 import org.cougaar.core.cluster.Subscription;
-import org.cougaar.domain.planning.ldm.plan.Task;
-import org.cougaar.domain.planning.ldm.plan.NewTask;
-import org.cougaar.domain.planning.ldm.plan.Verb;
+import org.cougaar.domain.planning.ldm.plan.*;
 import org.cougaar.domain.planning.ldm.RootFactory;
-import org.cougaar.domain.planning.ldm.plan.NewPrepositionalPhrase;
+import org.cougaar.microedition.shared.Constants;
 
 import org.cougaar.core.cluster.IncrementalSubscription;
 
@@ -102,9 +87,36 @@ public class PSP_ControlLight extends PSP_BaseAdapter
          onText = (String) query_parameters.getFirstParameterToken(onParam, '=');
          System.out.println("Input "+onParam+" parm for onText: ["+onText+"]");
          wantOn=onText.equalsIgnoreCase("true");
-         System.out.println("wanton is "+wantOn);
+         System.out.println("want on is "+wantOn);
+
+	 RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+
+	 NewTask t = theLDMF.newTask();
+	 t.setPlan(theLDMF.getRealityPlan());
+	 t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.CONTROLFLASHLIGHT]));
+
+
+	 psc.getServerPlugInSupport().openLogPlanTransaction();
+	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
+         npp.setPreposition("LightingMode");
+	 npp.setIndirectObject("toggle"); // turn on for now
+	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
+	 psc.getServerPlugInSupport().closeLogPlanTransaction();
+
+	 psc.getServerPlugInSupport().publishAddForSubscriber(t);
+
+
       }
 
+
+      /*
+      if( query_parameters.existsParameter(onParam) )
+      {
+         onText = (String) query_parameters.getFirstParameterToken(onParam, '=');
+         System.out.println("Input "+onParam+" parm for onText: ["+onText+"]");
+         wantOn=onText.equalsIgnoreCase("true");
+         System.out.println("wanton is "+wantOn);
+      }
       if (wantOn) {
         RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
         Task task=createTask(theLDMF, verbText);
@@ -142,6 +154,7 @@ public class PSP_ControlLight extends PSP_BaseAdapter
           createOutputPage("No More Tasks to be removed with "+verbText+" verb", null, out);
         }
       }
+      */
     } catch (Exception ex) {
       out.println(ex.getMessage());
       ex.printStackTrace(out);

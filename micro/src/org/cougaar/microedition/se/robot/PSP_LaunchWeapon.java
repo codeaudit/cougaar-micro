@@ -22,20 +22,22 @@ import org.cougaar.lib.planserver.PlanServiceContext;
 import org.cougaar.lib.planserver.PlanServiceUtilities;
 import org.cougaar.lib.planserver.RuntimePSPException;
 import org.cougaar.core.cluster.Subscription;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.domain.planning.ldm.plan.Task;
+import org.cougaar.domain.planning.ldm.plan.NewTask;
+import org.cougaar.domain.planning.ldm.plan.Verb;
 import org.cougaar.domain.planning.ldm.RootFactory;
 import org.cougaar.core.cluster.IncrementalSubscription;
 import org.cougaar.microedition.shared.Constants;
 
 /**
  */
-public class PSP_StartSystem extends PSP_BaseAdapter
+public class PSP_LaunchWeapon extends PSP_BaseAdapter
   implements PlanServiceProvider, UISubscriber
 {
   /** A zero-argument constructor is required for dynamically loaded PSPs,
    *         required by Class.newInstance()
    **/
-  public PSP_StartSystem()
+  public PSP_LaunchWeapon()
   {
     super();
   }
@@ -43,7 +45,7 @@ public class PSP_StartSystem extends PSP_BaseAdapter
   /**
    * This constructor includes the URL path as arguments
    */
-  public PSP_StartSystem( String pkg, String id ) throws RuntimePSPException
+  public PSP_LaunchWeapon( String pkg, String id ) throws RuntimePSPException
   {
     setResourceLocation(pkg, id);
   }
@@ -58,24 +60,6 @@ public class PSP_StartSystem extends PSP_BaseAdapter
     return false;  // This PSP is only accessed by direct reference.
   }
 
-  UnaryPredicate sysstartPred()
-  {
-    UnaryPredicate newPred = new UnaryPredicate()
-    {
-      public boolean execute(Object o)
-      {
-	boolean ret=false;
-	if (o instanceof Task)
-	{
-	  Task mt = (Task)o;
-	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.STARTSYSTEM]));
-	}
-	return ret;
-      }
-    };
-    return newPred;
-  }
-
   /**
    * Called when a HTTP request is made of this PSP.
    * @param out data stream back to the caller.
@@ -88,72 +72,20 @@ public class PSP_StartSystem extends PSP_BaseAdapter
                        PlanServiceContext psc,
                        PlanServiceUtilities psu ) throws Exception
   {
-    boolean system_on = false;
+
     try
     {
-      String onParam = "go";
-      String waypointParam = "waypoint";
-      String onText = "false";
-      String verbText = Constants.Robot.verbs[Constants.Robot.STARTSYSTEM];
-      out.println("PSP_StartSystem called from " + psc.getSessionAddress());
-      System.out.println("PSP_StartSystem called from " + psc.getSessionAddress());
 
-      if( query_parameters.existsParameter(waypointParam) )
-      {
-         String coordtext = (String) query_parameters.getFirstParameterToken(waypointParam, '=');
-         System.out.println("Waypoint: ["+coordtext+"]");
+      String verbText = Constants.Robot.verbs[Constants.Robot.LAUNCHWEAPON];
+      System.out.println("PSP_LaunchWeapon called from " + psc.getSessionAddress());
 
-	 RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+      RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
 
-	 NewTask t = theLDMF.newTask();
-	 t.setPlan(theLDMF.getRealityPlan());
-	 t.setVerb(Verb.getVerb(verbText));
+      NewTask t = theLDMF.newTask();
+      t.setPlan(theLDMF.getRealityPlan());
+      t.setVerb(Verb.getVerb(verbText));
 
-	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
-         npp.setPreposition(Constants.Robot.verbs[Constants.Robot.SETWAYPOINT]);
-	 npp.setIndirectObject(coordtext);
-	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
-
-	 psc.getServerPlugInSupport().publishAddForSubscriber(t);
-
-      }
-
-      if( query_parameters.existsParameter(onParam) )
-      {
-         onText = (String) query_parameters.getFirstParameterToken(onParam, '=');
-         System.out.println("Input "+onParam+" parm for onText: ["+onText+"]");
-         system_on=onText.equalsIgnoreCase("true");
-         System.out.println("system on is "+system_on);
-
-	if (system_on)
-	{
-	  RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
-
-	  NewTask t = theLDMF.newTask();
-	  t.setPlan(theLDMF.getRealityPlan());
-	  t.setVerb(Verb.getVerb(verbText));
-
-	  psc.getServerPlugInSupport().publishAddForSubscriber(t);
-	}
-	else
-	{
-	  IncrementalSubscription subscription = null;
-
-	  subscription = (IncrementalSubscription)psc
-	    .getServerPlugInSupport().subscribe(this, sysstartPred());
-
-	  Iterator iter = subscription.getCollection().iterator();
-	  if (iter.hasNext())
-	  {
-	    Task task=null;
-	    while (iter.hasNext())
-	    {
-	      task = (Task)iter.next();
-	      psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
-	    }
-	  }
-	}
-      }
+      psc.getServerPlugInSupport().publishAddForSubscriber(t);
     }
     catch (Exception ex)
     {

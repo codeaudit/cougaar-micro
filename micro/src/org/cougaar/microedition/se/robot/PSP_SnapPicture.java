@@ -14,6 +14,8 @@ import org.cougaar.domain.planning.ldm.plan.PlanElement;
 import org.cougaar.util.UnaryPredicate;
 import java.io.*;
 import java.util.*;
+import java.net.*;
+import java.awt.*;
 import org.cougaar.lib.planserver.PSP_BaseAdapter;
 import org.cougaar.lib.planserver.PlanServiceProvider;
 import org.cougaar.lib.planserver.UISubscriber;
@@ -29,36 +31,27 @@ import org.cougaar.microedition.shared.Constants;
 
 /**
  */
-public class PSP_StartSystem extends PSP_BaseAdapter
+public class PSP_SnapPicture extends PSP_BaseAdapter
   implements PlanServiceProvider, UISubscriber
 {
-  /** A zero-argument constructor is required for dynamically loaded PSPs,
-   *         required by Class.newInstance()
-   **/
-  public PSP_StartSystem()
+
+  public PSP_SnapPicture()
   {
     super();
   }
 
-  /**
-   * This constructor includes the URL path as arguments
-   */
-  public PSP_StartSystem( String pkg, String id ) throws RuntimePSPException
+  public PSP_SnapPicture( String pkg, String id ) throws RuntimePSPException
   {
     setResourceLocation(pkg, id);
   }
 
-  /**
-   * Some PSPs can respond to queries -- URLs that start with "?"
-   * I don't respond to queries
-   */
   public boolean test(HttpInput query_parameters, PlanServiceContext sc)
   {
     super.initializeTest(); // IF subclass off of PSP_BaseAdapter.java
     return false;  // This PSP is only accessed by direct reference.
   }
 
-  UnaryPredicate sysstartPred()
+  UnaryPredicate getImagePred()
   {
     UnaryPredicate newPred = new UnaryPredicate()
     {
@@ -68,13 +61,17 @@ public class PSP_StartSystem extends PSP_BaseAdapter
 	if (o instanceof Task)
 	{
 	  Task mt = (Task)o;
-	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.STARTSYSTEM]));
+	  ret= (mt.getVerb().equals(Constants.Robot.verbs[Constants.Robot.GETIMAGE]));
 	}
 	return ret;
       }
     };
     return newPred;
   }
+
+  private static final String photofilename = "C:\\RobotPics\\PHOTO.JPG";
+  private static final String jpegfileline =
+	  "<img src=\"file:///C|/RobotPics/PHOTO.JPG\">";
 
   /**
    * Called when a HTTP request is made of this PSP.
@@ -88,72 +85,101 @@ public class PSP_StartSystem extends PSP_BaseAdapter
                        PlanServiceContext psc,
                        PlanServiceUtilities psu ) throws Exception
   {
-    boolean system_on = false;
+
+
+
+
     try
     {
-      String onParam = "go";
-      String waypointParam = "waypoint";
-      String onText = "false";
-      String verbText = Constants.Robot.verbs[Constants.Robot.STARTSYSTEM];
-      out.println("PSP_StartSystem called from " + psc.getSessionAddress());
-      System.out.println("PSP_StartSystem called from " + psc.getSessionAddress());
 
-      if( query_parameters.existsParameter(waypointParam) )
+      //out.println("PSP_SnapPicture called from " + psc.getSessionAddress());
+
+
+      //remove other rotation/advancement tasks
+      IncrementalSubscription subscription = null;
+
+      subscription = (IncrementalSubscription)psc
+	.getServerPlugInSupport().subscribe(this, getImagePred());
+
+      Iterator iter = subscription.getCollection().iterator();
+      if (iter.hasNext())
       {
-         String coordtext = (String) query_parameters.getFirstParameterToken(waypointParam, '=');
-         System.out.println("Waypoint: ["+coordtext+"]");
-
-	 RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
-
-	 NewTask t = theLDMF.newTask();
-	 t.setPlan(theLDMF.getRealityPlan());
-	 t.setVerb(Verb.getVerb(verbText));
-
-	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
-         npp.setPreposition(Constants.Robot.verbs[Constants.Robot.SETWAYPOINT]);
-	 npp.setIndirectObject(coordtext);
-	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
-
-	 psc.getServerPlugInSupport().publishAddForSubscriber(t);
-
+	Task task=null;
+	while (iter.hasNext())
+	{
+	  task = (Task)iter.next();
+	  psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
+	}
       }
 
-      if( query_parameters.existsParameter(onParam) )
+      if( query_parameters.existsParameter("fetch"))
       {
-         onText = (String) query_parameters.getFirstParameterToken(onParam, '=');
-         System.out.println("Input "+onParam+" parm for onText: ["+onText+"]");
-         system_on=onText.equalsIgnoreCase("true");
-         System.out.println("system on is "+system_on);
 
-	if (system_on)
-	{
-	  RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+        String robotipaddress = (String) query_parameters.getFirstParameterToken("fetch", '=');;
+        InetAddress addr = InetAddress.getByName(robotipaddress);
 
-	  NewTask t = theLDMF.newTask();
-	  t.setPlan(theLDMF.getRealityPlan());
-	  t.setVerb(Verb.getVerb(verbText));
+	System.out.println("PSP_SnapPicture Fetching..." +robotipaddress);
 
-	  psc.getServerPlugInSupport().publishAddForSubscriber(t);
-	}
-	else
-	{
-	  IncrementalSubscription subscription = null;
+        int port = 1230;
 
-	  subscription = (IncrementalSubscription)psc
-	    .getServerPlugInSupport().subscribe(this, sysstartPred());
+	Socket imsocket = new Socket(addr, port);
 
-	  Iterator iter = subscription.getCollection().iterator();
-	  if (iter.hasNext())
+        DataInputStream datain = new DataInputStream(imsocket.getInputStream());
+        int nbytes = datain.readInt();
+        if(nbytes > 0)
+        {
+          byte [] imagedata = new byte[nbytes];
+	  int nread = 0;
+	  while(nread < nbytes)
 	  {
-	    Task task=null;
-	    while (iter.hasNext())
-	    {
-	      task = (Task)iter.next();
-	      psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
-	    }
+	    int nval = datain.read(imagedata, nread, nbytes - nread);
+	    if (nval < 0) break;
+
+	    nread += nval;
+	    //System.out.println("RobotImageDisplay: nread "+nread+" of "+nbytes);
 	  }
-	}
+
+	  if(nread != nbytes)
+	  {
+	    out.println("RobotImageDisplay: nread != nbytes "+nread+"!="+nbytes);
+	  }
+	  else
+	  {
+	    FileOutputStream fimage;
+	    try
+            {
+	      fimage = new FileOutputStream(photofilename);
+	      fimage.write(imagedata);
+	      fimage.flush();
+	      fimage.close();
+            }
+            catch(FileNotFoundException fnfe)
+            {
+	      System.err.println(photofilename+" not found");
+	      fnfe.printStackTrace();
+            }
+	    catch (Exception e)
+	    {
+	      e.printStackTrace();
+	      System.err.println("Error writing image data to file.");
+	    }
+	    out.println(jpegfileline);
+	  }
+
+        }
       }
+      else
+      {
+	out.println("PSP_SnapPicture Snapping... " + psc.getSessionAddress());
+	RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+
+	NewTask t = theLDMF.newTask();
+	t.setPlan(theLDMF.getRealityPlan());
+	t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.GETIMAGE]));
+
+	psc.getServerPlugInSupport().publishAddForSubscriber(t);
+      }
+
     }
     catch (Exception ex)
     {

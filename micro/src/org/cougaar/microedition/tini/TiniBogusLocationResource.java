@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -27,6 +27,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 import javax.comm.*;
+import java.text.*;
 
 import org.cougaar.microedition.asset.LocationResource;
 import org.cougaar.microedition.asset.ControllerResource;
@@ -40,6 +41,8 @@ public class TiniBogusLocationResource extends ControllerResource implements Loc
   private double latitude = 0.0;
   private double heading = 0.0;
   private double altitude = 0.0;
+  private long msecstime = 0;
+  private long tincrement = 1000;
   private String myName = "";
   private Hashtable attrtable = null;
 
@@ -96,11 +99,14 @@ public class TiniBogusLocationResource extends ControllerResource implements Loc
     }
   }
 
+
   public void getValues(long [] values)
   {
     values[0] = (long)(scalingFactor*getLatitude());
     values[1] = (long)(scalingFactor*getLongitude());
     values[2] = (long)(scalingFactor*getHeading());
+
+    values[3] = System.currentTimeMillis();
   }
 
   public void getValueAspects(int [] aspects)
@@ -108,11 +114,12 @@ public class TiniBogusLocationResource extends ControllerResource implements Loc
     aspects[0] = Constants.Aspects.LATITUDE;
     aspects[1] = Constants.Aspects.LONGITUDE;
     aspects[2] = Constants.Aspects.HEADING;
+    aspects[3] = Constants.Aspects.TIME;
   }
 
   public int getNumberAspects()
   {
-    return 3;
+    return 4;
   }
 
   public void setChan(int c) {}
@@ -138,7 +145,13 @@ public class TiniBogusLocationResource extends ControllerResource implements Loc
 
   public void modifyControl(String controlparameter, String controlparametervalue)
   {
-
+    if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]))
+    {
+      Double temp = new Double(controlparametervalue);
+      double rotationdegrees = (long)temp.doubleValue();
+      System.out.println("TiniBogusLocationResource: augment heading: " +rotationdegrees +" degrees");
+      adjustHeading(rotationdegrees);
+    }
   }
 
   public boolean getSuccess()
@@ -165,6 +178,13 @@ public class TiniBogusLocationResource extends ControllerResource implements Loc
   {
 
     return heading;
+  }
+
+  public void adjustHeading(double deg)
+  {
+    heading += deg;
+    if(heading > 180.0) heading -= 360.0;
+    if(heading < -180.0) heading += 360.0;
   }
 
   public Date getDate()
