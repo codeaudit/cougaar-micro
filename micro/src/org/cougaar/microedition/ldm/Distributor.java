@@ -55,21 +55,22 @@ public class Distributor {
     return getNodeName() + '/' + UIDcount++;
   }
 
-  private Object owner = null;
+  private Thread owner = null;
 
   /**
    * Begin modifications to the blackboard.
    * @param subscriber The object that will hold the "lock" on this transaction.
    */
-  public synchronized void openTransaction(Object subscriber) {
-    if (subscriber == owner)
-      return;
+  public synchronized void openTransaction(Thread thread) {
+    if (thread == owner)
+      throw new RuntimeException("Attempt to re-open transaction");
     while (owner != null) {
       try {
+//        System.out.println("waiting for owner to closeTransaction, if wedged, problems");
         wait();
       } catch (InterruptedException ie) {}
     }
-    owner = subscriber;
+    owner = thread;
     addedList.removeAllElements();
     changedList.removeAllElements();
     removedList.removeAllElements();
@@ -82,8 +83,8 @@ public class Distributor {
    * @exception RuntimeException if the subscriber parameter does not equal the last
    * subscriber given to openTransaction.
    */
-  public void closeTransaction(Object subscriber) {
-    closeTransaction(subscriber, true);
+  public void closeTransaction(Thread thread, Object subscriber) {
+    closeTransaction(thread, subscriber, true);
   }
 
 
@@ -97,9 +98,9 @@ public class Distributor {
    * @exception RuntimeException if the subscriber parameter does not equal the last
    * subscriber given to openTransaction.
    */
-  public synchronized void closeTransaction(Object subscriber, boolean seeMyOwnChanges) {
+  public synchronized void closeTransaction(Thread thread, Object subscriber, boolean seeMyOwnChanges) {
 
-  if (subscriber != owner)
+  if (owner == null || thread != owner )
     throw new RuntimeException("Attempt to close unopen transaction");
 
   // process added list
@@ -266,11 +267,11 @@ public class Distributor {
       while (runnableSubscribers.size() > 0) {
         Subscriber runme = (Subscriber)runnableSubscribers.elementAt(0);
         runnableSubscribers.removeElementAt(0);
-        openTransaction(runme);
+        openTransaction(Thread.currentThread());
         runme.execute();
         runme.getSubscription().clearLists();
         // collect changed subscriptions
-        closeTransaction(runme);
+        closeTransaction(Thread.currentThread(), runme);
 //        try {Thread.sleep(5000);} catch (Exception e) {}
       }
       waitForSomeWork();
