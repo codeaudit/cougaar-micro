@@ -60,18 +60,21 @@ public class TiniSONARController extends ControllerResource {
   private long newreturnvalue = 0;
   private long oldreturnvalue = -1;
 
-  public long getValue()
+  public void getValues(double [] values)
   {
     oldreturnvalue = newreturnvalue;
-
-    return(newreturnvalue);
+    values[0] = (double)newreturnvalue;
   }
 
-  public long getValueAspect()
+  public void getValueAspects(int [] aspects)
   {
-    return Constants.Aspects.DETECTION;
+    aspects[0] = Constants.Aspects.DETECTION;
   }
 
+  public int getNumberAspects()
+  {
+    return 1;
+  }
   public boolean getSuccess()
   {
     if(newreturnvalue > 0 )

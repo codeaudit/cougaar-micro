@@ -81,8 +81,9 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
   /**
    * Constructor.  Sets name default.
    */
-  public TiniMach5LocomotionResource() {
-    setName("Mach5LocomotionResource");
+  public TiniMach5LocomotionResource()
+  {
+
   }
 
   private String portName = "serial1";
@@ -107,6 +108,7 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
   public void setParameters(Hashtable params)
   {
     setName("TiniMach5LocomotionResource");
+    setScalingFactor(Constants.Geophysical.DEGTOBILLIONTHS);
 
     if (params != null)
     {
@@ -279,7 +281,10 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
   private Mach5RelativePositionData ReadCurrentState()
   {
    Mach5RelativePositionData ret = new Mach5RelativePositionData();
+
    long [] wheelpos = getWheelPositions();
+   if(wheelpos == null)
+     return laststatechange;
 
    //compute change in wheel positioning since last command
    long diffleft = wheelpos[0] - laststatechange.leftwheelpos;
@@ -339,7 +344,8 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
         ret[0] = Long.parseLong(left);
         ret[1] = Long.parseLong(right);
       }
-    } catch (NumberFormatException nfe) { // error parsing wheel position text
+    } catch (Exception nfe) { // error parsing wheel position text
+      System.out.println("getWheelPositions Exception " +nfe);
       ret = null;
     }
     return ret;
@@ -487,6 +493,39 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
 
   }
 
+  public void getCoordinates( double [] coord)
+  {
+    //read the wheels to tell me where you are at
+    //use the same command to keep it going
+    Mach5RelativePositionData upd = ReadCurrentState();
+
+    //rotate the coordinate frame to align with absolute coordinate frame
+    double xpp = upd.Xrel*shcos - upd.Yrel*shsin;
+    double ypp = upd.Xrel*shsin + upd.Yrel*shcos;
+
+    xpp = xpp/1000.0;
+    ypp = ypp/1000.0; //meters
+
+    double lat = surveylatitude + ypp/Constants.Geophysical.EARTH_RADIUS_METERS;
+    double lon = surveylongitude + xpp / (Constants.Geophysical.EARTH_RADIUS_METERS * TiniTrig.tinicos(0.5*(surveylatitude + lat)));
+
+    lat *= (180.0/Math.PI); //convert to degrees
+    lon *= (180.0/Math.PI); //convert to degrees
+
+    double h = (Math.PI/2.0) - upd.Thetarel;
+    h *= (180.0/Math.PI);
+
+    //adjust by heading of coordinate frame
+    h += surveyheading;
+    if(h < 0.0) h += 360.0;
+    if(h >= 360.0) h -=360.0;
+
+    coord[0] = lat;
+    coord[1] = lon;
+    coord[2] = h;
+
+  }
+
   public double getLatitude()
   {
     //read the wheels to tell me where you are at
@@ -555,15 +594,21 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
     return new Date();
   }
 
-  public long getValue()
+  public void getValues(double [] values)
   {
-    long val = (long)getHeading();
-    return val;
+    getCoordinates(values);
   }
 
-  public long getValueAspect()
+  public void getValueAspects(int [] aspects)
   {
-    return Constants.Aspects.HEADING;
+    aspects[0] = Constants.Aspects.LATITUDE;
+    aspects[1] = Constants.Aspects.LONGITUDE;
+    aspects[2] = Constants.Aspects.HEADING;
+  }
+
+  public int getNumberAspects()
+  {
+    return 3;
   }
 
   public void setChan(int c) {}

@@ -164,11 +164,17 @@ public class TiniRotationAndLimitSensor extends RotationAndLimitSensorResource {
     }
   }
 
-  public long getValue() {
-    return 0;
+  public void getValues(double [] values)
+  {
   }
 
-  public long getValueAspect() { return 0; }
+  public void getValueAspects(int [] aspects)
+  {
+
+  }
+
+  public int getNumberAspects() { return 0; }
+
   public void setChan(int c) {}
   public void setUnits(String u) {}
   public void startControl() {}

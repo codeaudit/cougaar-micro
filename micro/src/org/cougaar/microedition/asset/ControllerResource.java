@@ -18,10 +18,11 @@ public abstract class ControllerResource extends ResourceAdapter
 {
   protected int chan = 0;
   protected String units = "";
-  protected int scalingFactor = 1000;
+  protected double scalingFactor = 1000.0;
 
-  public abstract long getValue(); //more of a sensor resource item, keep for now
-  public abstract long getValueAspect(); //more of a sensor resource item, keep for now
+  public abstract void getValues( double [] values); //more of a sensor resource item, keep for now
+  public abstract void getValueAspects(int [] values); //more of a sensor resource item, keep for now
+  public abstract int getNumberAspects();
   public boolean getSuccess() { return true; }
   public abstract void setChan(int c);
   public abstract void setUnits(String u);
@@ -40,9 +41,14 @@ public abstract class ControllerResource extends ResourceAdapter
     return units;
   }
 
-  public long getScalingFactor() {
+  public double getScalingFactor() {
     return scalingFactor;
   }
+
+ public void setScalingFactor(double sf) {
+    scalingFactor = sf;
+  }
+
   //this can be used to associated the resource to one item, task, object, etc.
   private String associated_id = "";
   public void setAssociation(String id)
