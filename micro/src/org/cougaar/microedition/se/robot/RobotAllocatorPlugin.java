@@ -22,7 +22,7 @@
  */
 package org.cougaar.microedition.se.robot;
 
-import org.cougaar.core.plugin.*;
+import org.cougaar.planning.plugin.legacy.*;
 import org.cougaar.core.util.*;
 import org.cougaar.core.blackboard.*;
 

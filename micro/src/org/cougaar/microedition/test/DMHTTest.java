@@ -2,7 +2,7 @@ package org.cougaar.microedition.test;
 
 import java.util.*;
 import java.io.*;
-import org.cougaar.microedition.dmht.*;
+//import org.cougaar.microedition.dmht.*;
 
 import javax.swing.*;
 import java.awt.*;

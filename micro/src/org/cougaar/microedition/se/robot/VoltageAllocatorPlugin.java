@@ -24,10 +24,11 @@ package org.cougaar.microedition.se.robot;
 
 import java.util.*;
 
-import org.cougaar.core.plugin.*;
+import org.cougaar.planning.plugin.legacy.*;
 import org.cougaar.core.util.*;
 import org.cougaar.util.*;
 import org.cougaar.core.blackboard.*;
+import org.cougaar.core.service.*;
 import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.microedition.se.domain.*;
 
@@ -73,7 +74,14 @@ public class VoltageAllocatorPlugin extends SimplePlugin {
       }});
 
     if (log) {
-      lf = new Logfile(this.getClusterIdentifier().cleanToString()+"-"+Name+".csv");
+      String agentName = "unknown";
+      AgentIdentificationService ais =
+        (AgentIdentificationService) getBindingSite().getServiceBroker().getService(this, AgentIdentificationService.class, null);
+      if (ais != null) {
+        agentName = ais.getName();
+      }
+
+      lf = new Logfile(agentName+"-"+Name+".csv");
     }
 
     System.out.println(Name+"AllocationPlugin:setupSubscriptions()");

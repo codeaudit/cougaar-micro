@@ -28,6 +28,8 @@ import org.cougaar.core.plugin.*;
 import org.cougaar.core.util.*;
 import org.cougaar.util.*;
 import org.cougaar.planning.ldm.asset.*;
+import org.cougaar.planning.ldm.PlanningFactory;
+import org.cougaar.planning.service.PrototypeRegistryService;
 import org.cougaar.core.blackboard.*;
 import org.cougaar.core.service.*;
 import org.cougaar.core.component.*;
@@ -41,7 +43,7 @@ import org.cougaar.microedition.shared.*;
  */
 public class NameServerPlugin extends ComponentPlugin implements MessageListener, ServiceAvailableListener {
   private MEMessageService service;
-  private RootFactory theLDMF;
+  private PlanningFactory theLDMF;
   private short lastPort = 7000;
 
   private IncrementalSubscription microAgents;
@@ -52,7 +54,7 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
     Collection parameters = getParameters();
     loggingService.debug("SetupSubscriptions");
 
-    theLDMF = getDomainService().getFactory();
+    theLDMF = (PlanningFactory)getDomainService().getFactory("planning");
     theLDMF.addPropertyGroupFactory(new org.cougaar.microedition.se.domain.PropertyGroupFactory());
 
     MicroAgent new_prototype = (MicroAgent)theLDMF.createPrototype
@@ -151,7 +153,15 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
         }
 
         StringBuffer registrationResponse = new StringBuffer();
-        registrationResponse.append(getBindingSite().getAgentIdentifier().toString() + ":");
+        String agentName = "unknown";
+        AgentIdentificationService ais =
+          (AgentIdentificationService) getBindingSite().getServiceBroker().getService(this, AgentIdentificationService.class, null);
+        if (ais != null) {
+          agentName = ais.getName();
+        }
+
+
+        registrationResponse.append(agentName + ":");
         registrationResponse.append(Encodable.xmlPreamble);
         rr.encode(registrationResponse);
         registrationResponse.append("\0");
@@ -190,7 +200,13 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
         Enumeration agent_enum = agents.elements();
 
         StringBuffer lookupResponse = new StringBuffer();
-        lookupResponse.append(getBindingSite().getAgentIdentifier().toString() + ":");
+        String agentName = "unknown";
+        AgentIdentificationService ais =
+          (AgentIdentificationService) getBindingSite().getServiceBroker().getService(this, AgentIdentificationService.class, null);
+        if (ais != null) {
+          agentName = ais.getName();
+        }
+        lookupResponse.append(agentName + ":");
         lookupResponse.append(Encodable.xmlPreamble);
         lookupResponse.append("<list>");
         while (agent_enum.hasMoreElements()) {

@@ -1,0 +1,142 @@
+<project name="cougaarme" default="all">
+  <property name="j2me_dir" value="c:\dev\j2me_cldc"/>
+  <property name="cougaar" value="c:\alp\b11_0"/>
+
+  <property name="TOP" value=".."/>
+  <property name="src" value="${TOP}/src"/>
+
+  <property name="classes" value="${TOP}/classes"/>
+  <property name="preverified" value="${TOP}/preverified"/>
+  <property name="deploy" value="${TOP}/deploy"/>
+
+  <property name="classes_se" value="${TOP}/classes_se"/>
+  <property name="deploy_se" value="${TOP}/deploy"/>
+
+  <property name="build.compiler" value="modern"/>
+  <property name="build.compiler.debug" value="on"/>
+  <property name="build.compiler.deprecation" value="off"/>
+  <property name="build.compiler.optimize" value="off"/>
+  <property name="build.compiler.optimize" value="off"/>
+
+  <path id="compile.classpath">
+    <pathelement path="${j2me_dir}/bin/common/api/classes"/>
+  </path>
+  <property name="compile.classpath" value="${j2me_dir}/bin/common/api/classes"/>
+  
+    <target name="clean">
+      <!-- Delete our the ${build}, ${obf} and ${deploy} directory trees -->
+      <delete dir="${classes}"/> 
+      <delete dir="${deploy}"/> 
+      <delete dir="${preverified}"/> 
+
+      <delete dir="${classes_se}"/> 
+      <delete dir="${deploy_se}"/> 
+    </target> 
+
+
+    <target name="all" depends="jar,jar_se"/>
+
+    <target name="compile" depends="">
+      <mkdir dir="${classes}" />
+      <available property="has.build" file="${classes}"/>
+      <!-- target=1.1 required for j2me -->
+      <javac srcdir="${src}" destdir="${classes}"
+             target="1.1"
+             includeAntRuntime="no"
+             debug="${build.compiler.debug}"
+             optimize="${build.compiler.optimize}"
+             deprecation="${build.compiler.deprecation}">
+        <classpath>
+          <path refid="compile.classpath" />
+        </classpath>
+        <exclude name="com/**"/>
+        <exclude name="org/cougaar/microedition/saje/**"/>
+        <exclude name="org/cougaar/microedition/tini/**"/>
+        <exclude name="org/cougaar/microedition/se/**"/>
+        <exclude name="org/cougaar/microedition/demo/**"/>
+        <exclude name="org/cougaar/microedition/test/**"/>
+        <exclude name="org/cougaar/microedition/jvm/**"/>
+      </javac>
+    </target>
+    <target name="preverify" depends="compile">
+      <mkdir dir="${TOP}/preverified"/>
+      <exec executable="${j2me_dir}/bin/win32/preverify">
+        <arg line="-classpath ${compile.classpath}"/>
+        <arg line="-d ${preverified}"/>
+        <arg line="${classes}"/>
+      </exec>
+    </target>
+    <target name="jar" depends="preverify">
+      <mkdir dir="${deploy}"/>
+      <jar basedir="${preverified}"
+        jarfile="${deploy}/cougaarme.jar">
+      </jar>
+    </target>
+
+
+
+
+
+
+
+
+    <!-- COUGAAR SE CLASSES -->
+    <path id="compile.classpath_se">
+      <fileset dir="${cougaar}/lib">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${cougaar}/sys">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${cougaar}/clib">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+
+    <target name="makeassets">
+      <java classname="org.cougaar.tools.build.AssetWriter"
+            classpathref="compile.classpath_se"
+            dir="${src}/org/cougaar/microedition/se/domain"
+            fork="true">
+         <arg value="-Porg.cougaar.microedition.se.domain"/>
+         <arg value="assets.def"/>
+      </java>
+      <java classname="org.cougaar.tools.build.PGWriter"
+            classpathref="compile.classpath_se"
+            dir="${src}/org/cougaar/microedition/se/domain"
+            fork="true">
+         <arg value="properties.def"/>
+      </java>
+    </target>
+
+    <target name="compile_se" depends="makeassets">
+      <mkdir dir="${classes_se}" />
+      <available property="has.build" file="${classes_se}"/>
+      <javac destdir="${classes_se}"
+             includeAntRuntime="no"
+             debug="${build.compiler.debug}"
+             optimize="${build.compiler.optimize}"
+             deprecation="${build.compiler.deprecation}">
+        <classpath>
+          <path refid="compile.classpath_se" />
+        </classpath>
+        <src path="${src}/org/cougaar/microedition/se"/>
+        <!--  needs porting
+        <src path="${src}/org/cougaar/microedition/demo"/>
+        <src path="${src}/org/cougaar/microedition/test"/>
+        -->
+        <src path="${src}/org/cougaar/microedition/shared"/>
+        <exclude name="**/PSP*"/>
+        <exclude name="**/ssw/**"/>
+      </javac>
+    </target>
+    <target name="jar_se" depends="compile_se">
+      <mkdir dir="${deploy}"/>
+      <jar basedir="${classes_se}"
+        jarfile="${deploy}/cougaarmedomain.jar">
+      </jar>
+    </target>
+
+
+</project>
+  

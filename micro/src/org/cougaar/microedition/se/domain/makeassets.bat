@@ -1,4 +1,4 @@
-echo off
+echo on
 rem /*
 rem  * <copyright>
 rem  * Copyright 1997-2000 Defense Advanced Research Projects Agency (DARPA)
@@ -12,7 +12,7 @@ rem  */
 rem Script to generate asset classes
 
 set LIBPATHS=%COUGAAR_INSTALL_PATH%\lib\core.jar
-set LIBPATHS=%LIBPATHS%;%COUGAAR_INSTALL_PATH%\lib\build.jar
+set LIBPATHS=%LIBPATHS%;%COUGAAR_INSTALL_PATH%\clib\build.jar
 
 rem Regenerate and recompile all property/asset files
 java -classpath %LIBPATHS% org.cougaar.tools.build.AssetWriter  -Porg.cougaar.microedition.se.domain assets.def

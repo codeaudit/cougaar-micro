@@ -24,7 +24,7 @@ package org.cougaar.microedition.se.test;
 
 import java.util.*;
 
-import org.cougaar.core.plugin.*;
+import org.cougaar.planning.plugin.legacy.*;
 import org.cougaar.core.util.*;
 import org.cougaar.util.*;
 import org.cougaar.core.blackboard.*;

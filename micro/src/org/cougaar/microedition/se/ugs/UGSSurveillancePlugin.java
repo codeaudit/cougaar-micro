@@ -27,7 +27,7 @@ import org.cougaar.microedition.se.domain.*;
   This class is the Surveillance Manager for the NSOF demo.
   It is based upon the SurveillancePlugin.
 */
-import org.cougaar.core.plugin.SimplePlugin;
+import org.cougaar.planning.plugin.legacy.SimplePlugin;
 import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.planning.ldm.plan.*;

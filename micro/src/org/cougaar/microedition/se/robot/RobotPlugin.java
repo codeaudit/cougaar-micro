@@ -27,7 +27,7 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-import org.cougaar.core.plugin.SimplePlugin;
+import org.cougaar.planning.plugin.legacy.SimplePlugin;
 import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.util.UnaryPredicate;
 

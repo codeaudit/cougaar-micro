@@ -44,7 +44,15 @@ public class MicroAgentMessagePlugin extends ComponentPlugin implements ServiceP
   private LoggingService loggingService;  
 
   protected void setupSubscriptions() {
-      service = new MEMessageService(getBindingSite().getAgentIdentifier().toString());
+      String agentName = "unknown";
+      AgentIdentificationService ais =
+        (AgentIdentificationService) getBindingSite().getServiceBroker().getService(this, AgentIdentificationService.class, null);
+      if (ais != null) {
+        agentName = ais.getName();
+      }
+
+
+      service = new MEMessageService(agentName);
       loggingService.debug("Adding service start");
       getBindingSite().getServiceBroker().addService(MEMessageService.class, this);
       loggingService.debug("Adding service done");

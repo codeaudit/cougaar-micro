@@ -22,7 +22,7 @@
  */
 package org.cougaar.microedition.se.robot;
 
-import org.cougaar.core.plugin.SimplePlugin;
+import org.cougaar.planning.plugin.legacy.SimplePlugin;
 import org.cougaar.core.blackboard.IncrementalSubscription;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.planning.ldm.plan.*;
