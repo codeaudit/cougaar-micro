@@ -31,6 +31,8 @@ SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/tinyxml/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/tinyxml/util/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/util/*.java)
 
+SRCFILES += $(wildcard $(TOP)/gov/nasa/jpl/sensorweb/*.java)
+
 OBJFILES = $(patsubst %.java,%.class,$(SRCFILES))
 
 
@@ -41,7 +43,7 @@ preverify:
               $(TMPOUT) || exit 1; \
 
 cougaarme.jar: preverify 
-	$(JAR) -cf cougaarme.jar -C $(OUTDIR) org
+	$(JAR) -cf cougaarme.jar -C $(OUTDIR) org -C $(OUTDIR) gov
 
 PalmMain.prc: cougaarme.jar
 	java -classpath $(KVMROOT)/tools/palm/src/palm.jar palm.database.MakePalmApp \

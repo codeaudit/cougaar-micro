@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>sample SensorWeb cluster</description>
+  <plugin sleeptime="1000">gov.nasa.jpl.sensorweb.SWSimPlugIn</plugin>
+  <plugin sleeptime="1000">gov.nasa.jpl.sensorweb.SWSampleAppPlugIn</plugin>
+  <!-- Infrastructure PlugIns -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+</NodeConfiguration>
