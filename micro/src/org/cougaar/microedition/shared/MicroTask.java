@@ -23,6 +23,13 @@ public class MicroTask implements Encodable {
   private java.util.Vector prepositionalPhrases;
   private cougaar.microedition.shared.MicroAllocation allocation;
 
+  public void setMe(MicroTask mt) {
+    uniqueID = mt.uniqueID;
+    verb = mt.verb;
+    prepositionalPhrases = mt.prepositionalPhrases;
+    allocation = mt.allocation;
+  }
+
   /**
    * Get the verb describing what to do.
    */
