@@ -33,7 +33,7 @@ public class KvmServerSocketME implements ServerSocketME {
 
   public void open( int myListenPort ) throws IllegalArgumentException, IllegalAccessException, IOException
   {
-    ss = (StreamConnectionNotifier)Connector.open("serversocket://:" + myListenPort);
+    ss = (StreamConnectionNotifier)Connector.open("serversocket://:" + myListenPort, Connector.READ_WRITE, true);
   }
 
   public SocketME accept() throws IOException
