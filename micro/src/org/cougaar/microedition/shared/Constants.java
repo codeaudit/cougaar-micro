@@ -45,10 +45,11 @@ public interface Constants {
     static int STARTSYSTEM = 8;
     static int SETORIENTATION = 9;
 
-    static String [] prepositions = { "Degrees", "Speed", "Velocity" };
+    static String [] prepositions = { "Degrees", "Speed", "Velocity", "TurretHemisphere" };
     final static int ORIENTATIONPREP= 0; // "Degrees"
     final static int SPEEDPREP= 1; // "Speed";
     final static int VELOCITYPREP=2; // "Velocity";
+    final static int TURRETDIRECTIONPREP=3; // "TurretHemisphere"
 
   }
 
