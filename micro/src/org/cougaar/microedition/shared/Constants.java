@@ -21,6 +21,7 @@ public interface Constants {
     static int SCANDIR = 105;
     static int IMAGE = 106;
     static int FLASHLIGHT = 107;
+    static int DETECTION_TIME = 108;
 
   }
 
