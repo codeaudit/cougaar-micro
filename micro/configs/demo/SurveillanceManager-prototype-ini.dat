@@ -1,0 +1,14 @@
+[Prototype]     Organization
+        
+[UIC]		"SurveillanceManager"
+
+[Relationship]
+        
+[TypeIdentificationPG]                      
+TypeIdentification		String	"SurveillanceManager"
+Nomenclature			String	"SurveillanceManager"
+AlternateTypeIdentification	String	"SurveillanceManager"
+
+[OrganizationPG]
+Roles	Collection<Role>  "SurveillanceManager"
+

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>Provider of lat and lon</description>
+
+  <plugin> org.cougaar.microedition.tini.TiniLocationPlugIn</plugin>
+
+  <!-- Infrastructure PlugIns -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+</NodeConfiguration>
