@@ -38,13 +38,14 @@ public class KvmValuemeter extends ValueResource {
 
 
 
-  PalmOut po = null;
+//  PalmOut po = null;
+int val = 0;
 
 
 
   public KvmValuemeter() {
 
-    po = new PalmOut();
+//    po = new PalmOut();
 
   }
 
@@ -60,9 +61,10 @@ public class KvmValuemeter extends ValueResource {
 
   public long getValue() {
 
-    int ival = po.getValue();
+//    int ival = po.getValue();
 
-    long ret = (long)ival;
+    long ret = (long)val;
+    val = val + 1;
 
     return ret  * getScalingFactor();
 

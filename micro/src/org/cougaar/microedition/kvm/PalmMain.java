@@ -1,9 +1,10 @@
 package org.cougaar.microedition.kvm;
 
-import com.sun.kjava.*;
+//import com.sun.kjava.*;
 import org.cougaar.microedition.cluster.Node;
 
-public class PalmMain extends Spotlet {
+//public class PalmMain extends Spotlet {
+public class PalmMain {
   static String myName = "PDA1";
 //  static String myHost = "192.233.51.176";
 //  static String myHost = "192.233.51.250";
