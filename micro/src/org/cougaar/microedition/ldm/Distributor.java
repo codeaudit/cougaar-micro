@@ -30,9 +30,9 @@ public class Distributor {
   }
 
   public synchronized void openTransaction() {
-    addedList.clear();
-    changedList.clear();
-    removedList.clear();
+    addedList.removeAllElements();
+    changedList.removeAllElements();
+    removedList.removeAllElements();
   }
 
   public void closeTransaction() {
@@ -46,16 +46,16 @@ public class Distributor {
       Subscriber s = (Subscriber)subsenum.nextElement();
       Vector list = s.getSubscription().getAddedList();
       if (!list.contains(o))
-        list.add(o);
+        list.addElement(o);
       list = s.getSubscription().getMemberList();
       if (!list.contains(o))
-        list.add(o);
+        list.addElement(o);
       if (!runnableSubscribers.contains(s))
-        runnableSubscribers.add(s);
+        runnableSubscribers.addElement(s);
     }
     // Update the master blackboard
     if (!allObjects.contains(o))
-      allObjects.add(o);
+      allObjects.addElement(o);
   }
 
   // process changed list
@@ -67,9 +67,9 @@ public class Distributor {
       Subscriber s = (Subscriber)subsenum.nextElement();
       Vector list = s.getSubscription().getChangedList();
       if (!list.contains(o))
-        list.add(o);
+        list.addElement(o);
       if (!runnableSubscribers.contains(s))
-        runnableSubscribers.add(s);
+        runnableSubscribers.addElement(s);
     }
   }
 
@@ -82,14 +82,14 @@ public class Distributor {
       Subscriber s = (Subscriber)subsenum.nextElement();
       Vector list = s.getSubscription().getRemovedList();
       if (!list.contains(o))
-        list.add(o);
+        list.addElement(o);
       list = s.getSubscription().getMemberList();
-      list.remove(o);
+      list.removeElement(o);
       if (!runnableSubscribers.contains(s))
-        runnableSubscribers.add(s);
+        runnableSubscribers.addElement(s);
     }
     // Update the master blackboard
-    allObjects.remove(o);
+    allObjects.removeElement(o);
   }
 
 
@@ -97,39 +97,39 @@ public class Distributor {
 
   public boolean publishAdd(Object o) {
     if (!addedList.contains(o))
-      addedList.add(o);
+      addedList.addElement(o);
     return true;
   }
 
   public boolean publishChange(Object o) {
     if (!changedList.contains(o))
-      changedList.add(o);
+      changedList.addElement(o);
     return true;
   }
 
   public boolean publishRemove(Object o) {
     if (!removedList.contains(o))
-      removedList.add(o);
+      removedList.addElement(o);
     return true;
   }
 
   public boolean addSubscriber(Subscriber s) {
     if (!allSubscribers.contains(s))
-      allSubscribers.add(s);
+      allSubscribers.addElement(s);
     for (Enumeration objects = allObjects.elements();  objects.hasMoreElements();) {
       Object o = objects.nextElement();
       if (s.getSubscription().getPredicate().execute(o)) {
-        s.getSubscription().getMemberList().add(o);
-        s.getSubscription().getAddedList().add(o);
+        s.getSubscription().getMemberList().addElement(o);
+        s.getSubscription().getAddedList().addElement(o);
         if (!runnableSubscribers.contains(s))
-          runnableSubscribers.add(s);
+          runnableSubscribers.addElement(s);
       }
     }
     return true;
   }
 
   public boolean removeSubscriber(Subscriber s) {
-    allSubscribers.remove(s);
+    allSubscribers.removeElement(s);
     return true;
   }
 
@@ -152,7 +152,8 @@ public class Distributor {
     for (;;) {
       // execute PlugIns
       while (runnableSubscribers.size() > 0) {
-        Subscriber runme = (Subscriber)runnableSubscribers.remove(0);
+        Subscriber runme = (Subscriber)runnableSubscribers.elementAt(0);
+        runnableSubscribers.removeElementAt(0);
         openTransaction();
         runme.execute();
         runme.getSubscription().clearLists();

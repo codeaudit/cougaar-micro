@@ -30,9 +30,9 @@ public class Subscription {
   private java.util.Vector memberList;
 
   public void clearLists() {
-    addedList.clear();
-    changedList.clear();
-    removedList.clear();
+    addedList.removeAllElements();
+    changedList.removeAllElements();
+    removedList.removeAllElements();
   }
 
   public cougaar.microedition.ldm.Subscriber getSubscriber() {

@@ -19,7 +19,7 @@ package cougaar.microedition.util;
  * with Objectspace's JGL package.
  */
 
-public interface UnaryPredicate extends java.io.Serializable {
+public interface UnaryPredicate {
   /** @return true iff the object "passes" the predicate */
   boolean execute(Object o);
 }
