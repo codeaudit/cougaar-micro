@@ -1,0 +1,1 @@
+java -classpath %ALP_INSTALL_PATH%/lib;%ALP_INSTALL_PATH%/classes org.cougaar.microedition.demo.RobotDemoUI file:test/uiinput.txt

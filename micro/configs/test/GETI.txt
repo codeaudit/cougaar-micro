@@ -1,0 +1,2 @@
+This is the test left click URL for the robot named GETI.
+Change robotui.properties to have this point to the ControlFlashlight.PSP.
