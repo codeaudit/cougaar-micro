@@ -27,7 +27,7 @@ public class MicroTask implements Encodable {
     uniqueID = mt.uniqueID;
     verb = mt.verb;
     prepositionalPhrases = mt.prepositionalPhrases;
-    allocation = mt.allocation;
+    // (don't want to null out the allocation) allocation = mt.allocation;
   }
 
   /**
