@@ -22,10 +22,18 @@ public class TaskDecoder extends HandlerBase {
   public TaskDecoder() {
   }
 
+  /**
+   * Not used. No CHARDATA in the MicroTask encoding.
+   */
   public void charData(String charData) {
     System.out.println("CHARDATA: "+charData);
   }
 
+  /**
+   * Main method to decode a MicroTask.
+   * @param data XML text of an encoded MicroTask.
+   * @return the filled-in MicroTask.
+   */
   public MicroTask decode(String data) {
     t = new MicroTask();
     try {
@@ -52,7 +60,6 @@ public class TaskDecoder extends HandlerBase {
    * @param attr a hashtable containing the explicitly supplied attributes (as strings)
    */
   public void elementStart(String name, Hashtable attr) throws ParseException {
-    System.out.println("Element: " + name);
     if (name.equals(MicroTask.tag)) {
       getTaskAttrs(attr);
     }
@@ -70,15 +77,25 @@ public class TaskDecoder extends HandlerBase {
     }
   }
 
+  /**
+   * Get the attributes associated with the MicroTask object
+   */
   private void getTaskAttrs(Hashtable attr) {
     t.setVerb((String)attr.get("verb"));
+    t.setUniqueID((String)attr.get("uniqueID"));
   }
 
+  /**
+   * Get the attributes assocaited with the MicroAllocation object.
+   */
   private void getAllocationAttrs(Hashtable attr) {
     if (t.getAllocation() == null)
       t.setAllocation(new MicroAllocation());
   }
 
+  /**
+   * Get the attributes assocaited with the MicroAllocationResult object.
+   */
   private void getAllocationResultAttrs(Hashtable attr) {
     if (t.getAllocation().getReportedResult() == null)
       t.getAllocation().setReportedResult(new MicroAllocationResult());
@@ -96,6 +113,9 @@ public class TaskDecoder extends HandlerBase {
     mar.setConfidenceRating(Double.valueOf(str).doubleValue());
   }
 
+  /**
+   * Get the aspect attributes assocaited with the MicroAllocationResult object.
+   */
   private void getAllocationResultAspects(Hashtable attr) {
     MicroAllocationResult mar = t.getAllocation().getReportedResult();
     String str;
@@ -108,6 +128,9 @@ public class TaskDecoder extends HandlerBase {
     mar.addAspectValuePair(aspect, value);
   }
 
+  /**
+   * Get the attributes assocaited with the MicroPrepositionalPhrase object.
+   */
   private void getPrepositionalPhraseAttrs(Hashtable attr) {
     String prep = (String)attr.get("preposition");
     String obj = (String)attr.get("indirectObject");
@@ -118,6 +141,10 @@ public class TaskDecoder extends HandlerBase {
 
   }
 
+  /**
+   * A test stub
+   */
+/* No need to code-bloat the KVM
   public static void main(String [] args) {
     MicroTask t = new MicroTask();
     t.setVerb("AVerb");
@@ -146,4 +173,5 @@ public class TaskDecoder extends HandlerBase {
     MicroTask new_t = d.decode(str.toString());
     System.out.println(new_t);
   }
+*/
 }

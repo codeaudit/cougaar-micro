@@ -10,6 +10,9 @@
  */
 package cougaar.microedition.shared;
 
+/**
+ * Describes the status of an allocation.
+ */
 public class MicroAllocationResult implements Encodable {
 
   public MicroAllocationResult() {
@@ -23,6 +26,9 @@ public class MicroAllocationResult implements Encodable {
   private double confidenceRating;
   private double[] values = new double[0];
   private int[] aspects = new int[0];
+  /**
+   * XML encode this object and all sub-objects.
+   */
   public void encode(StringBuffer str) {
     str.append("<");
     str.append(tag);
@@ -39,55 +45,98 @@ public class MicroAllocationResult implements Encodable {
     str.append(">");
   }
 
+  /**
+   * Is the disposition of this task OK?
+   */
   public void setSuccess(boolean newSuccess) {
     success = newSuccess;
   }
 
+  /**
+   * Is the disposition of this task OK?
+   */
   public boolean isSuccess() {
     return success;
   }
 
+  /**
+   * Get the results (array is parallel to getAspects())
+   */
   public double[] getValues() {
     return values;
   }
 
+  /**
+   * Set the results (array is parallel to getAspects())
+   */
   public void setValues(double[] newValues) {
     values = newValues;
   }
 
+  /**
+   * Set the amount of risk associated with performing this task.
+   * @param newRisk (0 = no risk, 1 = certain death)
+   */
   public void setRisk(double newRisk) {
     risk = newRisk;
   }
 
+  /**
+   * Get the amount of risk associated with performing this task.
+   * @return 0 = no risk, 1 = certain death
+   */
   public double getRisk() {
     return risk;
   }
 
+  /**
+   * Attach an arbitrary string to this allocation result.
+   */
   public void setAuxData(String newAuxData) {
     auxData = newAuxData;
   }
 
+  /**
+   * Get an arbitrary string attached to this allocation result.
+   */
   public String getAuxData() {
     return auxData;
 
   }
 
+  /**
+   * Set how likely correct the answer(s) is/are.
+   * @param newConfidenceRating 0 = unsure, 1.0 = completely sure.
+   */
   public void setConfidenceRating(double newConfidenceRating) {
     confidenceRating = newConfidenceRating;
   }
 
+  /**
+   * Get how likely correct the answer(s) is/are.
+   * @return 0 = unsure, 1.0 = completely sure.
+   */
   public double getConfidenceRating() {
     return confidenceRating;
   }
 
+  /**
+   * Set the results aspects (array is parallel to getValues())
+   */
   public void setAspects(int[] newAspects) {
     aspects = newAspects;
   }
 
+  /**
+   * Get the results aspects (array is parallel to getValues())
+   */
   public int[] getAspects() {
     return aspects;
   }
 
+  /**
+   * Add a new aspect and value to the current set.
+   */
   public void addAspectValuePair(int aspect, double value) {
     int [] newAspects = new int[aspects.length + 1];
     double [] newValues = new double[aspects.length + 1];

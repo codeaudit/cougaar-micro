@@ -10,6 +10,12 @@
  */
 package cougaar.microedition.shared;
 
+/**
+ * Interface for things that can XML encode themselves.
+ */
 public interface Encodable {
+  /**
+   * XML encode this object and all sub-objects.
+   */
   void encode(StringBuffer str);
 } 

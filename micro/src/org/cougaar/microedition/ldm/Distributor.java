@@ -11,6 +11,8 @@ package cougaar.microedition.ldm;
 
 import java.util.*;
 
+import cougaar.microedition.io.*;
+
 /**
  * The Distributor registers PlugIn subscriptions, executing PlugIns based
  * on changes to their subscriptions.
@@ -29,13 +31,26 @@ public class Distributor {
   public Distributor() {
   }
 
-  public synchronized void openTransaction() {
+  private Object owner = null;
+
+  public synchronized void openTransaction(Object subscriber) {
+    if (subscriber == owner)
+      return;
+    while (owner != null) {
+      try {
+        wait();
+      } catch (InterruptedException ie) {}
+    }
+    owner = subscriber;
     addedList.removeAllElements();
     changedList.removeAllElements();
     removedList.removeAllElements();
   }
 
-  public void closeTransaction() {
+  public synchronized void closeTransaction(Object subscriber) {
+
+  if (subscriber != owner)
+    throw new RuntimeException("Attempt to close unopen transaction");
 
   // process added list
   for (Enumeration objects = addedList.elements();  objects.hasMoreElements();) {
@@ -92,6 +107,8 @@ public class Distributor {
     allObjects.removeElement(o);
   }
 
+  owner = null;
+  notify();
 
   }
 
@@ -144,6 +161,15 @@ public class Distributor {
     return ret;
   }
 
+  private MessageTransport messageTransport = null;
+
+  public MessageTransport getMessageTransport() {
+    return messageTransport;
+  }
+  public void setMessageTransport(MessageTransport mt) {
+    messageTransport = mt;
+  }
+
   /**
    * Manage PlugIn subscriptions and executions
    */
@@ -154,11 +180,11 @@ public class Distributor {
       while (runnableSubscribers.size() > 0) {
         Subscriber runme = (Subscriber)runnableSubscribers.elementAt(0);
         runnableSubscribers.removeElementAt(0);
-        openTransaction();
+        openTransaction(runme);
         runme.execute();
         runme.getSubscription().clearLists();
         // collect changed subscriptions
-        closeTransaction();
+        closeTransaction(runme);
 //        try {Thread.sleep( 1000 );} catch (Exception e) {}
       }
     }

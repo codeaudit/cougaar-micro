@@ -10,6 +10,10 @@
  */
 package cougaar.microedition.shared;
 
+/**
+ * Qualifier describing how a task should be carried out.  These are two
+ * arbitrary strings.
+ */
 public class MicroPrepositionalPhrase implements Encodable {
 
   public MicroPrepositionalPhrase() {
@@ -40,6 +44,9 @@ public class MicroPrepositionalPhrase implements Encodable {
   }
 
   protected static String tag = "MicroPrepositionalPhrase";
+  /**
+   * XML encode this object and all sub-objects
+   */
   public void encode(StringBuffer str) {
     str.append("<");
     str.append(tag);
@@ -48,6 +55,6 @@ public class MicroPrepositionalPhrase implements Encodable {
     str.append("/>");
   }
 
-  
-  
+
+
 }

@@ -33,7 +33,7 @@ public class PacketReader {
 /**
  * This variable stores the sender object, what to do with the stuff once we read it.
  */
-  private PacketSender deliverer = null;
+  private MessageTransport deliverer = null;
 
 /**
  * This variable holds the value of the server socket port on which I am to listen.
@@ -56,21 +56,46 @@ public class PacketReader {
         System.out.println("Listening on " + myListenPort);
 
         while (true) {
-          bufr = ss.acceptInputStream();
-          while (true) {
-            bite = bufr.read();
-            if (bite <= 0)
-              break;
-            msg.append((char)bite);
+          try {
+            bufr = ss.acceptInputStream();
+            while (true) {
+              bite = bufr.read();
+              if (bite <= 0)
+                break;
+              msg.append((char)bite);
+            }
+            bufr.close();
+            String message = msg.toString();
+            ClusterId source = getSource(message);
+            deliverer.takePacket(getMessage(message), source);
+            msg.setLength(0);
+          } catch (Exception ex) {
+            System.err.println("Exception processing input message ");
+            ex.printStackTrace();
           }
-          deliverer.takePacket(msg.toString());
-          bufr.close();
-          msg.setLength(0);
         }
-      } catch (Exception e) {
-        System.err.println("Unable to setup ServerSocket " + e);
+      } catch (ClassNotFoundException cnfe) {
+        System.err.println("Error configuring message recv: ClassNotFoundException");
+        cnfe.printStackTrace();
+      } catch (IllegalAccessException iae) {
+        System.err.println("Error configuring message recv: IllegalAccessException");
+        iae.printStackTrace();
+      } catch (InstantiationException ie) {
+        System.err.println("Error configuring message recv: InstantiationException");
+        ie.printStackTrace();
+      } catch (IOException ioe) {
+        System.err.println("Error configuring message recv: IOException");
+        ioe.printStackTrace();
       }
     }
+  }
+
+  private ClusterId getSource(String msg) {
+    return deliverer.getNameMap().lookup(msg.substring(0, msg.indexOf(":")));
+  }
+
+  private String getMessage(String msg) {
+    return msg.substring(msg.indexOf(":")+1);
   }
 
   /**
@@ -86,10 +111,10 @@ public class PacketReader {
   /**
    * This method saves the packet handler object.
    *
-   * @param   ps    the PacketSender object that will do something with the incoming message.
+   * @param   ps    the MessageTransport object that will do something with the incoming message.
    * @return  none
    */
-  public void setPacketSender (PacketSender ps) {
+  public void setMessageTransport (MessageTransport ps) {
     deliverer = ps;
   }
 
