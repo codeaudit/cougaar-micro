@@ -4,7 +4,6 @@
 #33=org.cougaar.microedition.shared
 #37=org.cougaar.microedition.shared.tinyxml
 #38=org.cougaar.microedition.shared.tinyxml.util
-#40=org.cougaar.microedition.demo.telnet
 #41=org.cougaar.microedition.se.domain
 #42=org.cougaar.microedition.se.robot
 #43=org.cougaar.microedition.se.test
@@ -92,8 +91,6 @@ sys[37].Parent=0
 sys[37].Type=Package
 sys[38].Parent=0
 sys[38].Type=Package
-sys[40].Parent=0
-sys[40].Type=Package
 sys[41].Parent=0
 sys[41].Type=Package
 sys[42].Parent=0
