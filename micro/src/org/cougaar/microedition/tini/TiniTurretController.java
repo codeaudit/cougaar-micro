@@ -31,8 +31,8 @@ public class TiniTurretController extends TurretControllerResource
 
   private TiniMotorController motor;
   private static final int COAST = 0;
-  private static final int BACKWARD = 1;
-  private static final int FORWARD = 2;
+  private static final int BACKWARD = 2;  // turret rotates counterclockwise (decreasing bearing)
+  private static final int FORWARD = 1;  // turret rotates clockwise (increasing bearing)
   private static final int BRAKE = 3;
   private int MotorDirection = BRAKE;
 
@@ -45,18 +45,15 @@ public class TiniTurretController extends TurretControllerResource
   public static final int RIGHT = Constants.Robot.TURRET_RIGHT;
   private int Hemisphere = MIDDLE;
   public static final int SWEEP_WAIT = 0;
-  public static final int SWEEP_CALIBRATION_REWIND = 1;
-  public static final int SWEEP_CALIBRATION = 2;
-  public static final int SWEEP_SETUP = 3;
-  public static final int SWEEP = 4;
-  public static final int SWEEP_REWIND = 5;
+  public static final int SWEEP_SETUP = 1;
+  public static final int SWEEP = 2;
+  public static final int SWEEP_REWIND = 3;
 
   private BearingStateMachine bsm;
   private boolean BearingSMRun = false;
   public static final int BEARING_WAIT = 0;
-  public static final int BEARING_CALIBRATION_REWIND = 1;
-  public static final int BEARING_FORWARD_SEEK = 2;
-  public static final int BEARING_BACKWARD_SEEK = 3;
+  public static final int BEARING_FORWARD_SEEK = 3;
+  public static final int BEARING_BACKWARD_SEEK = 2;
 
   // thread control
   private Thread ST;
@@ -79,10 +76,10 @@ public class TiniTurretController extends TurretControllerResource
     int BearingToAcquire = 45;
     TiniTurretController TTC = new TiniTurretController();
     TTC.SweepSMRun=true;
-    TTC.setHemisphere(LEFT);
+    TTC.setHemisphere(MIDDLE);
     TTC.startScan();
 
-//    /*
+    /*
     TTC.longpause("MAIN: main thread paused...");
     TTC.stopScan();
 
@@ -96,7 +93,7 @@ public class TiniTurretController extends TurretControllerResource
     TTC.longpause("MAIN: main thread paused...");
     TTC.stopSeek();
 
-//    */
+    */
     if (debugging) {System.out.println(Thread.currentThread().getName() + " is finished.");}
 
   }
@@ -128,6 +125,7 @@ public class TiniTurretController extends TurretControllerResource
       if (debugging) {System.out.println("Caught throwable in TiniTurretController ctor: "+thr);}
     }
   }
+
   boolean fullyConstructed=false;
   synchronized public boolean isFullyConstructed() { return fullyConstructed; }
   synchronized public void setFullyConstructed(boolean value) { fullyConstructed=value; notifyAll(); }
@@ -275,10 +273,10 @@ public class TiniTurretController extends TurretControllerResource
   public void adjustbearing(boolean correctforrange, boolean autocal)
   {
     if(MotorDirection == FORWARD)
-       bearing -= TURRETRESOLUTION;
+       bearing += TURRETRESOLUTION;
 
     if(MotorDirection == BACKWARD)
-       bearing += TURRETRESOLUTION;
+       bearing -= TURRETRESOLUTION;
 
     if(correctforrange)
     {
@@ -312,6 +310,52 @@ public class TiniTurretController extends TurretControllerResource
     }
     BearingSMRun = true;
     return true;
+  }
+
+  public void calibrateTurret() {
+    // calibrate turret (rewind until limit sensor closes)
+    int IncrementCounter = 0;
+    int MotorRotations = 0;
+    if (debugging) {System.out.println("Turret Calibration is running");}
+    sensors.refreshAlarms();
+    sensors.clearLimitAlarm();
+    sensors.clearRotationAlarm();
+    System.gc();
+    if (debugging) {System.out.println("TURRET_CALIBRATION: Starting...");}
+    MotorDirection = FORWARD;
+    motor.setDirection(MotorDirection);
+    while (!sensors.isLimitTriggered())
+    {
+      motor.turnOneIncrement();
+      sensors.refreshAlarms();
+      if (sensors.isRotationTriggered())
+      {
+        IncrementCounter++;
+        if (debugging) {System.out.println("TURRET_CALIBRATION: Rotation Alarm.");}
+        sensors.clearRotationAlarm();
+        adjustbearing(false, false);
+        if (debugging) {System.out.println("TURRET_CALIBRATION: Bearing = " + bearing);}
+      }
+      // safeguard the turret hardware
+      if (IncrementCounter > 200) {
+          if (debugging) {System.out.println("TURRET_CALIBRATION: Possible limit sensor failure.");}
+          return;
+      }
+    }
+    if (debugging) {System.out.println("TURRET_CALIBRATION: Limit Alarm Triggered.");}
+    sensors.clearLimitAlarm();
+
+    // move turret back across limit sensor
+    System.gc();
+    MotorDirection = BACKWARD;
+    motor.setDirection(MotorDirection);
+    for (int j = 0; j < 2; j++) {motor.turnOneIncrement();}
+    sensors.clearLimitAlarm();
+    sensors.clearRotationAlarm();
+    setbearing(0.0);
+    if (debugging) {System.out.println("TURRET_CALIBRATION: Calibration Complete. Bearing = " + bearing);}
+    if (debugging) {pause("Short pause...");}
+    return;
   }
 
   private class SweepStateMachine implements Runnable {
@@ -360,68 +404,27 @@ public class TiniTurretController extends TurretControllerResource
                 if (debugging) {System.out.println("SLEEP_WAIT: Sleep interrupted.");}
               }
             }
-            SweepStateIndex = SWEEP_CALIBRATION_REWIND;
-            break;
-
-          // calibrate turret (rewind until limit sensor closes)
-          case SWEEP_CALIBRATION_REWIND:
-            sensors.refreshAlarms();
-            sensors.clearLimitAlarm();
-            sensors.clearRotationAlarm();
-            System.gc();
-            if (debugging) {System.out.println("SWEEP_CALIBRATION_REWIND: Starting...");}
-            MotorDirection = BACKWARD;
-            motor.setDirection(MotorDirection);
-            IncrementCounter = 0;
-            while (!sensors.isLimitTriggered())
-            {
-              motor.turnOneIncrement();
-              sensors.refreshAlarms();
-              if (sensors.isRotationTriggered())
-              {
-                IncrementCounter++;
-                if (debugging) {System.out.println("SWEEP_CALIBRATION_REWIND: Rotation Alarm.");}
-                sensors.clearRotationAlarm();
-		adjustbearing(false, false);
-                if (debugging) {System.out.println("SWEEP_CALIBRATION_REWIND: Bearing = " + bearing);}
-              }
-              // safeguard the turret hardware
-              if (IncrementCounter > 200) {
-                  if (debugging) {System.out.println("SWEEP_CALIBRATION_REWIND: Possible limit sensor failure.");}
-                  break sweepstateloop;
-              }
-              if (!SweepSMRun) {
-                SweepStateIndex = SWEEP_WAIT;
-                break;
-              }
-            }
-            if (debugging) {System.out.println("SWEEP_CALIBRATION_REWIND: Limit Alarm Triggered.");}
-            sensors.clearLimitAlarm();
-            SweepStateIndex = SWEEP_CALIBRATION;
-            break;
-
-          // move turret back across limit sensor
-          case SWEEP_CALIBRATION:
-            System.gc();
-            MotorDirection = FORWARD;
-            motor.setDirection(MotorDirection);
-            for (int j = 0; j < 2; j++) {motor.turnOneIncrement();}
-            sensors.clearLimitAlarm();
-            sensors.clearRotationAlarm();
-            setbearing(0.0);
-            if (debugging) {System.out.println("SWEEP_CALIBRATION: Calibration Complete. Bearing = " + bearing);}
             SweepStateIndex = SWEEP_SETUP;
             break;
 
           // rotate to sweep starting position
           case SWEEP_SETUP:
             System.gc();
-	    MotorDirection = BACKWARD;
+	    MotorDirection = FORWARD;
             motor.setDirection(MotorDirection);
             MotorRotations = 0;
             if (LEFT == Hemisphere) {MotorRotations = 0;}
             else if (MIDDLE == Hemisphere) {MotorRotations = 6;}
             else if (RIGHT == Hemisphere) {MotorRotations = 12;}
+            if ((MIDDLE == Hemisphere) || (RIGHT == Hemisphere)) {
+              // move turret back across limit sensor
+              System.gc();
+              for (int j = 0; j < 3; j++) {motor.turnOneIncrement();}
+              sensors.clearLimitAlarm();
+              sensors.clearRotationAlarm();
+              setbearing(0.0);
+              if (debugging) {System.out.println("SWEEP_SETUP: Beginning. Bearing = " + bearing);}
+            }
             for (int i = 0; i < MotorRotations; i++) {
               IncrementCounter = 0;
               while (!sensors.isRotationTriggered())
@@ -455,9 +458,9 @@ public class TiniTurretController extends TurretControllerResource
             System.gc();
             MotorRotations = 12;
             IncrementCounter = 0;
-            MotorDirection = FORWARD;
+            MotorDirection = BACKWARD;
             motor.setDirection(MotorDirection);
-            if (RIGHT == Hemisphere) {
+            if (RIGHT == Hemisphere) {  // recalibrate while sweeping
               sensors.clearLimitAlarm();
               int MotorRevs = 0;
               while (!sensors.isLimitTriggered()) {
@@ -527,17 +530,59 @@ public class TiniTurretController extends TurretControllerResource
             System.gc();
             MotorRotations = 12;
             IncrementCounter = 0;
-            MotorDirection = BACKWARD;
+            MotorDirection = FORWARD;
             motor.setDirection(MotorDirection);
             // go back across limit & rotation sensors & ignore alarms
-            for (int j = 0; j < 4; j++) {motor.turnOneIncrement();}
+            for (int j = 0; j < 3; j++) {motor.turnOneIncrement();}
             sensors.clearLimitAlarm();
             sensors.clearRotationAlarm();
 
             // start rewind
-            if (LEFT == Hemisphere)  // recalibrate instead of sweeping back
+            if (LEFT == Hemisphere)  // recalibrate while sweeping back
             {
-              SweepStateIndex = SWEEP_WAIT;
+              // calibrate turret (rewind until limit sensor closes)
+              IncrementCounter = 0;
+              MotorRotations = 0;
+              if (debugging) {System.out.println("Turret Calibration is running");}
+              sensors.refreshAlarms();
+              sensors.clearLimitAlarm();
+              sensors.clearRotationAlarm();
+              System.gc();
+              if (debugging) {System.out.println("SWEEP_REWIND: Starting...");}
+              MotorDirection = FORWARD;
+              motor.setDirection(MotorDirection);
+              while (!sensors.isLimitTriggered())
+              {
+                motor.turnOneIncrement();
+                sensors.refreshAlarms();
+                if (sensors.isRotationTriggered())
+                {
+                  IncrementCounter++;
+                  if (debugging) {System.out.println("SWEEP_REWIND: Rotation Alarm.");}
+                  sensors.clearRotationAlarm();
+                  adjustbearing(false, false);
+                  if (debugging) {System.out.println("SWEEP_REWIND: Bearing = " + bearing);}
+                }
+                // safeguard the turret hardware
+                if (IncrementCounter > 200) {
+                  if (debugging) {System.out.println("SWEEP_REWIND: Possible limit sensor failure.");}
+                  break;
+                }
+              }
+              if (debugging) {System.out.println("SWEEP_REWIND: Limit Alarm Triggered.");}
+              sensors.clearLimitAlarm();
+
+              // move turret back across limit sensor
+              System.gc();
+              MotorDirection = BACKWARD;
+              motor.setDirection(MotorDirection);
+              for (int j = 0; j < 2; j++) {motor.turnOneIncrement();}
+              sensors.clearLimitAlarm();
+              sensors.clearRotationAlarm();
+              setbearing(0.0);
+              if (debugging) {System.out.println("SWEEP_REWIND: Calibration Complete. Bearing = " + bearing);}
+              if (debugging) {pause("Short pause...");}
+              SweepStateIndex = SWEEP;
             } else {  // hemisphere = MIDDLE or LEFT
               for (int i = 0; i < MotorRotations; i++) {
                 IncrementCounter = 0;
@@ -564,7 +609,7 @@ public class TiniTurretController extends TurretControllerResource
                 if (debuggingpauses) {pause("SWEEP_REWIND: Pause 10 sec. then continue...");}
               }
               // avoid the erroneous "double close" at the end of a sweep rewind
-              MotorDirection = FORWARD;
+              MotorDirection = BACKWARD;
               motor.setDirection(MotorDirection);
               for (int j = 0; j < 2; j++) {motor.turnOneIncrement();}
               sensors.clearLimitAlarm();
@@ -572,6 +617,8 @@ public class TiniTurretController extends TurretControllerResource
               SweepStateIndex = SWEEP;
               if (debugging) {System.out.println("SWEEP_REWIND: Rewind complete.  Bearing = " + bearing);}
             }
+
+
 //            break sweepstateloop;  // stops state machine after one iteration
             break;  // continuous sweep
         }  // end switch
@@ -642,65 +689,7 @@ public class TiniTurretController extends TurretControllerResource
                 if (debugging) {System.out.println("BEARING_WAIT: Sleep interrupted on Bearing State Machine.");}
               }
             }
-            BearingStateIndex = BEARING_CALIBRATION_REWIND;
-            break;
-
-          // calibrate turret (rewind until limit sensor closes)
-          case BEARING_CALIBRATION_REWIND:
-            MotorDirection = BACKWARD;
-            motor.setDirection(MotorDirection);
-            sensors.refreshAlarms();
-            sensors.clearLimitAlarm();
-            sensors.clearRotationAlarm();
-            System.gc();
-            if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Starting rewind.");}
-            MotorDirection = BACKWARD;
-            motor.setDirection(MotorDirection);
-            IncrementCounter = 0;
-            while (!sensors.isLimitTriggered())
-            {
-              motor.turnOneIncrement();
-              sensors.refreshAlarms();
-              if (sensors.isRotationTriggered())
-              {
-                IncrementCounter++;
-                if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Rotation Alarm.");}
-                sensors.clearRotationAlarm();
-                adjustbearing(true, false);
-                if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Bearing = " + bearing);}
-              }
-              // safeguard the turret hardware
-              if (IncrementCounter > 200) {
-                  if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Possible limit sensor failure.");}
-                  break bearingstateloop;
-              }
-              if (!BearingSMRun) {
-                BearingStateIndex = BEARING_WAIT;
-                break;
-              }
-            }
-            if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Limit Alarm Triggered.");}
-            sensors.clearLimitAlarm();
-            if (0 <= BearingOfInterest && 180 > BearingOfInterest) {
-              // move motor forward one increment (back across limit sensor)
-              System.gc();
-              MotorDirection = FORWARD;
-              motor.setDirection(MotorDirection);
-              for (int j = 0; j < 2; j++) {motor.turnOneIncrement();}
-              setbearing(0.0);
-              BearingStateIndex = BEARING_FORWARD_SEEK;
-            } else if (180 <= BearingOfInterest && 360 > BearingOfInterest) {
-              // calibration is now complete
-              setbearing(360.0);
-              BearingStateIndex = BEARING_BACKWARD_SEEK;
-            } else {
-              if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Invalid Bearing.");}
-              setbearing(0.0);
-              BearingStateIndex = BEARING_WAIT;
-            }
-            sensors.clearLimitAlarm();
-            sensors.clearRotationAlarm();
-            if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Calibration Complete.  Bearing = " + bearing);}
+            BearingStateIndex = BEARING_FORWARD_SEEK;
             break;
 
           // rotate to bearing of interest
