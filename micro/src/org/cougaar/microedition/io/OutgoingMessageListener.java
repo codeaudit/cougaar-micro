@@ -22,25 +22,10 @@
  */
 package org.cougaar.microedition.io;
 
-import org.cougaar.microedition.util.*;
-import org.cougaar.microedition.shared.*;
-import org.cougaar.microedition.asset.*;
-import java.io.*;
-import java.util.*;
-
 /**
- * This class handles sending messages to another agent,
+ * This interface is implemented by classes which need to see outgoing XML messages.
  */
-public interface MessageTransport {
-
-  public void addMessageListener(MessageListener ml);
-
-  public void removeMessageListener(MessageListener ml);
-
-  public void sendMessage(Encodable msg, MicroAgent dest, String op);
-
-  public void takePacket(String data, String source);
-
-  public void notifyListeners(String data, String source);
-
+public interface OutgoingMessageListener extends MessageListener
+{
+  public void outgoingMessage(String data, String destination);
 }

@@ -95,6 +95,20 @@ public class ServerSocketMessageTransport implements MessageTransport {
 
   }
 
+  public void notifyListeners(String data, String dest)
+  {
+    Enumeration en = listeners.elements();
+    while (en.hasMoreElements())
+    {
+      Object obj = en.nextElement();
+      if(obj instanceof OutgoingMessageListener)
+      {
+	OutgoingMessageListener oml = (OutgoingMessageListener)obj;
+        oml.outgoingMessage(data, dest);
+      }
+    }
+  }
+
   public void addMessageListener(MessageListener ml) {
     if (!listeners.contains(ml))  {
       listeners.addElement(ml);
@@ -119,6 +133,8 @@ public class ServerSocketMessageTransport implements MessageTransport {
     short port = dest.getAgentId().getPort();
 
 //    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
+
+    notifyListeners(buf.toString(), dest.getAgentId().getName());
 
     sendMessage(ipAddress, port, buf.toString());
   }

@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -85,6 +85,20 @@ public class ConservativeMessageTransport implements MessageTransport {
 
   }
 
+  public void notifyListeners(String data, String dest)
+  {
+    Enumeration en = listeners.elements();
+    while (en.hasMoreElements())
+    {
+      Object obj = en.nextElement();
+      if(obj instanceof OutgoingMessageListener)
+      {
+	OutgoingMessageListener oml = (OutgoingMessageListener)obj;
+        oml.outgoingMessage(data, dest);
+      }
+    }
+  }
+
   public void addMessageListener(MessageListener ml) {
     if (!listeners.contains(ml))  {
       listeners.addElement(ml);
@@ -107,6 +121,8 @@ public class ConservativeMessageTransport implements MessageTransport {
     buf.append('\0');
 
 //    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
+
+    notifyListeners(buf.toString(), dest.getAgentId().getName());
 
     sendMessage(buf.toString());
   }
