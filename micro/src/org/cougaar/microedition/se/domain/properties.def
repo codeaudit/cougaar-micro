@@ -38,3 +38,7 @@ slots=String filename, long captureTime, byte[] data
 filename.doc=Initial Filename used for image
 captureTime.doc=Image creation time
 data.doc=binary image data
+
+[UGSPG]
+doc=Characteristics of an Asset for a UGS
+slots=String name, double lat, double lon, int len, int entries, String status, double[] bearing, double[] detTime
