@@ -128,7 +128,8 @@ public class RobotDemoUI {
           System.out.println(line);
         }
       } catch (Exception ex) {
-        ex.printStackTrace();
+        System.err.println("Error:  PSP to start society indicated a failure.  Check that the PSP is configured correctly.  Url used: ["+fullUrl+"]");
+        // ex.printStackTrace();
       } finally {
         try {
           if (br!=null) {
