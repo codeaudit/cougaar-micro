@@ -118,7 +118,7 @@ public class TiniTurretController extends TurretControllerResource
       if (debugging) {sensors.readHWStatus();}
       if (debugging) {System.out.println("\nMotor and Sensors Initialized.");}
       setFullyConstructed(true);
-      startScan();
+      calibrateTurret();
     }
     catch (Throwable thr)
     {
@@ -138,15 +138,20 @@ public class TiniTurretController extends TurretControllerResource
 //    return fullyConstructed;
 //  }
 
-  public long getValue()
+  public void getValues(double [] values)
   {
     oldbearing = bearing;
-    return (long)bearing;
+    values[0] = bearing;
   }
 
-  public long getValueAspect()
+  public void getValueAspects(int [] aspects)
   {
-    return Constants.Aspects.BEARING;
+    aspects[0] = Constants.Aspects.BEARING;
+  }
+
+  public int getNumberAspects()
+  {
+    return 1;
   }
 
   public void setChan(int c) {}
@@ -270,6 +275,17 @@ public class TiniTurretController extends TurretControllerResource
 
   private boolean lastlimit = false;
 
+  public int computeRotations(double destinationdegrees)
+  {
+    int num = 0;
+
+    num = (int)((destinationdegrees - bearing)/TURRETRESOLUTION);
+
+    System.out.println("Bearing= " +bearing +" DestBrg= "+destinationdegrees +" Num= " +num);
+
+    return num;
+
+  }
   public void adjustbearing(boolean correctforrange, boolean autocal)
   {
     if(MotorDirection == FORWARD)
@@ -410,6 +426,26 @@ public class TiniTurretController extends TurretControllerResource
           // rotate to sweep starting position
           case SWEEP_SETUP:
             System.gc();
+
+	    MotorDirection = FORWARD;
+
+            if (LEFT == Hemisphere) {MotorRotations = computeRotations(0.0);}
+            else if (MIDDLE == Hemisphere) {MotorRotations = computeRotations(90.0);}
+            else if (RIGHT == Hemisphere) {MotorRotations = computeRotations(180.0);}
+
+	    if(MotorRotations >= 0)
+	    {
+	      MotorDirection = FORWARD;
+	    }
+	    else
+	    {
+	      MotorRotations = -MotorRotations;
+	      MotorDirection = BACKWARD;
+	    }
+
+	    motor.setDirection(MotorDirection);
+
+	    /*
 	    MotorDirection = FORWARD;
             motor.setDirection(MotorDirection);
             MotorRotations = 0;
@@ -425,6 +461,7 @@ public class TiniTurretController extends TurretControllerResource
               setbearing(0.0);
               if (debugging) {System.out.println("SWEEP_SETUP: Beginning. Bearing = " + bearing);}
             }
+	    */
             for (int i = 0; i < MotorRotations; i++) {
               IncrementCounter = 0;
               while (!sensors.isRotationTriggered())
