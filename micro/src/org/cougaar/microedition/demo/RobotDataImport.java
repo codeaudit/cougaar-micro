@@ -79,6 +79,9 @@ public class RobotDataImport {
               }
             }
             ht.clear();
+            if (tok2.substring(0,4).equalsIgnoreCase("UIC/")) {
+              tok2=tok2.substring(4);
+            }
             ht.put(ID, tok2);
             // processID(st);
           } else if (!validKey(tok1)) {
