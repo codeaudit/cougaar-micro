@@ -76,7 +76,7 @@ class Mach5RelativePositionData
  *   3  ---  2
  *   7  ---  7
  */
-public class TiniMach5LocomotionResource extends LocomotionResource implements LocationResource {
+public class TiniMach5LocomotionResource extends ControllerResource implements LocationResource {
 
   /**
    * Constructor.  Sets name default.
@@ -90,6 +90,8 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
   private Mach5RelativePositionData laststatechange = new Mach5RelativePositionData();
   static final double TICKSPERDEGREE = 2.25; //experimentally determined
   //static final double TICKSPERDEGREE = 2.1685716; //computed from wheel base
+  public static final int CLOCKWISE = 0;
+  public static final int COUNTER_CLOCKWISE = 1;
 
   //these variables define the position, orientation of the relative coordinate
   //frame (of the robot) with respect to an absolute from (geographic)
@@ -104,7 +106,8 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
    */
   public void setParameters(Hashtable params)
   {
-    super.setParameters(params);
+    setName("TiniMach5LocomotionResource");
+
     if (params != null)
     {
       if (params.get("port") != null)
@@ -550,5 +553,49 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
   public Date getDate()
   {
     return new Date();
+  }
+
+  public long getValue()
+  {
+    long val = (long)getHeading();
+    return val;
+  }
+
+  public long getValueAspect()
+  {
+    return Constants.Aspects.HEADING;
+  }
+
+  public void setChan(int c) {}
+  public void setUnits(String u) {}
+  public boolean conditionChanged() {return true;} //always report heading
+
+  private boolean isundercontrol = false;
+
+  public void startControl()
+  {
+    forward();
+    isundercontrol = true;
+  }
+
+  public void stopControl()
+  {
+    stop();
+    isundercontrol = false;
+  }
+
+  public boolean isUnderControl()
+  {
+    return isundercontrol;
+  }
+
+  public void modifyControl(String controlparameter, String controlparametervalue)
+  {
+    if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.SPEEDPREP]))
+    {
+      Double temp = new Double(controlparametervalue);
+      setSpeed((long)temp.doubleValue());
+      System.out.println("TiniMach5LocomotionResource: speed set: " +getSpeed());
+    }
   }
 }
