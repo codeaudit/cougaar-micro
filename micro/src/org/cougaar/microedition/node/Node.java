@@ -308,4 +308,17 @@ public class Node {
 
     return xtl;
   }
+
+  private static Rebooter rebooter;
+  public static void setRebooter(Rebooter reb) {
+	  rebooter = reb;
+  }
+  public static void reboot() {
+    if (rebooter == null) 
+      System.out.println("ERROR: No rebooter configured");
+    else {
+      System.out.println("Reboot requested ... ");
+      rebooter.reboot();
+    }
+  }
 }

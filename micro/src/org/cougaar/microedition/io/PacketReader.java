@@ -98,6 +98,7 @@ public class PacketReader {
             System.err.println("SocketException:"+ex);
             if (ss == null) {
               System.out.println("Shutting down connection");
+	      org.cougaar.microedition.node.Node.reboot();
               return;
             }
           }

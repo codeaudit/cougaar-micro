@@ -27,6 +27,7 @@ public class SajeInputGpioPinResource extends org.cougaar.microedition.asset.Con
     /** Creates new SajeInputGpioPinResource */
     public SajeInputGpioPinResource() {
         //System.out.println("Creating GPIO Resource");
+	org.cougaar.microedition.node.Node.setRebooter(new Restart());
     }
   
     public void setParameters(java.util.Hashtable t)
