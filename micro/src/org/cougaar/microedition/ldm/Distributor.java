@@ -264,17 +264,30 @@ public class Distributor {
 
     for (;;) {
       // execute PlugIns
-      while (runnableSubscribers.size() > 0) {
-        Subscriber runme = (Subscriber)runnableSubscribers.elementAt(0);
-        runnableSubscribers.removeElementAt(0);
-        openTransaction(Thread.currentThread());
-        runme.execute();
-        runme.getSubscription().clearLists();
-        // collect changed subscriptions
-        closeTransaction(Thread.currentThread(), runme);
-//        try {Thread.sleep(5000);} catch (Exception e) {}
+      try {
+
+	while (runnableSubscribers.size() > 0) {
+	  Subscriber runme = (Subscriber)runnableSubscribers.elementAt(0);
+	  runnableSubscribers.removeElementAt(0);
+	  openTransaction(Thread.currentThread());
+	  try {
+	      runme.execute();
+	  }
+	  catch (Throwable e) {
+	    System.out.println("Exception thrown from plugin: " +e);
+	  }
+	  runme.getSubscription().clearLists();
+	  // collect changed subscriptions
+	  closeTransaction(Thread.currentThread(), runme);
+  //        try {Thread.sleep(5000);} catch (Exception e) {}
+	}
+	waitForSomeWork();
+
       }
-      waitForSomeWork();
+      catch (Exception ex) {
+	System.out.println("Exception while processing plugins: " +ex);
+	ex.printStackTrace();
+      }
     }
   }
 }
