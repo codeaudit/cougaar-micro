@@ -10,7 +10,6 @@
 #17=cougaar.microedition.shared.tinyxml.test
 #18=cougaar.microedition.shared.tinyxml.util
 #19=cougaar.microedition.tini
-#22=cougaar.microedition.naming
 #25=com.ibutton.container
 #26=com.ibutton.utils
 #27=..\TINI\Node.tini
@@ -104,8 +103,6 @@ sys[18].Parent=0
 sys[18].Type=Package
 sys[19].Parent=0
 sys[19].Type=Package
-sys[22].Parent=0
-sys[22].Type=Package
 sys[25].Parent=0
 sys[25].Type=Package
 sys[26].Parent=0

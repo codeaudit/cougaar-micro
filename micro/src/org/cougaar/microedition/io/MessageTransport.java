@@ -9,7 +9,6 @@ package cougaar.microedition.io;
 
 import cougaar.microedition.util.*;
 import cougaar.microedition.shared.*;
-import cougaar.microedition.naming.*;
 import cougaar.microedition.asset.*;
 import java.io.*;
 import java.util.*;
