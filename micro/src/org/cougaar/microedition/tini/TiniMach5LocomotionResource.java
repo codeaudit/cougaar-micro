@@ -391,6 +391,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
         CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(portName);
         SerialPort sp = (SerialPort)portId.open("MACH5", 0);
         sp.setSerialPortParams(38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+        sp.enableReceiveTimeout(1000);
 
         input = sp.getInputStream();
         output = sp.getOutputStream();
@@ -402,6 +403,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
 
        byte [] data = new byte[128];
 
+       forever:
        while (true) {
          /*
           * Write any pending output messages
@@ -433,7 +435,10 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
            try {
              byte ch = 0;
              while (ch != 10) { // line-feed
-               ch = (byte)input.read();
+               int datum = input.read();
+               if (datum < 0) // read timeout
+                 continue forever;
+               ch = (byte)datum;
                data[dataptr++] = ch;
              }
            } catch (IOException ioe) {
