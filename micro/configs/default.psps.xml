@@ -1,6 +1,10 @@
 <object type="java.util.Vector">
 
   <element type="alp.ui.planserver.NamedPSP">
+    <Classname>cougaar.microedition.demo.PSP_MicroData</Classname>
+    <PSPName>MICRO_DATA.PSP</PSPName>
+  </element>
+  <element type="alp.ui.planserver.NamedPSP">
     <Classname>alp.ui.planserver.psp.PSP_LocateClusters</Classname>
     <PSPName>alpine/demo/CLUSTERS.PSP</PSPName>
   </element>
