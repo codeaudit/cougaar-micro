@@ -75,8 +75,9 @@ public class ServerSocketMessageTransport implements MessageTransport {
       sock.close();
       done = true;
     } catch (Exception e) {
-      System.err.println("Unable to sendMessage " + e);
-    }
+      System.err.println("Unable to sendMessage " + e + " Try to reboot...");
+      org.cougaar.microedition.node.Node.reboot();
+     }
     if (!done) {
       System.gc();
       try {Thread.sleep(3000);} catch (InterruptedException ie){}

@@ -70,7 +70,8 @@ public class ConservativeMessageTransport implements MessageTransport {
       out.write(data);
       out.flush();
     } catch (Exception e) {
-      System.err.println("Unable to sendMessage " + e);
+      System.err.println("Unable to sendMessage " + e + " Try to reboot...");
+      org.cougaar.microedition.node.Node.reboot();
     }
   }
 
