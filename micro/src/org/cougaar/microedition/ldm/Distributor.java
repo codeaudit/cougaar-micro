@@ -28,6 +28,8 @@ public class Distributor {
 
   private Vector allObjects = new Vector();
 
+  private Semaphore sem = new Semaphore();
+
   public Distributor() {
   }
 
@@ -175,23 +177,17 @@ public class Distributor {
    *  Check for subscribers who have something to do.
    */
   public void distribute() {
-    synchronized (runnableSubscribers) {
-      runnableSubscribers.notify();
-    }
+    sem.put();
   }
 
   /**
    * Pause until a subscriber has something to do.
    */
-  private void waitForSomeWork() {
-    synchronized (runnableSubscribers) {
-      try {
-        if (runnableSubscribers.size() == 0) {
-          runnableSubscribers.wait();
-        }
-      } catch (InterruptedException ie) {}
-    }
+  public void waitForSomeWork() {
+    if (runnableSubscribers.size() == 0)
+      sem.take();
   }
+
   /**
    * Manage PlugIn subscriptions and executions
    */
@@ -212,4 +208,26 @@ public class Distributor {
       waitForSomeWork();
     }
   }
+}
+
+class Semaphore {
+
+  int count = 1;
+  public Semaphore() {
+  }
+
+  public synchronized void take() {
+    while (count == 0) {
+      try { wait(); } catch (InterruptedException ie) {
+        System.out.println("interrupted");
+      }
+    }
+    count = 0;
+  }
+
+  public synchronized void put() {
+    count = 1;
+    notify();
+  }
+
 }
