@@ -382,7 +382,7 @@ public class DS2450
               if (madc.hasADAlarmed(adchannel, alarmtype, adstate))
               {
                 triggered = true;
-                if (debugging) {System.out.println("A/D ALARM event has occurred.")};
+                if (debugging) {System.out.println("A/D ALARM event has occurred.");}
                 madc.writeDevice(adstate);     // clear alarm flags for all channels
               }
             }
