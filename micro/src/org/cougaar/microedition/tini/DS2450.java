@@ -462,6 +462,7 @@ public class DS2450
    */
   public double readVoltage(int adindex, int adchannel)
   {
+    System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+")");
     double voltage = 0.0;
     try
     {
@@ -472,12 +473,16 @@ public class DS2450
           MyADContainer   madc = (MyADContainer)madv.elementAt(adindex);
           if (adchannel < madc.getNumberADChannels())
           {
+            if (debugging) System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+") entering sync");
             synchronized (adlock)
             {
+              if (debugging) System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+") in sync");
               byte[] adstate = madc.readDevice();
               madc.doADConvert(adchannel, adstate);
               voltage = madc.getADVoltage(adchannel, adstate);
+              if (debugging) System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+") leaving sync");
             }
+            if (debugging) System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+") out sync");
           }
         }
       }
@@ -485,6 +490,7 @@ public class DS2450
     catch (Throwable t)
     {
     }
+    System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+") leaving method");
     return voltage;
   }
 
