@@ -92,7 +92,7 @@ public class PSP_RobotData extends PSP_BaseAdapter implements PlanServiceProvide
     //
     // Look at allocation results to see what the temperature is.
     //
-    Collection bots = psc.getServerPlugInSupport().queryForSubscriber( new Gimme());
+    Collection bots = psc.getServerPluginSupport().queryForSubscriber( new Gimme());
     Iterator bot_iter = bots.iterator();
     while (bot_iter.hasNext()) {
       dumpBotData((Asset)bot_iter.next(), cout);

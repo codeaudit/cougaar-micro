@@ -131,12 +131,12 @@ public class PSP_Sensor extends PSP_BaseAdapter implements PlanServiceProvider, 
          if( inputSensorName.equalsIgnoreCase(tempNameHdr) )
          {
             outNameHdr = tempNameHdr;
-            sensorColl = psc.getServerPlugInSupport().queryForSubscriber(new GetSensorTempPredicate());
+            sensorColl = psc.getServerPluginSupport().queryForSubscriber(new GetSensorTempPredicate());
          }
          else if( inputSensorName.equalsIgnoreCase(brightNameHdr) )
          {
             outNameHdr = brightNameHdr;
-            sensorColl = psc.getServerPlugInSupport().queryForSubscriber(new GetSensorBrightPredicate());
+            sensorColl = psc.getServerPluginSupport().queryForSubscriber(new GetSensorBrightPredicate());
          }
 
          if ((sensorColl == null) || sensorColl.isEmpty()) { // no data

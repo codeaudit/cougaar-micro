@@ -4,12 +4,12 @@
 
   <resource>org.cougaar.microedition.kvm.KvmValuemeter</resource>
 
-  <plugin>org.cougaar.microedition.plugin.TaskReporterPlugIn</plugin>
-  <!-- Infrastructure PlugIns -->
-  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.TaskReporterPlugin</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 
-  <plugin name="Value" sleeptime="1000">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
+  <plugin name="Value" sleeptime="1000">org.cougaar.microedition.plugin.MeasurePlugin</plugin>
 
 </NodeConfiguration>

@@ -48,10 +48,10 @@ n, both described next.
 \b\i\f1\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {P2PShareableObject
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
 \par This object defines a Serializable abstract class. Any object that is derived from P2PShareableObject is automatically designated as an object that can be shared among agents (also known as peers) via the JXTAOb
-jectSharePlugIn. Examples of this are Hypothesis objects in the org.cougaar.microedition.dmht package.
+jectSharePlugin. Examples of this are Hypothesis objects in the org.cougaar.microedition.dmht package.
 \par 
 \par {\listtext\pard\plain\s2 \b\i\f1\fs28 \hich\af1\dbch\af0\loch\f1 1.3\tab}}\pard\plain \s2\ql \fi-576\li576\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx576\aspalpha\aspnum\faauto\ls1\ilvl1\outlinelevel1\adjustright\rin0\lin576\itap0 
-\b\i\f1\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {JXTAObjectSharePlugIn
+\b\i\f1\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {JXTAObjectSharePlugin
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
 \par This Cougaar plug-in serves as the main mechanism for P2P activity that includes peer discovery, peer group membership, message passing, and other activities related to JXTA protocols.
 \par 
@@ -60,7 +60,7 @@ jectSharePlugIn. Examples of this are Hypothesis objects in the org.cougaar.micr
 \par The <domain> parameter is a way to ignore most of the JXTA P2P traffic that one may encounter on a wide area network. The <sharegroup> is, for now, the peer group name that the peer is interested in joining and collaborating with on a particular problem. 
 
 \par 
-\par As a Cougaar PlugIn class, this object implements essential plug-in methods:
+\par As a Cougaar Plugin class, this object implements essential plug-in methods:
 \par {\listtext\pard\plain\s3 \b\f1\fs26 \hich\af1\dbch\af0\loch\f1 1.3.1\tab}}\pard\plain \s3\ql \fi-720\li720\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx720\aspalpha\aspnum\faauto\ls1\ilvl2\outlinelevel2\adjustright\rin0\lin720\itap0 
 \b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {setupSubscription()
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
@@ -74,14 +74,14 @@ When this happens for the first time, the JXTA Configurator (see below) will pop
 s blackboard. If the agent has joined the desired <sharedgroup> peer group and has established connectivity to the group\rquote s prop
 agation pipe, the plug-in will compose a JXTA pipe message containing the object and relay the information to all members of the peer group. 
 \par 
-\par There are other methods in the JXTAObjectSharePlugIn which define the plug-in as a JXTA peer:
+\par There are other methods in the JXTAObjectSharePlugin which define the plug-in as a JXTA peer:
 \par {\listtext\pard\plain\s3 \b\f1\fs26 \hich\af1\dbch\af0\loch\f1 1.3.3\tab}}\pard\plain \s3\ql \fi-720\li720\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx720\aspalpha\aspnum\faauto\ls1\ilvl2\outlinelevel2\adjustright\rin0\lin720\itap0 
 \b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {discoveryEvent
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {As a discoveryListener, the agent will be
  notified when others publish relevant JXTA advertisements. When notified, the discoveryEvent() method will be invoked with a data argument. By deciphering the argument, the plug-in determines if the advertisement is relevant to its own role. 
 \par 
 \par The adverti
-sements that are relevant include a peer group advertisement of name <sharegroup>. The agent is also interested in pipe advertisements of the same description. To understand how these advertisements are promulgated, refer to the GroupFacilitatorPlugIn. 
+sements that are relevant include a peer group advertisement of name <sharegroup>. The agent is also interested in pipe advertisements of the same description. To understand how these advertisements are promulgated, refer to the GroupFacilitatorPlugin. 
 
 \par 
 \par W
@@ -92,22 +92,22 @@ discovery service that was used initially)
 s the output pipe to send a pipe message to the other peers. The agent also establishes itself as a pipe message listener using the JXTA pipe service method createInputPipe(pipeadv, this). 
 \par {\listtext\pard\plain\s3 \b\f1\fs26 \hich\af1\dbch\af0\loch\f1 1.3.4\tab}}\pard\plain \s3\ql \fi-720\li720\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx720\aspalpha\aspnum\faauto\ls1\ilvl2\outlinelevel2\adjustright\rin0\lin720\itap0 
 \b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {PipeMsgEvent
-\par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {As a pipe message listener, the JXTAObjectSharePlugIn
+\par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {As a pipe message listener, the JXTAObjectSharePlugin
  will be notified when any message is available on the peer group\rquote 
 s propagation pipe via the pipeMsgListener method. When this happens, the messages containing the P2PShareableObject are read and will be rehydrated and published to the local blackboard. 
 \par 
-\par Plug-ins interested on the local blackboard that have subscribed to any of the shareable objects will have the subscriptions fulfilled accordingly. In this way, the JXTAObjectSharePlugIn provides a way of sharing blackboard content amongst peers in a peer
+\par Plug-ins interested on the local blackboard that have subscribed to any of the shareable objects will have the subscriptions fulfilled accordingly. In this way, the JXTAObjectSharePlugin provides a way of sharing blackboard content amongst peers in a peer
  group.
 \par {\listtext\pard\plain\s2 \b\i\f1\fs28 \hich\af1\dbch\af0\loch\f1 1.4\tab}}\pard\plain \s2\ql \fi-576\li576\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx576\aspalpha\aspnum\faauto\ls1\ilvl1\outlinelevel1\adjustright\rin0\lin576\itap0 
-\b\i\f1\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {GroupFacilitatorPlugIn
+\b\i\f1\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {GroupFacilitatorPlugin
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
-\par The GroupFacilitatorPlugIn was designed to manage the creation and formation of peer groups within the system. In any system of P2P Cougaar agents there should be at least one agent acting as group facilitator to coordinate this function.  
+\par The GroupFacilitatorPlugin was designed to manage the creation and formation of peer groups within the system. In any system of P2P Cougaar agents there should be at least one agent acting as group facilitator to coordinate this function.  
 \par 
-\par Since any peer can create and publish peer groups and related advertisements, the GroupFacilitatorPlugIn was invented to prevent the formation of multiple peer groups with the same name. JXTA identifies peer groups using a generated GUID a
+\par Since any peer can create and publish peer groups and related advertisements, the GroupFacilitatorPlugin was invented to prevent the formation of multiple peer groups with the same name. JXTA identifies peer groups using a generated GUID a
 nd does not prohibit the formation of multiple peer groups having the same name. It is the current understanding that two peers will create the same-named peer group simultaneously and each join the separate peer groups, though the names are the same.
 
 \par 
-\par To prevent multiple peer groups and the over proliferation, the GroupFacilitatorPlugIn starts JXTA identically to any other peer. It also establishes itself as a discoveryListener, examining discovery events for advertisements related to its role. 
+\par To prevent multiple peer groups and the over proliferation, the GroupFacilitatorPlugin starts JXTA identically to any other peer. It also establishes itself as a discoveryListener, examining discovery events for advertisements related to its role. 
 \par 
 \par The plug-in defines a <domain> parameter that it uses to flag peer advertisements. Any peer advertisement description that matches the <domain> string will be examined. Then the peer\rquote 
 s share group requirements are analyzed. If it has not done so already, the facilitator will create the share group and publish it to everyone. The advertisement for this peer group is maintained on a local list of \'93facilitated groups\'94
@@ -131,7 +131,7 @@ ents passed about the peer group even on subsequent runs of the system. This can
 \par {\listtext\pard\plain\s2 \b\i\f1\fs28 \hich\af1\dbch\af0\loch\f1 1.5\tab}}\pard\plain \s2\ql \fi-576\li576\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx576\aspalpha\aspnum\faauto\ls1\ilvl1\outlinelevel1\adjustright\rin0\lin576\itap0 
 \b\i\f1\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {Peer Configuration and the JXTA Configurator
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {Coug
-aar agents that establish themselves as JXTA peers using either the JXTAObjectSharePlugIn or the GroupFacilitatorPlugIn will pop up the JXTA Configurator the first time they are run. This paragraph describes the essential elements of the configuration too
+aar agents that establish themselves as JXTA peers using either the JXTAObjectSharePlugin or the GroupFacilitatorPlugin will pop up the JXTA Configurator the first time they are run. This paragraph describes the essential elements of the configuration too
 l and how they impact the Cougaar agent design. The configurator has several top level tabs: Basics, Advanced, Routers and Security.
 \par {\listtext\pard\plain\s3 \b\f1\fs26 \hich\af1\dbch\af0\loch\f1 1.5.1\tab}}\pard\plain \s3\ql \fi-720\li720\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx720\aspalpha\aspnum\faauto\ls1\ilvl2\outlinelevel2\adjustright\rin0\lin720\itap0 
 \b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {Basics
@@ -163,7 +163,7 @@ ion and password will need to be established for the peer. For sanity, one may w
 \b\i\f1\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {Using the JXTA Shell with Cougaar agents
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
 \par The shell tool provided with the JXTA distribution (shell/s
-hell/jxta.exe in the distribution) is very handy in analyzing Cougaar peer group functionality. Cougaar agents that establish themselves as JXTA peers using either the JXTAObjectSharePlugIn or the GroupFacilitatorPlugIn can be seen from the shell by issui
+hell/jxta.exe in the distribution) is very handy in analyzing Cougaar peer group functionality. Cougaar agents that establish themselves as JXTA peers using either the JXTAObjectSharePlugin or the GroupFacilitatorPlugin can be seen from the shell by issui
 ng the \'93peers \endash r\'94 command (which broadcasts a request for online peers) and the \'93peers\'94 command (which lists the peers seen thus far). It may be required to flush the old peers listed in the cache using the \'93peers \endash f\'94
  command first of all.
 \par 
@@ -181,7 +181,7 @@ ng the \'93peers \endash r\'94 command (which broadcasts a request for online pe
 \par {\listtext\pard\plain\s3 \b\f1\fs26 \hich\af1\dbch\af0\loch\f1 1.7.1\tab}}\pard\plain \s3\ql \fi-720\li720\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx720\aspalpha\aspnum\faauto\ls1\ilvl2\outlinelevel2\adjustright\rin0\lin720\itap0 
 \b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {PeerActivityObject
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
-This object is published to the blackboard by the JXTAObjectSharePlugIn when certain peer activities have transpired. For example, when the agent joins a peer group,  a new PeerActivit
+This object is published to the blackboard by the JXTAObjectSharePlugin when certain peer activities have transpired. For example, when the agent joins a peer group,  a new PeerActivit
 yObject is published to announce this fact to other parts of the agent (e.g. other plug-ins). 
 \par 
 \par Plug-ins wishing to be notified of these peer related activities should subscribe to the PeerActivityObject.
@@ -205,7 +205,7 @@ design a peers identity separate from the JXTA plug-in protocols.
 \par {\listtext\pard\plain\s3 \b\f1\fs26 \hich\af1\dbch\af0\loch\f1 1.7.4\tab}}\pard\plain \s3\ql \fi-720\li720\ri0\sb240\sa60\keepn\widctlpar\jclisttab\tx720\aspalpha\aspnum\faauto\ls1\ilvl2\outlinelevel2\adjustright\rin0\lin720\itap0 
 \b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {Deprecated objects
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
-Collaboration, JXTACollaborationPeerPlugIn and JXTARendezvousPeerPlugIn are early explorations of the JXTA technology and need not be used. 
+Collaboration, JXTACollaborationPeerPlugin and JXTARendezvousPeerPlugin are early explorations of the JXTA technology and need not be used. 
 \par 
 \par 
 \par 

@@ -29,7 +29,7 @@ import org.cougaar.microedition.node.*;
 import org.cougaar.microedition.plugin.*;
 
 /**
- * The Distributor registers PlugIn subscriptions, executing PlugIns based
+ * The Distributor registers Plugin subscriptions, executing Plugins based
  * on changes to their subscriptions.
  */
 public class Distributor {
@@ -111,7 +111,7 @@ public class Distributor {
    * @exception RuntimeException if the thread parameter does not equal the last
    * thread given to openTransaction.
    */
-  public synchronized void closeTransaction(Thread thread, PlugIn publisher) {
+  public synchronized void closeTransaction(Thread thread, Plugin publisher) {
   //System.out.println("CLOSE TRANSACTION thread: " +thread.getName() +" owner" +owner.getName());
   if (owner == null || thread != owner )
     throw new RuntimeException("Attempt to close unopen transaction");
@@ -144,7 +144,7 @@ public class Distributor {
     // update subscribers
     for (Enumeration subsenum = subs.elements(); subsenum.hasMoreElements();) {
       Subscriber s = (Subscriber)subsenum.nextElement();
-      if ((!s.getSubscription().isSeeOwnChanges()) && (s.getPlugIn() == publisher))
+      if ((!s.getSubscription().isSeeOwnChanges()) && (s.getPlugin() == publisher))
         continue;
       Vector list = s.getSubscription().getChangedList();
       if (!list.contains(o))
@@ -272,12 +272,12 @@ public class Distributor {
   }
 
   /**
-   * Manage PlugIn subscriptions and executions
+   * Manage Plugin subscriptions and executions
    */
   public void cycle() {
 
     for (;;) {
-      // execute PlugIns
+      // execute Plugins
       try {
 
 	while (runnableSubscribers.size() > 0) {
@@ -285,16 +285,16 @@ public class Distributor {
 	  runnableSubscribers.removeElementAt(0);
 	  openTransaction(Thread.currentThread());
 	  try {
-	      //System.out.println("EXECUTE : " +runme.getPlugIn().getClass());
+	      //System.out.println("EXECUTE : " +runme.getPlugin().getClass());
 	      runme.execute();
-	      //System.out.println("DONE EXECUTE : " +runme.getPlugIn().getClass());
+	      //System.out.println("DONE EXECUTE : " +runme.getPlugin().getClass());
 	  }
 	  catch (Throwable e) {
 	    System.out.println("Exception thrown from plugin: " +e);
 	  }
 	  runme.getSubscription().clearLists();
 	  // collect changed subscriptions
-	  closeTransaction(Thread.currentThread(), runme.getPlugIn());
+	  closeTransaction(Thread.currentThread(), runme.getPlugin());
 	}
 	waitForSomeWork();
 

@@ -105,7 +105,7 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
       IncrementalSubscription subscription = null;
 
       subscription = (IncrementalSubscription)psc
-	.getServerPlugInSupport().subscribe(this, advancePred());
+	.getServerPluginSupport().subscribe(this, advancePred());
 
       Iterator iter = subscription.getCollection().iterator();
       if (iter.hasNext())
@@ -114,7 +114,7 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
 	while (iter.hasNext())
 	{
 	  task = (Task)iter.next();
-	  psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
+	  psc.getServerPluginSupport().publishRemoveForSubscriber(task);
 	}
       }
 
@@ -128,7 +128,7 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
 	 String mmtext = (String) query_parameters.getFirstParameterToken(mmparam, '=');
          out.println("Translate: ["+mmtext+"]");
 
-	 RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+	 RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
 	 NewTask t = theLDMF.newTask();
 	 t.setPlan(theLDMF.getRealityPlan());
@@ -136,7 +136,7 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
 
 	 Vector prepositions = new Vector();
 
-	 psc.getServerPlugInSupport().openLogPlanTransaction();
+	 psc.getServerPluginSupport().openLogPlanTransaction();
 
 	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
 	 npp.setPreposition(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]);
@@ -149,9 +149,9 @@ public class PSP_TurnRobot extends PSP_BaseAdapter
 	 prepositions.add(npp);
 
 	 t.setPrepositionalPhrases(prepositions.elements());
-	 psc.getServerPlugInSupport().closeLogPlanTransaction();
+	 psc.getServerPluginSupport().closeLogPlanTransaction();
 
-	 psc.getServerPlugInSupport().publishAddForSubscriber(t);
+	 psc.getServerPluginSupport().publishAddForSubscriber(t);
 
       }
     }

@@ -5,13 +5,13 @@ publishing and subscribing to objects.
 
 There are two plugins in this example:
 
-ManagerPlugIn: publishes Job objects and subscribes to Status objects.
+ManagerPlugin: publishes Job objects and subscribes to Status objects.
 
-WorkerPlugIn: subscribes to Job objects and publishes Status objects.
+WorkerPlugin: subscribes to Job objects and publishes Status objects.
 
 These two plugins pass objects back and forth through the blackboard forever or
 until a maximum limit is reached. The maximum is set as a parameter in the
-XML configuration file for the ManagerPlugIn.
+XML configuration file for the ManagerPlugin.
 
 Run the example like this:
 
@@ -26,30 +26,30 @@ I am java null or CLDC-1.0, running on null
 Reading config from local file: Tutorial.xml
 My description: Example CougaarME Node
 Listening on 7000
-WorkerPlugIn got a new Job: Work1
-ManagerPlugIn got a status: Done1
-WorkerPlugIn got a new Job: Work2
-ManagerPlugIn got a status: Done2
-WorkerPlugIn got a new Job: Work3
-ManagerPlugIn got a status: Done3
-WorkerPlugIn got a new Job: Work4
-ManagerPlugIn got a status: Done4
-WorkerPlugIn got a new Job: Work5
-ManagerPlugIn got a status: Done5
-WorkerPlugIn got a new Job: Work6
-ManagerPlugIn got a status: Done6
-WorkerPlugIn got a new Job: Work7
-ManagerPlugIn got a status: Done7
-WorkerPlugIn got a new Job: Work8
-ManagerPlugIn got a status: Done8
-WorkerPlugIn got a new Job: Work9
-ManagerPlugIn got a status: Done9
-WorkerPlugIn got a new Job: Work10
-ManagerPlugIn got a status: Done10
-WorkerPlugIn got a new Job: Work11
-ManagerPlugIn got a status: Done11
-WorkerPlugIn got a new Job: Work12
-ManagerPlugIn got a status: Done12
+WorkerPlugin got a new Job: Work1
+ManagerPlugin got a status: Done1
+WorkerPlugin got a new Job: Work2
+ManagerPlugin got a status: Done2
+WorkerPlugin got a new Job: Work3
+ManagerPlugin got a status: Done3
+WorkerPlugin got a new Job: Work4
+ManagerPlugin got a status: Done4
+WorkerPlugin got a new Job: Work5
+ManagerPlugin got a status: Done5
+WorkerPlugin got a new Job: Work6
+ManagerPlugin got a status: Done6
+WorkerPlugin got a new Job: Work7
+ManagerPlugin got a status: Done7
+WorkerPlugin got a new Job: Work8
+ManagerPlugin got a status: Done8
+WorkerPlugin got a new Job: Work9
+ManagerPlugin got a status: Done9
+WorkerPlugin got a new Job: Work10
+ManagerPlugin got a status: Done10
+WorkerPlugin got a new Job: Work11
+ManagerPlugin got a status: Done11
+WorkerPlugin got a new Job: Work12
+ManagerPlugin got a status: Done12
 ...
 
 

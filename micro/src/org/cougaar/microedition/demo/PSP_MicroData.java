@@ -93,7 +93,7 @@ public class PSP_MicroData extends PSP_BaseAdapter implements PlanServiceProvide
     // Look at allocation results to see what the temperature is.
     //
     out = cout;
-    Subscription subscription = psc.getServerPlugInSupport().subscribe(this, new Gimme());
+    Subscription subscription = psc.getServerPluginSupport().subscribe(this, new Gimme());
     while (true) {
       try {Thread.sleep(Long.MAX_VALUE);} catch (Exception e) {}
     }

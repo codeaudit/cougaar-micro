@@ -2,14 +2,14 @@
 <NodeConfiguration>
   <description>Everything</description>
 
-  <!-- Infrastructure PlugIns -->
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 
-  <plugin> org.cougaar.microedition.tini.TiniLocomotionPlugIn</plugin>
-  <plugin> org.cougaar.microedition.tini.TiniTurretManagerPlugIn</plugin>
-  <plugin> org.cougaar.microedition.tini.TiniSONARSensorPlugIn</plugin>
-  <plugin> org.cougaar.microedition.tini.TiniTurretPlugIn</plugin>
+  <plugin> org.cougaar.microedition.tini.TiniLocomotionPlugin</plugin>
+  <plugin> org.cougaar.microedition.tini.TiniTurretManagerPlugin</plugin>
+  <plugin> org.cougaar.microedition.tini.TiniSONARSensorPlugin</plugin>
+  <plugin> org.cougaar.microedition.tini.TiniTurretPlugin</plugin>
 
 </NodeConfiguration>

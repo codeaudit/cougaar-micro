@@ -144,14 +144,14 @@ public class PSP_MakeTask extends PSP_BaseAdapter
 
       // create task
       if (!"remove".equalsIgnoreCase(actionText)) {
-        RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+        RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
         Task task=createTask(theLDMF, verbText);
         addPreposition(theLDMF, (NewTask)task, speedParam, speedText);
         addPreposition(theLDMF, (NewTask)task, velocityParam, velocityText);
         addPreposition(theLDMF, (NewTask)task, degreesParam, degreesText);
         addPreposition(theLDMF, (NewTask)task, hemisParam, hemisphere);
 
-        psc.getServerPlugInSupport().publishAddForSubscriber(task);
+        psc.getServerPluginSupport().publishAddForSubscriber(task);
         count++;
         createOutputPage("Added", task, out);
       } else {
@@ -169,11 +169,11 @@ public class PSP_MakeTask extends PSP_BaseAdapter
         };
 
         subscription = (IncrementalSubscription)psc
-          .getServerPlugInSupport().subscribe(this, taskPred);
+          .getServerPluginSupport().subscribe(this, taskPred);
         Iterator iter = subscription.getCollection().iterator();
         if (iter.hasNext()) {
           Task task = (Task)iter.next();
-          psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
+          psc.getServerPluginSupport().publishRemoveForSubscriber(task);
           count--;
           createOutputPage("Removed", task, out);
         } else {

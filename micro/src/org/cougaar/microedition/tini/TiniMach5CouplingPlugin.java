@@ -32,7 +32,7 @@ import org.cougaar.microedition.plugin.*;
 
 /**
  */
-public class TiniMach5CouplingPlugIn extends PlugInAdapter {
+public class TiniMach5CouplingPlugin extends PluginAdapter {
 
   UnaryPredicate getPosResourcePred() {
     UnaryPredicate resourcePred = new UnaryPredicate() {
@@ -65,7 +65,7 @@ public class TiniMach5CouplingPlugIn extends PlugInAdapter {
 
   public void setupSubscriptions() {
 
-    System.out.println("TiniMach5CouplingPlugIn::setupSubscriptions v2");
+    System.out.println("TiniMach5CouplingPlugin::setupSubscriptions v2");
 
     pos_resourceSub = subscribe(getPosResourcePred());
     loc_resourceSub = subscribe(getLocResourcePred());
@@ -75,7 +75,7 @@ public class TiniMach5CouplingPlugIn extends PlugInAdapter {
 
   public void execute() {
 
-    System.out.println("TiniMach5CouplingPlugIn.execute()");
+    System.out.println("TiniMach5CouplingPlugin.execute()");
 
     Enumeration enum = pos_resourceSub.getAddedList().elements();
     if (enum.hasMoreElements())
@@ -91,7 +91,7 @@ public class TiniMach5CouplingPlugIn extends PlugInAdapter {
 
     if(posresource != null && locresource != null)
     {
-      System.out.println("TiniMach5CouplingPlugIn Assigning resource");
+      System.out.println("TiniMach5CouplingPlugin Assigning resource");
 
       posresource.setLocomotionResource(locresource);
     }

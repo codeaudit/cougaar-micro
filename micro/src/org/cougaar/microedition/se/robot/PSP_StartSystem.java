@@ -116,7 +116,7 @@ public class PSP_StartSystem extends PSP_BaseAdapter
          String coordtext = (String) query_parameters.getFirstParameterToken(waypointParam, '=');
          System.out.println("Waypoint: ["+coordtext+"]");
 
-	 RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+	 RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
 	 NewTask t = theLDMF.newTask();
 	 t.setPlan(theLDMF.getRealityPlan());
@@ -127,7 +127,7 @@ public class PSP_StartSystem extends PSP_BaseAdapter
 	 npp.setIndirectObject(coordtext);
 	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
 
-	 psc.getServerPlugInSupport().publishAddForSubscriber(t);
+	 psc.getServerPluginSupport().publishAddForSubscriber(t);
 
       }
 
@@ -140,20 +140,20 @@ public class PSP_StartSystem extends PSP_BaseAdapter
 
 	if (system_on)
 	{
-	  RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+	  RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
 	  NewTask t = theLDMF.newTask();
 	  t.setPlan(theLDMF.getRealityPlan());
 	  t.setVerb(Verb.getVerb(verbText));
 
-	  psc.getServerPlugInSupport().publishAddForSubscriber(t);
+	  psc.getServerPluginSupport().publishAddForSubscriber(t);
 	}
 	else
 	{
 	  IncrementalSubscription subscription = null;
 
 	  subscription = (IncrementalSubscription)psc
-	    .getServerPlugInSupport().subscribe(this, sysstartPred());
+	    .getServerPluginSupport().subscribe(this, sysstartPred());
 
 	  Iterator iter = subscription.getCollection().iterator();
 	  if (iter.hasNext())
@@ -162,7 +162,7 @@ public class PSP_StartSystem extends PSP_BaseAdapter
 	    while (iter.hasNext())
 	    {
 	      task = (Task)iter.next();
-	      psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
+	      psc.getServerPluginSupport().publishRemoveForSubscriber(task);
 	    }
 	  }
 	}

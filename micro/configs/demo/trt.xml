@@ -4,11 +4,11 @@
 
   <resource> org.cougaar.microedition.tini.TiniTurretController</resource>
 
-  <plugin sleeptime="1000" resource="TiniTurretController" command="RotateTurret"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+  <plugin sleeptime="1000" resource="TiniTurretController" command="RotateTurret"> org.cougaar.microedition.plugin.ControlPlugin</plugin>
 
-  <!-- Infrastructure PlugIns -->
-  <plugin>org.cougaar.microedition.tini.TiniKillPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin>org.cougaar.microedition.tini.TiniKillPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>

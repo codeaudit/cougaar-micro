@@ -30,7 +30,7 @@ public class Subscriber {
   public Subscriber() {
   }
   private org.cougaar.microedition.ldm.Distributor distributor;
-  private org.cougaar.microedition.plugin.PlugIn plugin;
+  private org.cougaar.microedition.plugin.Plugin plugin;
   private org.cougaar.microedition.ldm.Subscription subscription;
 
   public org.cougaar.microedition.ldm.Distributor getDistributor() {
@@ -41,11 +41,11 @@ public class Subscriber {
     distributor = newDistributor;
   }
 
-  public void setPlugIn(org.cougaar.microedition.plugin.PlugIn newPlugIn) {
-    plugin = newPlugIn;
+  public void setPlugin(org.cougaar.microedition.plugin.Plugin newPlugin) {
+    plugin = newPlugin;
   }
 
-  public org.cougaar.microedition.plugin.PlugIn getPlugIn() {
+  public org.cougaar.microedition.plugin.Plugin getPlugin() {
     return plugin;
   }
 
@@ -58,7 +58,7 @@ public class Subscriber {
   }
 
   public void execute() {
-    getPlugIn().execute();
+    getPlugin().execute();
   }
 
  

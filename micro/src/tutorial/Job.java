@@ -23,9 +23,9 @@
 package tutorial;
 
 /**
- * This class can be published to the PLAN and subscribed to by PlugIns
+ * This class can be published to the PLAN and subscribed to by Plugins
  * @author ALPINE (alpine-software@bbn.com)
- * @version $Id: Job.java,v 1.2 2001-08-22 20:22:49 wwright Exp $
+ * @version $Id: Job.java,v 1.3 2002-02-13 15:13:01 jwinston Exp $
  **/
 public class Job {
 

@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>Example CougaarME Node</description>
-  <plugin maxIterations="20">tutorial.ManagerPlugIn</plugin>
-  <plugin>tutorial.WorkerPlugIn</plugin>
-  <!-- Infrastructure PlugIns -->
+  <plugin maxIterations="20">tutorial.ManagerPlugin</plugin>
+  <plugin>tutorial.WorkerPlugin</plugin>
+  <!-- Infrastructure Plugins -->
   <!-- (These are only needed when communicating with other nodes) -->
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>

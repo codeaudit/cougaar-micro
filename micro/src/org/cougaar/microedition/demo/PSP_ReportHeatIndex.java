@@ -77,7 +77,7 @@ public class PSP_ReportHeatIndex extends PSP_BaseAdapter implements PlanServiceP
       PlanServiceContext psc,
       PlanServiceUtilities psu) throws Exception
   {
-    Collection recs = psc.getServerPlugInSupport().queryForSubscriber( new AllRecords());
+    Collection recs = psc.getServerPluginSupport().queryForSubscriber( new AllRecords());
     HeatIndexRecordComparator hirc = new HeatIndexRecordComparator();
 
     TreeSet timeordered = new TreeSet(hirc);

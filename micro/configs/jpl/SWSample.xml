@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>sample SensorWeb cluster</description>
-  <plugin podNumber="2">gov.nasa.jpl.sensorweb.SWSimPlugIn</plugin>
-  <plugin>gov.nasa.jpl.sensorweb.SWSampleAppPlugIn</plugin>
-  <!-- Infrastructure PlugIns -->
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin podNumber="2">gov.nasa.jpl.sensorweb.SWSimPlugin</plugin>
+  <plugin>gov.nasa.jpl.sensorweb.SWSampleAppPlugin</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>

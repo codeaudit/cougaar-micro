@@ -112,7 +112,7 @@ public class PSP_SnapPicture extends PSP_BaseAdapter
       IncrementalSubscription subscription = null;
 
       subscription = (IncrementalSubscription)psc
-	.getServerPlugInSupport().subscribe(this, getImagePred());
+	.getServerPluginSupport().subscribe(this, getImagePred());
 
       Iterator iter = subscription.getCollection().iterator();
       if (iter.hasNext())
@@ -121,7 +121,7 @@ public class PSP_SnapPicture extends PSP_BaseAdapter
 	while (iter.hasNext())
 	{
 	  task = (Task)iter.next();
-	  psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
+	  psc.getServerPluginSupport().publishRemoveForSubscriber(task);
 	}
       }
 
@@ -184,13 +184,13 @@ public class PSP_SnapPicture extends PSP_BaseAdapter
       else
       {
 	out.println("PSP_SnapPicture Snapping... " + psc.getSessionAddress());
-	RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+	RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
 	NewTask t = theLDMF.newTask();
 	t.setPlan(theLDMF.getRealityPlan());
 	t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.GETIMAGE]));
 
-	psc.getServerPlugInSupport().publishAddForSubscriber(t);
+	psc.getServerPluginSupport().publishAddForSubscriber(t);
       }
 
     }

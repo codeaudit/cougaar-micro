@@ -2,10 +2,10 @@
 <NodeConfiguration>
   <description>Controller of turret and detector</description>
 
-  <plugin> org.cougaar.microedition.tini.TiniTurretPlugIn</plugin>
+  <plugin> org.cougaar.microedition.tini.TiniTurretPlugin</plugin>
 
-  <!-- Infrastructure PlugIns -->
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>

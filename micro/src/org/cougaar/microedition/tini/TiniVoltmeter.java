@@ -27,7 +27,7 @@ import com.ibutton.adapter.*;
 import com.ibutton.container.*;
 
 /**
- * PlugIn for voltage readings.
+ * Plugin for voltage readings.
  */
 public class TiniVoltmeter extends VoltmeterResource {
 

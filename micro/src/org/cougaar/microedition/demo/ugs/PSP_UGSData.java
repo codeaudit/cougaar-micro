@@ -92,7 +92,7 @@ public class PSP_UGSData extends PSP_BaseAdapter implements PlanServiceProvider,
     //
     // Look at allocation results to see what the temperature is.
     //
-    Collection bots = psc.getServerPlugInSupport().queryForSubscriber( new Gimme());
+    Collection bots = psc.getServerPluginSupport().queryForSubscriber( new Gimme());
     Iterator bot_iter = bots.iterator();
     // dumpXml(bot_iter);
     dumpText(bot_iter, cout);

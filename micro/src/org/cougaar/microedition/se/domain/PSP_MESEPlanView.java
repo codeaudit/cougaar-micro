@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
  * <pre>
  * Wish list:
  *   1) Provide more powerful search, either by DebugUI-style
- *      UnaryPredicate creation or (better) by new PlugIn Contracts
+ *      UnaryPredicate creation or (better) by new Plugin Contracts
  *      Predicate Language.
  *   2) Others?
  *
@@ -141,7 +141,7 @@ public class PSP_MESEPlanView
     };
 
     porttableSub = (IncrementalSubscription)psc
-        .getServerPlugInSupport().subscribe(this, portTablePred);
+        .getServerPluginSupport().subscribe(this, portTablePred);
 
     // ================================================
 

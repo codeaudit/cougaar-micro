@@ -92,13 +92,13 @@ public class PSP_LaunchWeapon extends PSP_BaseAdapter
       String verbText = Constants.Robot.verbs[Constants.Robot.LAUNCHWEAPON];
       System.out.println("PSP_LaunchWeapon called from " + psc.getSessionAddress());
 
-      RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+      RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
       NewTask t = theLDMF.newTask();
       t.setPlan(theLDMF.getRealityPlan());
       t.setVerb(Verb.getVerb(verbText));
 
-      psc.getServerPlugInSupport().publishAddForSubscriber(t);
+      psc.getServerPluginSupport().publishAddForSubscriber(t);
     }
     catch (Exception ex)
     {

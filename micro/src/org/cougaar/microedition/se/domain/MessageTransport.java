@@ -35,12 +35,12 @@ import org.cougaar.microedition.shared.*;
  */
 class MessageTransport {
 
-  LDMServesPlugIn ldm;
+  LDMServesPlugin ldm;
   short port = 1234; // default port for incoming messages
 
   Vector deadagents = new Vector();
 
-   MessageTransport(LDMServesPlugIn ldm) {
+   MessageTransport(LDMServesPlugin ldm) {
     this.ldm = ldm;
     Thread t = new Thread(new Sender());
     t.start();

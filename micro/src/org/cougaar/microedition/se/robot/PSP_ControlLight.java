@@ -102,21 +102,21 @@ public class PSP_ControlLight extends PSP_BaseAdapter
          wantOn=onText.equalsIgnoreCase("true");
          System.out.println("want on is "+wantOn);
 
-	 RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+	 RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
 
 	 NewTask t = theLDMF.newTask();
 	 t.setPlan(theLDMF.getRealityPlan());
 	 t.setVerb(Verb.getVerb(Constants.Robot.verbs[Constants.Robot.CONTROLFLASHLIGHT]));
 
 
-	 psc.getServerPlugInSupport().openLogPlanTransaction();
+	 psc.getServerPluginSupport().openLogPlanTransaction();
 	 NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
          npp.setPreposition("LightingMode");
 	 npp.setIndirectObject("toggle"); // turn on for now
 	 t.setPrepositionalPhrase((PrepositionalPhrase)npp);
-	 psc.getServerPlugInSupport().closeLogPlanTransaction();
+	 psc.getServerPluginSupport().closeLogPlanTransaction();
 
-	 psc.getServerPlugInSupport().publishAddForSubscriber(t);
+	 psc.getServerPluginSupport().publishAddForSubscriber(t);
 
 
       }
@@ -131,9 +131,9 @@ public class PSP_ControlLight extends PSP_BaseAdapter
          System.out.println("wanton is "+wantOn);
       }
       if (wantOn) {
-        RootFactory theLDMF = psc.getServerPlugInSupport().getFactoryForPSP();
+        RootFactory theLDMF = psc.getServerPluginSupport().getFactoryForPSP();
         Task task=createTask(theLDMF, verbText);
-        psc.getServerPlugInSupport().publishAddForSubscriber(task);
+        psc.getServerPluginSupport().publishAddForSubscriber(task);
         count++;
         createOutputPage("Added", task, out);
       } else {
@@ -151,14 +151,14 @@ public class PSP_ControlLight extends PSP_BaseAdapter
         };
 
         subscription = (IncrementalSubscription)psc
-          .getServerPlugInSupport().subscribe(this, taskPred);
+          .getServerPluginSupport().subscribe(this, taskPred);
         Iterator iter = subscription.getCollection().iterator();
         if (iter.hasNext()) {
           Task task=null;
           int removedCount=0;
           while (iter.hasNext()) {
             task = (Task)iter.next();
-            psc.getServerPlugInSupport().publishRemoveForSubscriber(task);
+            psc.getServerPluginSupport().publishRemoveForSubscriber(task);
             count--;
             removedCount++;
           }

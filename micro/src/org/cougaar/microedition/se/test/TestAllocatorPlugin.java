@@ -32,10 +32,10 @@ import org.cougaar.domain.planning.ldm.plan.*;
 import org.cougaar.microedition.se.domain.*;
 
 /**
- * A test PlugIn to test interoperatbility with Cougaar ME.
+ * A test Plugin to test interoperatbility with Cougaar ME.
  * It asks all known micro agents for the temperature.
  */
-public class TestAllocatorPlugIn extends SimplePlugIn {
+public class TestAllocatorPlugin extends SimplePlugin {
 
   IncrementalSubscription assetSub, allocSub;
   String Name = "Test";

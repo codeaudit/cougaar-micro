@@ -102,7 +102,7 @@ public class PSP_GetImage extends PSP_BaseAdapter
       System.out.println("PSP_GetImage called from " + psc.getSessionAddress());
 
       subscription = (IncrementalSubscription)psc
-        .getServerPlugInSupport().subscribe(this, imagePred);
+        .getServerPluginSupport().subscribe(this, imagePred);
       Iterator iter = subscription.getCollection().iterator();
       if (iter.hasNext()) {
         ImageAsset imageAsset = (ImageAsset)iter.next();
@@ -116,7 +116,7 @@ public class PSP_GetImage extends PSP_BaseAdapter
       out.flush();
     }
     finally {
-      psc.getServerPlugInSupport().unsubscribeForSubscriber(subscription);
+      psc.getServerPluginSupport().unsubscribeForSubscriber(subscription);
     }
   }
 

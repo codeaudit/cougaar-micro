@@ -6,4 +6,4 @@ Changes:
 * Added the ability to read the configuration from a local file
   as an alternative to getting it from a configuration server. This
   is necessary for devices that have limited or no network capability.
-* Added new generic plugin org.cougaar.microedition.plugin.ControlPlugIn
+* Added new generic plugin org.cougaar.microedition.plugin.ControlPlugin

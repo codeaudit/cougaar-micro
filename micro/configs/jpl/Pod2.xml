@@ -6,24 +6,24 @@
   <!-- START Debugging and testing plugins -->
   <!-- Replace these with the actual pod interface plugin(s) -->
   <plugin podNumber="2" datatype="correction" datavalue="0x0908" sleeptime="1000">
-    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
+    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugin
   </plugin>
   <plugin podNumber="2" datatype="temp" datavalue="0x00F1" sleeptime="1000">
-    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
+    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugin
   </plugin>
   <plugin podNumber="2" datatype="humidity" datavalue="0x00DE" sleeptime="1000">
-    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
+    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugin
   </plugin>
-  <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin>
+  <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugin</plugin>
   <!-- END Debugging and testing plugins -->
 
 
-  <plugin>gov.nasa.jpl.sensorweb.PodDataConversionPlugIn</plugin>
-  <plugin>gov.nasa.jpl.sensorweb.ComputeHeatIndexPlugIn</plugin>
-  <plugin aggregate="300">gov.nasa.jpl.sensorweb.HeatIndexPlugIn</plugin>
-  <plugin reapinterval="15" expiration="1200">gov.nasa.jpl.sensorweb.PodIdentificationPlugIn</plugin>
+  <plugin>gov.nasa.jpl.sensorweb.PodDataConversionPlugin</plugin>
+  <plugin>gov.nasa.jpl.sensorweb.ComputeHeatIndexPlugin</plugin>
+  <plugin aggregate="300">gov.nasa.jpl.sensorweb.HeatIndexPlugin</plugin>
+  <plugin reapinterval="15" expiration="1200">gov.nasa.jpl.sensorweb.PodIdentificationPlugin</plugin>
 
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>

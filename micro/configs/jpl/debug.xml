@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>Debugging Tools</description>
-  <plugin debug="true" port="1233">org.cougaar.microedition.plugin.WebServerPlugIn</plugin>
+  <plugin debug="true" port="1233">org.cougaar.microedition.plugin.WebServerPlugin</plugin>
 </NodeConfiguration>

@@ -32,18 +32,18 @@ used in our workshop demo scenario...
 <NodeConfiguration>
   <description>Ambient Temp in Degrees Celsius</description>
   <resource name="Temperature">org.cougaar.microedition.tini.TiniThermometer</resource>
-  <plugin name="Temperature1" sleeptime="2000" blabbo="A">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
-  <plugin name="Temperature2" sleeptime="3000" foobar = "9">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
-  <!-- Infrastructure PlugIns -->
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin name="Temperature1" sleeptime="2000" blabbo="A">org.cougaar.microedition.plugin.MeasurePlugin</plugin>
+  <plugin name="Temperature2" sleeptime="3000" foobar = "9">org.cougaar.microedition.plugin.MeasurePlugin</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>
 
 The xml version tag is standard xml boilerplate. The description is not 
 really used by the ME, but is nice to have for comment/documentation 
 purposes. The 3 plugin lines below the xml comment: 
-<!-- Infrastructure PlugIns --> are needed for all ME Agents that 
+<!-- Infrastructure Plugins --> are needed for all ME Agents that 
 intend to do much of anything. 
 
 The line tagged <resource> describes a new type of asset unique to 
@@ -52,13 +52,13 @@ Sensor Resource. And in this case will match (via a measure plugin) all tasks
 whose PrepositionalPhrase (refered to as name in these parameter lists) 
 contains "Temperature".
 
-Shown are 2 generic Measure PlugIns. In order to perform the tasks given 
+Shown are 2 generic Measure Plugins. In order to perform the tasks given 
 it by the SE, they must be able to match their tasks (via Prepositional 
 Phrase) to a Temperature Sensor Resource. The "name" Temperature1 and 
 Temperature2 match the same "name" from the TempAllocatorPlugin given in the 
 Mother.ini file (see below). 
 
-These 2 generic Measure PlugIn declarations also show the method by which 
+These 2 generic Measure Plugin declarations also show the method by which 
 parameters are passed to a plugin at runtime. Value strings can be 
 associated with a tag by including the quoted strings after an equal sign 
 and said tags.  White space is optional on either side of the equal sign, 
@@ -73,13 +73,13 @@ class = org.cougaar.core.cluster.ClusterImpl
 uic = MotherNode
 cloned = false
 
-[ PlugIns ]
-plugin = org.cougaar.microedition.domain.TempAllocatorPlugIn(name=Temperature1)
-plugin = org.cougaar.microedition.domain.TempAllocatorPlugIn(name=Temperature2)
+[ Plugins ]
+plugin = org.cougaar.microedition.domain.TempAllocatorPlugin(name=Temperature1)
+plugin = org.cougaar.microedition.domain.TempAllocatorPlugin(name=Temperature2)
 
-plugin = org.cougaar.microedition.domain.NameServerPlugIn(debug)
-plugin = org.cougaar.microedition.domain.MicroTaskPlugIn
-plugin = org.cougaar.lib.planserver.PlanServerPlugIn
+plugin = org.cougaar.microedition.domain.NameServerPlugin(debug)
+plugin = org.cougaar.microedition.domain.MicroTaskPlugin
+plugin = org.cougaar.lib.planserver.PlanServerPlugin
 
 
 mtiberio@bbn.com

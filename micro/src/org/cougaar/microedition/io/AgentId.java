@@ -67,7 +67,7 @@ public class AgentId {
   /**
    * Get a string describing the capabilities of the node.  This is free text, but
    * should be a list of things the agent can do for client agents.  It is used by
-   * AgentQuery and AgentQueryPlugIn.
+   * AgentQuery and AgentQueryPlugin.
    */
   public String getCapabilities() {
     return capabilities;

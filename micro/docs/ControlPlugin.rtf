@@ -17,18 +17,18 @@
 \leveltemplateid67698703\'02\'06.;}{\levelnumbers\'01;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 \fi-360\li5040\jclisttab\tx5040 }{\listlevel\levelnfc4\levelnfcn4\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0
 {\leveltext\leveltemplateid67698713\'02\'07.;}{\levelnumbers\'01;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 \fi-360\li5760\jclisttab\tx5760 }{\listlevel\levelnfc2\levelnfcn2\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360
 \levelindent0{\leveltext\leveltemplateid67698715\'02\'08.;}{\levelnumbers\'01;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 \fi-180\li6480\jclisttab\tx6480 }{\listname ;}\listid1061975229}}{\*\listoverridetable{\listoverride\listid1061975229
-\listoverridecount0\ls1}}{\info{\title Using the ControlPlugIn}{\author James Metzger}{\operator Bill Wright}{\creatim\yr2001\mo8\dy23\hr14\min54}{\revtim\yr2001\mo8\dy30\hr9\min19}{\version3}{\edmins1}{\nofpages3}{\nofwords731}{\nofchars4168}
+\listoverridecount0\ls1}}{\info{\title Using the ControlPlugin}{\author James Metzger}{\operator Bill Wright}{\creatim\yr2001\mo8\dy23\hr14\min54}{\revtim\yr2001\mo8\dy30\hr9\min19}{\version3}{\edmins1}{\nofpages3}{\nofwords731}{\nofchars4168}
 {\*\company BBN Technologies}{\nofcharsws0}{\vern8269}}\widowctrl\ftnbj\aenddoc\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\formshade\horzdoc\dgmargin\dghspace180\dgvspace180\dghorigin1800\dgvorigin1440\dghshow1\dgvshow1
 \jexpand\viewkind1\viewscale100\pgbrdrhead\pgbrdrfoot\splytwnine\ftnlytwnine\htmautsp\nolnhtadjtbl\useltbaln\alntblind\lytcalctblwd\lyttblrtgr\lnbrkrule \fet0\sectd \linex0\endnhere\sectlinegrid360\sectdefaultcl {\*\pnseclvl1
 \pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}{\*\pnseclvl5
 \pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang
 {\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain \s3\ql \li0\ri0\sb240\sa60\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel2\adjustright\rin0\lin0\itap0 
-\b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {Using the ControlPlugIn
+\b\f1\fs26\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {Using the ControlPlugin
 \par }\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
 \par The ControlPlugin defines a generic Cougaar ME plug-in for controlling/reading an actuator/sensor device. For example, the ControlPlugin can be used to poll for position data from a GPS receiver, sound level from an ultrasonic sensor or activate a step-mo
 tor.
 \par 
-\par Like other Cougaar ME plug-ins, the ControlPlugIn is instantiated by means of an XML file read by the node at run time. Certain parameters must accompany the ControlPlugIn declaration in order to be useful. Here is an example XML declaration where the
+\par Like other Cougaar ME plug-ins, the ControlPlugin is instantiated by means of an XML file read by the node at run time. Certain parameters must accompany the ControlPlugin declaration in order to be useful. Here is an example XML declaration where the
  ControlPlugin is assigned the TiniSonarController resource:
 \par }{\fs20\lang1024\langfe1024\noproof {\shp{\*\shpinst\shpleft0\shptop120\shpright8640\shpbottom4620\shpfhdr0\shpbxcolumn\shpbxignore\shpbypara\shpbyignore\shpwr2\shpwrk0\shpfblwtxt0\shpz0\shplid1026
 {\sp{\sn shapeType}{\sv 202}}{\sp{\sn fFlipH}{\sv 0}}{\sp{\sn fFlipV}{\sv 0}}{\sp{\sn lTxid}{\sv 65536}}{\sp{\sn hspNext}{\sv 1026}}{\sp{\sn fLayoutInCell}{\sv 1}}{\sp{\sn fLayoutInCell}{\sv 1}}{\shptxt \pard\plain 
@@ -38,12 +38,12 @@ tor.
 \par 
 \par   <resource> org.cougaar.microedition.tini.TiniSONARController</resource>
 \par 
-\par   <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="3.0" sleeptime="100"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+\par   <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="3.0" sleeptime="100"> org.cougaar.microedition.plugin.ControlPlugin</plugin>
 \par 
-\par   <!-- Infrastructure PlugIns -->
-\par   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-\par   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-\par   <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+\par   <!-- Infrastructure Plugins -->
+\par   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+\par   <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+\par   <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 \par </NodeConfiguration>
 \par }}}{\shprslt{\*\do\dobxcolumn\dobypara\dodhgt8192\dptxbx\dptxlrtb{\dptxbxtext\pard\plain \ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {<?xml version="1.0"?>
 \par <NodeConfiguration>
@@ -51,15 +51,15 @@ tor.
 \par 
 \par   <resource> org.cougaar.microedition.tini.TiniSONARController</resource>
 \par 
-\par   <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="3.0" sleeptime="100"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+\par   <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="3.0" sleeptime="100"> org.cougaar.microedition.plugin.ControlPlugin</plugin>
 \par 
-\par   <!-- Infrastructure PlugIns -->
-\par   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-\par   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-\par   <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+\par   <!-- Infrastructure Plugins -->
+\par   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+\par   <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+\par   <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 \par </NodeConfiguration>
 \par }}\dpx0\dpy120\dpxsize8640\dpysize4500\dpfillfgcr255\dpfillfgcg255\dpfillfgcb255\dpfillbgcr255\dpfillbgcg255\dpfillbgcb255\dpfillpat1\dplinew15\dplinecor0\dplinecog0\dplinecob0}}}}{ 
-\par Here is a description of each XML parameter used by the ControlPlugIn:
+\par Here is a description of each XML parameter used by the ControlPlugin:
 \par 
 \par }\trowd \trgaph108\trleft-108\trbrdrt\brdrs\brdrw10 \trbrdrl\brdrs\brdrw10 \trbrdrb\brdrs\brdrw10 \trbrdrr\brdrs\brdrw10 \trbrdrh\brdrs\brdrw10 \trbrdrv\brdrs\brdrw10 \trftsWidth1\trautofit1\trpaddl108\trpaddr108\trpaddfl3\trpaddfr3 \clvertalt\clbrdrt
 \brdrs\brdrw10 \clbrdrl\brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 \cltxlrtb\clftsWidth3\clwWidth2952 \cellx2844\clvertalt\clbrdrt\brdrs\brdrw10 \clbrdrl\brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 
@@ -74,7 +74,7 @@ tor.
 \trgaph108\trleft-108\trbrdrt\brdrs\brdrw10 \trbrdrl\brdrs\brdrw10 \trbrdrb\brdrs\brdrw10 \trbrdrr\brdrs\brdrw10 \trbrdrh\brdrs\brdrw10 \trbrdrv\brdrs\brdrw10 \trftsWidth1\trautofit1\trpaddl108\trpaddr108\trpaddfl3\trpaddfr3 \clvertalt\clbrdrt
 \brdrs\brdrw10 \clbrdrl\brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 \cltxlrtb\clftsWidth3\clwWidth2952 \cellx2844\clvertalt\clbrdrt\brdrs\brdrw10 \clbrdrl\brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 
 \cltxlrtb\clftsWidth3\clwWidth2952 \cellx5796\clvertalt\clbrdrt\brdrs\brdrw10 \clbrdrl\brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 \cltxlrtb\clftsWidth3\clwWidth2952 \cellx8748\row }\pard 
-\ql \li0\ri0\widctlpar\intbl\aspalpha\aspnum\faauto\adjustright\rin0\lin0 {Resource (required)\cell The name of the ControllerResource controlled by ControlPlugIn\cell Resource must also be specified elsewhere in the XML\cell }\pard 
+\ql \li0\ri0\widctlpar\intbl\aspalpha\aspnum\faauto\adjustright\rin0\lin0 {Resource (required)\cell The name of the ControllerResource controlled by ControlPlugin\cell Resource must also be specified elsewhere in the XML\cell }\pard 
 \ql \li0\ri0\widctlpar\intbl\aspalpha\aspnum\faauto\adjustright\rin0\lin0 {\trowd \trgaph108\trleft-108\trbrdrt\brdrs\brdrw10 \trbrdrl\brdrs\brdrw10 \trbrdrb\brdrs\brdrw10 \trbrdrr\brdrs\brdrw10 \trbrdrh\brdrs\brdrw10 \trbrdrv\brdrs\brdrw10 
 \trftsWidth1\trautofit1\trpaddl108\trpaddr108\trpaddfl3\trpaddfr3 \clvertalt\clbrdrt\brdrs\brdrw10 \clbrdrl\brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 \cltxlrtb\clftsWidth3\clwWidth2952 \cellx2844\clvertalt\clbrdrt\brdrs\brdrw10 \clbrdrl
 \brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 \cltxlrtb\clftsWidth3\clwWidth2952 \cellx5796\clvertalt\clbrdrt\brdrs\brdrw10 \clbrdrl\brdrs\brdrw10 \clbrdrb\brdrs\brdrw10 \clbrdrr\brdrs\brdrw10 \cltxlrtb\clftsWidth3\clwWidth2952 \cellx8748
@@ -144,7 +144,7 @@ True if device is under control or activation by plugin\cell }\pard \ql \li0\ri0
 \par 
 \par Initialization:
 \par 
-\par When ControlPlugIn setupSubscription method is called, the plugin will subscribe to tasks with the verb equal to the <command> specified in the plugin parameters. It will also subscribe to an instance of ControllerResource of <resource> name. 
+\par When ControlPlugin setupSubscription method is called, the plugin will subscribe to tasks with the verb equal to the <command> specified in the plugin parameters. It will also subscribe to an instance of ControllerResource of <resource> name. 
 \par 
 \par Execution:
 \par 

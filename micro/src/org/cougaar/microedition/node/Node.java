@@ -102,15 +102,15 @@ public class Node {
       String classname = ntp.name.trim();
       try {
         Class clazz = Class.forName(classname);
-        PlugIn p = (PlugIn)clazz.newInstance();
+        Plugin p = (Plugin)clazz.newInstance();
         plugIns.addElement(p);
-        ((PlugInAdapter)p).setParameters(ntp.table);
+        ((PluginAdapter)p).setParameters(ntp.table);
       } catch (ClassNotFoundException cnfe) {
-        System.err.println("PlugIn class not found: "+classname);
+        System.err.println("Plugin class not found: "+classname);
       } catch (IllegalAccessException iae) {
-        System.err.println("Exception initializing PlugIn: "+classname);
+        System.err.println("Exception initializing Plugin: "+classname);
       } catch (InstantiationException ie) {
-        System.err.println("Exception instantiating PlugIn: "+classname);
+        System.err.println("Exception instantiating Plugin: "+classname);
       }
     }
 
@@ -167,10 +167,10 @@ public class Node {
       }
     }
 
-    // initialize all of the PlugIns
+    // initialize all of the Plugins
     plugInList = plugIns.elements();
     while (plugInList.hasMoreElements()) {
-      PlugInAdapter p = (PlugInAdapter)plugInList.nextElement();
+      PluginAdapter p = (PluginAdapter)plugInList.nextElement();
       p.setDistributor(d);
       d.openTransaction(Thread.currentThread());
       p.setupSubscriptions();

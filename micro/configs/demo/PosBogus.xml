@@ -2,9 +2,9 @@
 <NodeConfiguration>
   <description>PositionProvider</description>
   <resource Latitude="0.0" Longitude="0.0" Heading="0.0">org.cougaar.microedition.tini.TiniBogusLocationResource</resource>
-  <plugin>org.cougaar.microedition.tini.TiniLocationPlugIn</plugin>
-  <!-- Infrastructure PlugIns -->
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.tini.TiniLocationPlugin</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>

@@ -24,7 +24,7 @@ package org.cougaar.microedition.asset;
 
 import org.cougaar.microedition.shared.Encodable;
 /**
- * AgentQuery objects are picked up by the AgentQueryPlugIn and interpreted as
+ * AgentQuery objects are picked up by the AgentQueryPlugin and interpreted as
  * requests to look up other agent by capability.  The capabilities substring is
  * text-matched against the capabilities in the other agents.  Those that match
  * are added to the blackboard.
@@ -64,7 +64,7 @@ public class AgentQuery implements Encodable{
   }
   /**
    * Set the list of agents with capabilities matching the capabilities substring.
-   * This method is used by AgentQueryPlugIn.
+   * This method is used by AgentQueryPlugin.
    */
   public void setAgents(java.util.Vector newAgents) {
     agents = newAgents;

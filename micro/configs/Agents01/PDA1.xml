@@ -3,10 +3,10 @@
   <port>0</port>
   <description>value from KVM</description>
   <resource>org.cougaar.microedition.kvm.KvmValuemeter</resource>
-  <plugin name="Value" sleeptime="500">org.cougaar.microedition.kvm.KvmValuePlugIn</plugin>
-  <!-- Infrastructure PlugIns  -->
-  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin debug="true">org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin name="Value" sleeptime="500">org.cougaar.microedition.kvm.KvmValuePlugin</plugin>
+  <!-- Infrastructure Plugins  -->
+  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin debug="true">org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>
 

@@ -6,14 +6,14 @@
 
   <resource>org.cougaar.microedition.tini.TiniMach5LocomotionResource</resource>
 
-  <plugin >org.cougaar.microedition.tini.TiniMach5CouplingPlugIn</plugin>
+  <plugin >org.cougaar.microedition.tini.TiniMach5CouplingPlugin</plugin>
 
-  <plugin resource="TiniMach5PositionResource" command="ReportPosition">org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+  <plugin resource="TiniMach5PositionResource" command="ReportPosition">org.cougaar.microedition.plugin.ControlPlugin</plugin>
 
-  <plugin resource="TiniMach5LocomotionResource" command="Advance" parameter="Speed" parametervalue="25">org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+  <plugin resource="TiniMach5LocomotionResource" command="Advance" parameter="Speed" parametervalue="25">org.cougaar.microedition.plugin.ControlPlugin</plugin>
 
-  <!-- Infrastructure PlugIns -->
-  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <!-- Infrastructure Plugins -->
+  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
 </NodeConfiguration>
