@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -140,7 +140,8 @@ public class PSP_Sensor extends PSP_BaseAdapter implements PlanServiceProvider, 
          }
 
          if ((sensorColl == null) || sensorColl.isEmpty()) { // no data
-           out.println("0.0");
+           out.println(random(inputSensorName));
+//           out.println("0.0");
          } else {
            Iterator iter = sensorColl.iterator();
            while (iter.hasNext()) {
@@ -158,6 +159,15 @@ public class PSP_Sensor extends PSP_BaseAdapter implements PlanServiceProvider, 
     }
   }
 
+  String random(String sensor) {
+    double ret = 0.0;
+    if (sensor.equalsIgnoreCase("temperature"))
+      ret = 20.0 + (Math.random() * 5.0);
+    else if (sensor.equalsIgnoreCase("brightness"))
+      ret = 1.0 + (Math.random() * 4.0);
+    System.out.println("Sensor_PSP: Faking output: "+ret);
+    return Double.toString(ret);
+  }
   /**
    * A PSP can output either HTML or XML (for now).  The server
    * should be able to ask and find out what type it is.
