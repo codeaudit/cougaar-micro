@@ -66,7 +66,7 @@ public class PacketReader {
             }
             bufr.close();
             String message = msg.toString();
-            ClusterId source = getSource(message);
+            String source = getSource(message);
             deliverer.takePacket(getMessage(message), source);
             msg.setLength(0);
           } catch (Exception ex) {
@@ -90,8 +90,8 @@ public class PacketReader {
     }
   }
 
-  private ClusterId getSource(String msg) {
-    return deliverer.getNameMap().lookup(msg.substring(0, msg.indexOf(":")));
+  private String getSource(String msg) {
+    return msg.substring(0, msg.indexOf(":"));
   }
 
   private String getMessage(String msg) {

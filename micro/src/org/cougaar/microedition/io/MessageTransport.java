@@ -10,6 +10,7 @@ package cougaar.microedition.io;
 import cougaar.microedition.util.*;
 import cougaar.microedition.shared.*;
 import cougaar.microedition.naming.*;
+import cougaar.microedition.asset.*;
 import java.io.*;
 import java.util.*;
 
@@ -62,7 +63,7 @@ public class MessageTransport {
 
   Vector listeners = new Vector();
 
-  void takePacket(String data, ClusterId source) {
+  void takePacket(String data, String source) {
     Enumeration en = listeners.elements();
     while (en.hasMoreElements()) {
       MessageListener ml = (MessageListener)en.nextElement();
@@ -83,23 +84,17 @@ public class MessageTransport {
     }
   }
 
-  public void sendMessage(Encodable msg, ClusterId dest) {
+  public void sendMessage(Encodable msg, MicroCluster dest) {
     StringBuffer buf = new StringBuffer();
     buf.append(nodeName + ":");
     buf.append("<?xml version=\"1.0\"?>");
     msg.encode(buf);
-    String ipAddress = dest.getIpAddress();
-    short port = dest.getPort();
+    String ipAddress = dest.getClusterId().getIpAddress();
+    short port = dest.getClusterId().getPort();
 
 //    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
 
     sendMessage(ipAddress, port, buf.toString());
-  }
-
-  private NameMap nameMap = new NameMap();
-
-  public NameMap getNameMap() {
-    return nameMap;
   }
 
 /**
