@@ -18,9 +18,9 @@ public abstract class ControllerResource extends ResourceAdapter
 {
   protected int chan = 0;
   protected String units = "";
-  protected double scalingFactor = 1000.0;
+  protected long scalingFactor = 1000;
 
-  public abstract void getValues( double [] values); //more of a sensor resource item, keep for now
+  public abstract void getValues( long [] values); //more of a sensor resource item, keep for now
   public abstract void getValueAspects(int [] values); //more of a sensor resource item, keep for now
   public abstract int getNumberAspects();
   public boolean getSuccess() { return true; }
@@ -45,7 +45,7 @@ public abstract class ControllerResource extends ResourceAdapter
     return scalingFactor;
   }
 
- public void setScalingFactor(double sf) {
+ public void setScalingFactor(long sf) {
     scalingFactor = sf;
   }
 
