@@ -7,11 +7,25 @@ import java.io.*;
 
 public class KvmSocketME implements SocketME {
 
+  StreamConnection sock = null;
+
   public OutputStream getOutputStream( String server, int port ) throws IllegalArgumentException, IllegalAccessException, IOException {
 
-    StreamConnection sock = (StreamConnection)Connector.open("socket://" + server + ":" + port);
+    sock = (StreamConnection)Connector.open("socket://" + server + ":" + port);
 
     return sock.openOutputStream();
+
+  }
+
+  public InputStream getInputStream( ) throws IOException {
+
+    return sock.openInputStream();
+
+  }
+
+  public void close() throws IOException {
+
+    sock.close();
 
   }
 

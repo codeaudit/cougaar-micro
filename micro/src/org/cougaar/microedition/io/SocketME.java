@@ -22,5 +22,7 @@ public interface SocketME {
    * @return OutputStream for writing your message to.
    */
   public OutputStream getOutputStream ( String server, int port ) throws IllegalArgumentException, IllegalAccessException, IOException;
+  public InputStream getInputStream() throws IOException;
+  public void close() throws IOException;
 
 }
