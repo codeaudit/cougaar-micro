@@ -75,9 +75,12 @@ public class Node {
     String nameServerName = "";
     short nameServerPort = 0;
 
-    if (args.length == 1) // Read config from a file
+    if (args.length == 1) { // Read config from a file
+      this.nodeName = args[0];
       xtl = readConfig(args[0]);
+    }
     else if (args.length == 3) {
+      this.nodeName = args[0];
       xtl = readSocketConfig(args[0], args[1], args[2]);
       nameServerName = args[1];
       nameServerPort = Short.parseShort(args[2]);
