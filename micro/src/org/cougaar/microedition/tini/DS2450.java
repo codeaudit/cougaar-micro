@@ -26,18 +26,20 @@ public class DS2450
 
   static int      madvsize;
   static int      timeout;
-  boolean debugging = false;
+  boolean debugging = true;
 
   public DS2450()
   {
     timeout = 20;
     // initialization
+    if (debugging) System.out.println("in DS2450()");
     try
     {
       DSPortAdapter   pa = new TINIExternalAdapter();
       File            f = new File("DS2450.txt");
       if (f.exists())
       {
+        if (debugging) System.out.println("in DS2450() and f.exists()");
         // Read 1-Wire Net Addresses and A/D identifiers.
         /*
          * NOTE: The OneWire A/Ds are read in order, and the
@@ -69,22 +71,28 @@ public class DS2450
       }
       else   // identifier file does not exist, read from 1-wire bus
       {
+              if (debugging) System.out.println("in DS2450() and NOT f.exists() -- 1-WB");
         try {
           File newDS2450;
           newDS2450 = new File("newDS2450.txt");
           BufferedWriter bw = new BufferedWriter(new FileWriter(newDS2450));
           pa.targetFamily(0x20);
+              if (debugging) System.out.println("in DS2450() b4 for -- 1-WB");
           for (Enumeration e = pa.getAlliButtons();e.hasMoreElements(); )
           {
+              if (debugging) System.out.println("in DS2450() in for -- 1-WB");
             iButtonContainer ibc = (iButtonContainer)e.nextElement();
             byte                addr[] = ibc.getAddress();
             String              sn = ibc.getAddressAsString();
+              if (debugging) System.out.println("in DS2450() for addr_as_str: "+sn+"-- 1-WB");
             madv.addElement(new MyADContainer(pa, addr, sn));
             bw.write(sn,0,sn.length());
             bw.newLine();
           }
+              if (debugging) System.out.println("in DS2450() af for 1-- 1-WB");
           bw.flush();
           bw.close();
+              if (debugging) System.out.println("in DS2450() af for 2-- 1-WB");
         }
         catch (IOException e) {
           e.printStackTrace();
@@ -95,6 +103,7 @@ public class DS2450
       }
 
       madvsize = madv.size();
+              if (debugging) System.out.println("in DS2450() madvsize "+madvsize);
 
       if (madvsize > 0)
       {
@@ -116,9 +125,12 @@ public class DS2450
           MyADContainer madc = (MyADContainer)e.nextElement();
           try
           {
+             if (debugging) System.out.println("in DS2450() try madc "+madc);
             synchronized (adlock)
             {
+             if (debugging) System.out.println("in DS2450() sync  ");
               adstate = madc.readDevice();
+             if (debugging) System.out.println("in DS2450() sync adstat "+adstate);
               for (int adchan=0; adchan < madc.getNumberADChannels(); adchan++)
               {
                  madc.setADRange(adchan, adrange, adstate);
@@ -140,16 +152,24 @@ public class DS2450
       }
       else
       {
-        System.out.println("No A/D Converters");
+        System.out.println("in DS2450() -- No A/D Converters");
       }
     }
     catch (Exception e)
     {
-      System.out.println(e);
+      System.out.println("in DS2450() -- caught exception: "+e);
     }
+    catch (Throwable t)
+    {
+      System.out.println("in DS2450() -- caught throwable: "+t);
+    } finally {
+      if (debugging) System.out.println("in DS2450() -- at end of method in finally.");
+    }
+
   }
 
-/*
+
+ /*
   // test code
   public void main(String[] args)
   {
@@ -575,6 +595,43 @@ public class DS2450
     {
     }
     return;
+  }
+  /*
+   * This method reads the one wire bus state.
+   */
+  public boolean readOutput(int adindex, int adchan)
+  {
+    double voltage = 0.0;
+    boolean outputlogiclevel=false;
+    try
+    {
+      if ((adindex > -1) && (adindex < madvsize))
+      {
+        MyADContainer   madc = (MyADContainer)madv.elementAt(adindex);
+
+        if (adchan > -1 && adchan < madc.getNumberADChannels())
+        {
+          synchronized (adlock)
+          {
+            byte[] adstate = madc.readDevice();
+            System.out.println("\n" + madc.getADName());
+            System.out.println("Number of A/D Channels supported: " + madc.getNumberADChannels() + ".");
+
+              System.out.println ("Channel " + adchan + " status");
+              boolean outputenabled = madc.isOutputEnabled(adchan, adstate);
+              System.out.println("Output enabled: " + outputenabled + ".");
+              outputlogiclevel = madc.getOutputState(adchan, adstate);
+              System.out.println("Output logic level (true = high/false = low): " + outputlogiclevel + ".");
+
+
+          }
+        }
+      }
+    }
+    catch (Throwable t)
+    {
+    }
+    return outputlogiclevel;
   }
 
   /*
