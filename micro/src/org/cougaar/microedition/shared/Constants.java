@@ -48,7 +48,7 @@ public interface Constants {
     static int SETWAYPOINT = 11;
 
     static String [] prepositions = { "Degrees", "Speed", "Velocity",
-      "TurretHemisphere", "Lat", "Lon", "Bearing" };
+      "TurretHemisphere", "Lat", "Lon", "Bearing", "Rotation", "Translation" };
     final static int ORIENTATIONPREP= 0; // "Degrees"
     final static int SPEEDPREP= 1; // "Speed";
     final static int VELOCITYPREP=2; // "Velocity";
@@ -56,6 +56,8 @@ public interface Constants {
     final static int LATPREP=4; // "Lat"
     final static int LONPREP=5; // "Lon"
     final static int BEARINGPREP=6; // "Bearing"
+    final static int ROTATEPREP=7;
+    final static int TRANSLATEPREP=8;
 
     public static final String SEARCHLEFT = "left";
     public static final String SEARCHFRONT = "front";
