@@ -16,8 +16,8 @@
 
   <plugin>gov.nasa.jpl.sensorweb.PodDataConversionPlugIn</plugin>
   <plugin>gov.nasa.jpl.sensorweb.ComputeHeatIndexPlugIn</plugin>
-  <plugin aggregate="15">gov.nasa.jpl.sensorweb.HeatIndexPlugIn</plugin>
-  <plugin reapinterval="30" expiration="120">gov.nasa.jpl.sensorweb.PodIdentificationPlugIn</plugin>
+  <plugin aggregate="300">gov.nasa.jpl.sensorweb.HeatIndexPlugIn</plugin>
+  <plugin reapinterval="15" expiration="1200">gov.nasa.jpl.sensorweb.PodIdentificationPlugIn</plugin>
 
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
