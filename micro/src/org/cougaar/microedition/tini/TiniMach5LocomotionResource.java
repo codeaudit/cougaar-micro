@@ -34,7 +34,11 @@ import javax.comm.*;
  */
 public class TiniMach5LocomotionResource extends LocomotionResource {
 
+  /**
+   * Constructor.  Sets name default.
+   */
   public TiniMach5LocomotionResource() {
+    setName("Mach5LocomotionResource");
   }
 
   private String portName = "serial1";
@@ -62,7 +66,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
     speed = newSpeed;
   }
 
-  public void rotate(int direction, double degrees){
+  public long []  rotate(int direction, double degrees){
     String msg = "";
     int ticks = (int)(degrees * 2.25); // experimentally determined
     switch (direction) {
@@ -76,20 +80,24 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
         throw new IllegalArgumentException("LocomotionResource.rotate must be one of CLOCKWISE or COUNTERCLOCKWISE");
     }
     sendMsg(msg);
+    return getWheelPositions();
   }
 
-  public void stop() {
+  public long [] stop() {
     sendMsg("SV 0 0\n");
+    return getWheelPositions();
   }
 
-  public void forward() {
+  public long []  forward() {
     int spd = (int)speed;
     sendMsg("SV "+spd+" "+spd+"\n");
+    return getWheelPositions();
   }
 
-  public void backward() {
+  public long []  backward() {
     int spd = 0 - (int)speed;
     sendMsg("SV "+spd+" "+spd+"\n");
+    return getWheelPositions();
   }
 
   /**
@@ -233,15 +241,30 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
 
 
   }
-/*
+/* */
   public static void main (String argv[]) {
     TiniMach5LocomotionResource resource = new TiniMach5LocomotionResource();
     resource.setParameters(new Hashtable());
 
     resource.setSpeed(100.0);
     resource.forward();
+    System.out.println("forward...");
+
     long [] wheels = resource.getWheelPositions();
     System.out.println("Wheels: "+wheels[0]+":"+wheels[1]);
+
+    try { Thread.sleep(1000); } catch (Exception ex) {}
+    System.out.println("Stop now.");
+    resource.stop();
+    wheels = resource.getWheelPositions();
+    System.out.println("Wheels: "+wheels[0]+":"+wheels[1]);
+
+    System.out.println("Wait a second.");
+    try { Thread.sleep(1000); } catch (Exception ex) {}
+    System.out.println("Exit.");
+    System.exit(0);
+
+
   }
-*/
+/* */
 }
