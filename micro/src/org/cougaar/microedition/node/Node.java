@@ -60,6 +60,7 @@ public class Node {
   private OutputStream nameServerOutputStream = null;
   private InputStream nameServerInputStream = null;
   private SocketME nameServerSocket = null;
+  private MessageTransport mt;
 
 
   public String getNodeName() {
@@ -74,7 +75,24 @@ public class Node {
 
     String nameServerName = "";
     short nameServerPort = 0;
+    
+    System.out.println("args = "+args);
 
+    if ((args == null) || (args.length == 0)) { // Take args from system properties
+        String nodeName = System.getProperty("org.cougaar.microedition.nodeName");
+        if (nodeName == null)
+            System.out.println("Error: No way to get node name.  No args or properties");
+        if (System.getProperty("org.cougaar.microedition.configServer") != null) {
+            args = new String[3];
+            args[0] = nodeName;
+            args[1] = System.getProperty("org.cougaar.microedition.configServer");
+            args[2] = System.getProperty("org.cougaar.microedition.configServerPort");
+        } else {
+            args = new String[1];
+            args[0] = nodeName;
+        }
+    }
+    
     if (args.length == 1) { // Read config from a file
       this.nodeName = args[0];
       xtl = readConfig(args[0]);
@@ -125,7 +143,6 @@ public class Node {
       NameTablePair portPair = (NameTablePair)xtl.getTokenVect("port").firstElement();
       port = Integer.parseInt(portPair.name);
     }
-    MessageTransport mt;
     if (port == 0) { // conserve sockets
       mt = new ConservativeMessageTransport(nameServerInputStream, nameServerOutputStream, nodeName);
     } else {         // use a server socket
