@@ -59,14 +59,14 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
   }
 
   private double speed = 0;
-  public double getSpeed() {
-    return speed;
+  public long getSpeed() {
+    return (long)speed;
   }
-  public void setSpeed(double newSpeed){
+  public void setSpeed(long newSpeed){
     speed = newSpeed;
   }
 
-  public long []  rotate(int direction, double degrees){
+  public long []  rotate(int direction, long degrees){
     String msg = "";
     int ticks = (int)(degrees * 2.25); // experimentally determined
     switch (direction) {
@@ -246,7 +246,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
     TiniMach5LocomotionResource resource = new TiniMach5LocomotionResource();
     resource.setParameters(new Hashtable());
 
-    resource.setSpeed(100.0);
+    resource.setSpeed(100);
     resource.forward();
     System.out.println("forward...");
 

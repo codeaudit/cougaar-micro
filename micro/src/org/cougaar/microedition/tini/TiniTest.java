@@ -35,7 +35,7 @@ public class TiniTest extends TesterResource {
     units = u;
   }
 
-  public double getValue() {
+  public long getValue() {
     double dval = (double)-999.999;
     String unit = getUnits();
     try {
@@ -48,7 +48,7 @@ public class TiniTest extends TesterResource {
     } catch (Exception e) {
       System.out.println("caught exception: " + e);
     }
-    return dval;
+    return (long)dval;
   }
 
 }

@@ -155,8 +155,8 @@ public class TiniMotorController extends MotorControllerResource {
     }
   }
 
-  public double getValue() {
-    return 0.0;
+  public long getValue() {
+    return 0;
   }
 
   public void setUnits(String newUnits) {

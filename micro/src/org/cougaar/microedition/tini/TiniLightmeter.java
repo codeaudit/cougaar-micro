@@ -30,7 +30,7 @@ public class TiniLightmeter extends LightmeterResource {
 
   public void setUnits(String u) {}
 
-  public double getValue() {
+  public long getValue() {
     byte[]   state;
     double range = (-999.*2.);
     TINIExternalAdapter adapter = new TINIExternalAdapter();
@@ -50,14 +50,14 @@ public class TiniLightmeter extends LightmeterResource {
         }
         aD.doADConvert(getChan(), state);
         curVoltage = aD.getADVoltage(getChan(), state);
-    adapter.endExclusive();
       }
+      adapter.endExclusive();
     } catch (Exception e) {
       System.out.println("Exception: " + e);
-    adapter.endExclusive();
+      adapter.endExclusive();
     }
 
     System.out.println(getName() + " Reading: Ch" + getChan() + " = " + (range-curVoltage) + " V");
-    return range-curVoltage;
+    return (long)(range-curVoltage);
   }
 }

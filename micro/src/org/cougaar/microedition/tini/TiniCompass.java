@@ -64,12 +64,11 @@ public class TiniCompass extends CompassResource {
     System.out.print(" ");
   }
 
-  public double getValue()
+  public long getValue()
   {
-    double dval = (double)0.0;
 
     byte b1, b2, b3;
-    long longval;
+    long longval = 0;
 
     b1 = Parallel.getInput(Parallel.INOUT0);
     b2 = Parallel.getInput(Parallel.INOUT1);
@@ -102,8 +101,6 @@ public class TiniCompass extends CompassResource {
     if((b3 & BIT0) != 0) longval += BIT8VAL;
     if((b3 & BIT1) != 0) longval += BIT9VAL;
 
-    dval = (double)longval;
-
-    return dval;
+    return longval;
   }
 }

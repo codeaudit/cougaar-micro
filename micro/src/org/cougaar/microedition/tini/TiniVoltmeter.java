@@ -28,7 +28,7 @@ public class TiniVoltmeter extends VoltmeterResource {
 
   public void setUnits(String u) {}
 
-  public double getValue() {
+  public long getValue() {
     byte[]   state;
     TINIExternalAdapter adapter = new TINIExternalAdapter();
     double curVoltage = -999.;
@@ -46,15 +46,15 @@ public class TiniVoltmeter extends VoltmeterResource {
         }
         aD.doADConvert(getChan(), state);
         curVoltage = aD.getADVoltage(getChan(), state);
-    adapter.endExclusive();
       }
+      adapter.endExclusive();
     } catch (Exception e) {
       System.out.println("Exception: " + e);
-    adapter.endExclusive();
+      adapter.endExclusive();
     }
 
     System.out.println(getName() + " Reading: Ch" + getChan() + " = " + curVoltage + " V");
-    return curVoltage;
+    return (long)curVoltage;
   }
 
 }

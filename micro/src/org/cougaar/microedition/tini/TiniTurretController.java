@@ -190,8 +190,8 @@ public class TiniTurretController extends TurretControllerResource {
     return true;
   }
 
-  public double getValue() {
-    return 0.0;
+  public long getValue() {
+    return 0;
   }
 
   public void setUnits(String newUnits) {

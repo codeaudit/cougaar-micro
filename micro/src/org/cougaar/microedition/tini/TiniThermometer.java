@@ -35,7 +35,7 @@ public class TiniThermometer extends ThermometerResource {
     units = u;
   }
 
-  public double getValue() {
+  public long getValue() {
     TINIExternalAdapter adapter = new TINIExternalAdapter();
     double dval = (double)-999.999;
     String unit = getUnits();
@@ -44,8 +44,11 @@ public class TiniThermometer extends ThermometerResource {
       adapter.targetFamily(0x10);
 //      adapter.setSearchAlliButtons();
       iButtonContainer10 tempSensor = (iButtonContainer10)adapter.getFirstiButton();
-      if (tempSensor == null)
-        return dval;
+      if (tempSensor == null) {
+        System.out.println(unit + " " + getName() + " Reading: " + dval);
+        adapter.endExclusive();
+        return (long)dval;
+      }
       if (unit.equals("Fahrenheit"))
         dval = tempSensor.readTemperatureFahrenheit();
       else
@@ -56,7 +59,7 @@ public class TiniThermometer extends ThermometerResource {
       System.out.println("caught exception: " + e);
       adapter.endExclusive();
     }
-    return dval;
+    return (long)dval;
   }
 
 }
