@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -855,7 +855,7 @@ public class DS2450
   /**
    * Test driver.
    */
-  public static void main(String[] args)
+/*  public static void main(String[] args)
   {
     double adresult = 0.0;
     boolean alarmresult = false;
@@ -972,39 +972,6 @@ if (debugging) System.out.println("RICH:  WTF?");
       adindex = 0;
 
 
-      /*
-      // Perform A/D with no regard for alarms
-      adindex = 0;
-      adchan = 0;
-      for (int k=0;k<10;k++) {
-        adresult = ADConverters.readVoltage(adindex,adchan);
-        if (debugging) System.out.println("A/D result = : " + adresult + " volts.");
-        int junk = 0;
-        for (int kk = 0; kk<5000; kk++) {
-          junk = junk + 1;
-        }
-      }
-      */
-
-
-      /*
-      // Perform A/D and check individual channel alarm after every conversion
-      adindex = 0;
-      adchan = 0;
-      int junk = 0;
-      for (int k=0;k<10;k++) {
-        adresult = ADConverters.readVoltage(adindex,adchan);
-        if (debugging) System.out.println("A/D result = : " + adresult + " volts.");
-
-        alarmresult = ADConverters.readAlarm(adindex, adchan, alarmtype);
-        if (debugging) System.out.println("Channel " + adchan + " alarm check result = : " + alarmresult + ".");
-        // delay
-        junk = 0;
-        for (int jj = 0; jj<5000; jj++) {
-          junk = junk + 1;
-        }
-      }
-      */
 
       // Using one DS2450 A/D device
       // Perform A/D and check channel alarms after every conversion
@@ -1023,13 +990,6 @@ if (debugging) System.out.println("RICH:  WTF?");
       if (debugging) System.out.println("\n\nAbout to start continuous operation");
       if (debugging) {
         ADConverters.readStatus(RotationAndLimit);
-/*
-        if (debugging) System.out.println("Pause...\n\n");
-        int jjunk = 0;
-        for (int jjj = 0; jjj<250000; jjj++) {
-          jjunk = jjunk + 1;
-        }
-*/
       }
 
 
@@ -1086,6 +1046,6 @@ if (debugging) System.out.println("RICH:  WTF?");
       System.out.println("Exception: " + t);
     }
   }
-
+*/
 
 }

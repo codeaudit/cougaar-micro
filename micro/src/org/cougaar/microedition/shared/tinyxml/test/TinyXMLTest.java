@@ -38,14 +38,14 @@ import org.cougaar.microedition.shared.tinyxml.XMLParser;
  * @author: Christian Sauer
  */
 public class TinyXMLTest extends HandlerBase {
-/** 
+/**
  * Default constructor for TinyXMLTest.
  */
 private TinyXMLTest() {
 	super();
 }
-/** 
- * This method is called to indicate that the document 
+/**
+ * This method is called to indicate that the document
  * stream has been successfully closed.
  */
 public void docEnd() {
@@ -80,10 +80,10 @@ public void elementStart(String name, Hashtable attr) throws ParseException {
 		System.out.println("");
 	}
 }
-public static void main(String[] args) {
+/*public static void main(String[] args) {
 	// start a new test
 	new TinyXMLTest().start();
-}
+}*/
 /**
  * The main functionality of the test is implemented here.
  */

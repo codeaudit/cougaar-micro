@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -157,7 +157,7 @@ public class TaskDecoder extends HandlerBase {
   /**
    * A test stub
    */
-/* No need to code-bloat the KVM*/
+/* No need to code-bloat the KVM
   public static void main(String [] args) {
     MicroTask t = new MicroTask();
     t.setVerb("AVerb");
@@ -187,5 +187,5 @@ public class TaskDecoder extends HandlerBase {
     MicroTask new_t = d.decode(str.toString());
     System.out.println(new_t);
   }
-
+*/
 }

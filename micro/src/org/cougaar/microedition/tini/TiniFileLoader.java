@@ -79,6 +79,7 @@ public class TiniFileLoader implements FileLoader {
 		fout.close();
 	}
 
+/*
 	public static void main(String[] args) {
 
     String content = "";
@@ -101,4 +102,5 @@ public class TiniFileLoader implements FileLoader {
 
 		System.exit(0);
 	}
+*/
 }
