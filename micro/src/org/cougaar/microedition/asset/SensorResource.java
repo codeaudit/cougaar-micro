@@ -16,8 +16,9 @@ import java.util.*;
  */
 public abstract class SensorResource extends ResourceAdapter {
 
-  public int chan = 0;
-  public String units = "";
+  protected int chan = 0;
+  protected String units = "";
+  protected int scalingFactor = 1000;
 
   public abstract void setChan(int c);
   public abstract void setUnits(String u);
@@ -43,6 +44,10 @@ public abstract class SensorResource extends ResourceAdapter {
 
   public String getUnits() {
     return units;
+  }
+
+  public long getScalingFactor() {
+    return scalingFactor;
   }
 
 }

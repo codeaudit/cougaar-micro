@@ -59,7 +59,8 @@ public class TiniThermometer extends ThermometerResource {
       System.out.println("caught exception: " + e);
       adapter.endExclusive();
     }
-    return (long)dval;
+    long scaledValue = (long)(dval * (double)getScalingFactor());
+    return scaledValue;
   }
 
 }

@@ -58,6 +58,7 @@ public class TiniLightmeter extends LightmeterResource {
     }
 
     System.out.println(getName() + " Reading: Ch" + getChan() + " = " + (range-curVoltage) + " V");
-    return (long)(range-curVoltage);
+    long scaledValue = (long)((range-curVoltage) * (double)getScalingFactor());
+    return scaledValue;
   }
 }
