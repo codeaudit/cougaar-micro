@@ -86,12 +86,22 @@ public class MessageRecvPlugin  extends PluginAdapter implements MessageListener
       while (changes.hasMoreElements()) {
         MicroTask mt = (MicroTask)changes.nextElement();
         if (mt.getUniqueID().equals(((MicroTask)microTask).getUniqueID())) {
+				  MicroAllocation ma = mt.getAllocation(); // keep old allocation
           mt.setMe((MicroTask)microTask);
           if (debugging) System.out.println("MessageRecvPlugin: Change to "+mt.getUniqueID());
           publishChange(mt);
           if (mt.getAllocation() != null) {
-            publishChange(mt.getAllocation());
-          }
+            MicroAllocation new_alloc = mt.getAllocation();
+            MicroAllocationResult mar = new_alloc.getReportedResult();
+            // append the source of this result
+            if (mar != null)
+              mar.setAuxData(source);
+            ma.setReportedResult(mar);
+            // detach new allocation
+            new_alloc.setTask(null);
+					  mt.setAllocation(ma);
+            publishChange(ma);
+					}
         }
       }
     }
