@@ -37,7 +37,7 @@ public interface MessageTransport {
 
   public void removeMessageListener(MessageListener ml);
 
-  public void sendMessage(Encodable msg, MicroAgent dest, String op);
+  public void sendMessage(Encodable msg, MicroAgent dest, String op) throws IOException;
 
   public void takePacket(String data, String source);
 

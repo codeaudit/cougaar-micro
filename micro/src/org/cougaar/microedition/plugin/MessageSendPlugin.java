@@ -30,6 +30,7 @@ import org.cougaar.microedition.shared.*;
 import org.cougaar.microedition.shared.tinyxml.*;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * Plugin that looks for tasks allocated to microagents and sends them there.
@@ -79,6 +80,10 @@ public class MessageSendPlugin extends PluginAdapter {
     MicroAgent asset = (MicroAgent)ma.getAsset();
     if (debugging) System.out.println("MessageSendPlugin: Sending "+ma.getTask().getVerb()+
                                       " to "+asset.getAgentId().getName()+" op="+operation);
-    getDistributor().getMessageTransport().sendMessage(ma.getTask(), asset, operation);
+		try {
+      getDistributor().getMessageTransport().sendMessage(ma.getTask(), asset, operation);
+		} catch (IOException ioe) {
+      System.err.println("MessageSendPlugIn.processAllocation: couldn't send task to remote agent: " + asset);
+		}
   }
 }

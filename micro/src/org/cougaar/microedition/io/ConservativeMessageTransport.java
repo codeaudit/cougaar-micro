@@ -112,7 +112,7 @@ public class ConservativeMessageTransport implements MessageTransport {
     }
   }
 
-  public void sendMessage(Encodable msg, MicroAgent dest, String op) {
+  public void sendMessage(Encodable msg, MicroAgent dest, String op) throws IOException {
     StringBuffer buf = new StringBuffer();
     buf.append(nodeName + ":");
     buf.append(msg.xmlPreamble);

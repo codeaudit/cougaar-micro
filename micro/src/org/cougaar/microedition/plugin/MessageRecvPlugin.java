@@ -146,8 +146,12 @@ public class MessageRecvPlugin  extends PluginAdapter implements MessageListener
         publishAdd(cq);
         waitingChangeMessages.addElement(mt);
       } else {
-        if (debugging) System.out.println("MessageRecvPlugin: Sending messsage to "+source);
-        getDistributor().getMessageTransport().sendMessage(mt, mc, "change");
+        try {
+          if (debugging) System.out.println("MessageRecvPlugin: Sending messsage to "+source);
+          getDistributor().getMessageTransport().sendMessage(mt, mc, "change");
+				} catch (IOException ioe) {
+          System.err.println("MessageRecvPlugin.execute: couldn't deliver task change message to " + mc);
+				}
       }
     }
     // try to clear waiting messsages
@@ -159,9 +163,13 @@ public class MessageRecvPlugin  extends PluginAdapter implements MessageListener
         String source = (String)tasks.get(mt);
         MicroAgent mc = findMicroAgent(source);
         if (mc != null) {
+				  try {
           if (debugging) System.out.println("MessageRecvPlugin: Clearing messsage to "+source);
           getDistributor().getMessageTransport().sendMessage(mt, mc, "change");
           waitingChangeMessages.removeElement(mt);
+				  } catch (IOException ioe) {
+            System.err.println("MessageRecvPlugin.execute: couldn't deliver task change message to " + mc);
+				  }
         }
       }
     }

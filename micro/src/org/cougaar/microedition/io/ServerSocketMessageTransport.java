@@ -1,14 +1,14 @@
 /*
  * <copyright>
- *
+ * 
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- *
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- *
+ * 
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -60,12 +60,15 @@ public class ServerSocketMessageTransport implements MessageTransport {
    * @param   message   a string representing the message to be sent.
    * @return  none
    */
-  protected void sendMessage(String server, int port, String message) {
-
+protected void sendMessage(String server, int port, String message)
+throws IOException {
+	
   boolean done = false;
-  while (!done) {
+  int retryCount = 0;
+  while (!done && retryCount < 3) {
+      SocketME sock=null;
     try {
-      SocketME sock = (SocketME)MicroEdition.getObjectME(Class.forName("org.cougaar.microedition.io.SocketME"));
+      sock = (SocketME)MicroEdition.getObjectME(Class.forName("org.cougaar.microedition.io.SocketME"));
       sock.open(server, port);
       OutputStream os = sock.getOutputStream();
       byte [] data = message.getBytes();
@@ -74,16 +77,28 @@ public class ServerSocketMessageTransport implements MessageTransport {
       os.close();
       sock.close();
       done = true;
-    } catch (Exception e) {
-      System.err.println("Unable to sendMessage " + e + " Try to reboot...");
-      org.cougaar.microedition.node.Node.reboot();
-     }
+    } catch (ClassNotFoundException cfe) {
+			System.err.println("SocketME class not found\n");
+			break;
+    } catch (IOException e) {
+      System.err.println("Unable to sendMessage " + e);
+      if (sock != null) sock.close();
+      if (retryCount == 2) {
+        org.cougaar.microedition.node.Node.reboot(); // reboot if possible
+        throw e;                        // otherwise rethrow
+			}
+    }
     if (!done) {
       System.gc();
+      if (retryCount++ < 3)
+        System.err.println("ServerSocketMessageTransport.sendMessage: retrying");
+      else
+        System.err.println("ServerSocketMessageTransport.sendMessage: failed.");
+      
       try {Thread.sleep(3000);} catch (InterruptedException ie){}
     }
   }
-  }
+}
 
   Vector listeners = new Vector();
 
@@ -104,7 +119,7 @@ public class ServerSocketMessageTransport implements MessageTransport {
       Object obj = en.nextElement();
       if(obj instanceof OutgoingMessageListener)
       {
-	OutgoingMessageListener oml = (OutgoingMessageListener)obj;
+        OutgoingMessageListener oml = (OutgoingMessageListener)obj;
         oml.outgoingMessage(data, dest);
       }
     }
@@ -122,7 +137,8 @@ public class ServerSocketMessageTransport implements MessageTransport {
     }
   }
 
-  public void sendMessage(Encodable msg, MicroAgent dest, String op) {
+  public void sendMessage(Encodable msg, MicroAgent dest, String op) throws IOException
+    {
     StringBuffer buf = new StringBuffer();
     buf.append(nodeName + ":");
     buf.append(msg.xmlPreamble);
@@ -132,7 +148,6 @@ public class ServerSocketMessageTransport implements MessageTransport {
     buf.append('\0');
     String ipAddress = dest.getAgentId().getIpAddress();
     short port = dest.getAgentId().getPort();
-
 //    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
 
     notifyListeners(buf.toString(), dest.getAgentId().getName());
