@@ -14,8 +14,9 @@ package cougaar.microedition.shared;
  * Interface for things that can XML encode themselves.
  */
 public interface Encodable {
+  public final String xmlPreamble = "<?xml version=\"1.0\"?>";
   /**
    * XML encode this object and all sub-objects.
    */
   void encode(StringBuffer str);
-} 
+}
