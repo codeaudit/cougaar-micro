@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>SensorWeb Pod</description>
+  <port>2223</port>
+  <plugin podNumber="3">gov.nasa.jpl.sensorweb.GenerateSWRecordPlugIn</plugin>
+  <plugin reapinterval="20" expiration="60">gov.nasa.jpl.sensorweb.PodIdentificationPlugIn</plugin>
+  <plugin aggregate="15">gov.nasa.jpl.sensorweb.HeatIndexPlugIn</plugin>
+  <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin>
+  <plugin datatypemask="17">gov.nasa.jpl.sensorweb.SWRecordViewPlugIn</plugin>
+</NodeConfiguration>
