@@ -2,12 +2,12 @@
 
 REM calls setlibpath.bat which sets the path to the required jar files.
 REM calls setarguments.bat which sets input parameters for system behavior
-CALL %ALP_INSTALL_PATH%\bin\setlibpath.bat
-CALL %ALP_INSTALL_PATH%\bin\setarguments.bat
+CALL %COUGAAR_INSTALL_PATH%\bin\setlibpath.bat
+CALL %COUGAAR_INSTALL_PATH%\bin\setarguments.bat
 
 set MYARGUMENTS= -c -r -n "Administrator" -p 8000
 
-set MYPROPERTIES=-Dorg.cougaar.domain.micro=org.cougaar.microedition.domain.Domain %MYPROPERTIES%
+set MYPROPERTIES=%MYPROPERTIES%
 set LIBPATHS=..\classes;%LIBPATHS%
 
 @ECHO ON
