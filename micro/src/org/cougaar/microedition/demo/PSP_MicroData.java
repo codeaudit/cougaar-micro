@@ -36,7 +36,7 @@ public class PSP_MicroData extends PSP_BaseAdapter implements PlanServiceProvide
           if (a.getTask().getVerb().equals("Measure"))
             return (
               (a.getTask().getPrepositionalPhrase("Temperature") != null) ||
-              (a.getTask().getPrepositionalPhrase("Voltage") != null) ||
+              (a.getTask().getPrepositionalPhrase("Light") != null) ||
               (a.getTask().getPrepositionalPhrase("Value") != null)
             );
       }
@@ -113,7 +113,15 @@ public class PSP_MicroData extends PSP_BaseAdapter implements PlanServiceProvide
    */
   public void subscriptionChanged(Subscription subscription) {
 
-    Collection container = ((CollectionSubscription)subscription).getCollection();
+    Collection container = ((IncrementalSubscription)subscription).getChangedCollection();
+    if (container == null) {
+      container = ((IncrementalSubscription)subscription).getAddedCollection();
+      if (container == null)
+        return;
+    }
+    else
+      container.addAll(((IncrementalSubscription)subscription).getAddedCollection());
+
     Iterator iterate = container.iterator();
     while (iterate.hasNext()) {
       Allocation alloc = (Allocation)iterate.next();
@@ -122,7 +130,7 @@ public class PSP_MicroData extends PSP_BaseAdapter implements PlanServiceProvide
       if (ar == null) continue;
       if (alloc.getTask().getPrepositionalPhrase("Temperature") != null)
         out.println("Temperature:"+ar.getValue(0));
-      else if (alloc.getTask().getPrepositionalPhrase("Voltage") != null)
+      else if (alloc.getTask().getPrepositionalPhrase("Light") != null)
         out.println("Light:"+ar.getValue(0));
       else if (alloc.getTask().getPrepositionalPhrase("Value") != null)
         out.println("PDA:"+ar.getValue(0));
