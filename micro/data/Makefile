@@ -7,22 +7,20 @@
 ## Set these three parameters to match your local installation
 ##
 
-#PLATFORM=linux
-#KVMROOT=/home/wwright/j2me_cldc
+#MIDPROOT=/home/wwright/j2me_cldc
 #JAVAC=javac
 
-PLATFORM=win32
-KVMROOT=c:/dev/j2me_cldc
-JAVAC=javac
+MIDPROOT=c:/dev/midp1.0.3fcs
+JAVAC=c:/dev/jdk131/bin/javac
 
 
 TOP=../src
 TMPOUT=../src
 OUTDIR=classes
 
-PREVERIFY=$(KVMROOT)/bin/$(PLATFORM)/preverify
+PREVERIFY=$(MIDPROOT)/bin/preverify
 JAR=jar
-KVMCLASSES=$(KVMROOT)/bin/common/api/classes
+KVMCLASSES=$(MIDPROOT)/classes
 
 SRCFILES  = $(wildcard $(TOP)/org/cougaar/microedition/asset/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/node/*.java)
@@ -55,16 +53,14 @@ cougaarme.jar: preverify
 		-C $(OUTDIR) gov
 
 PalmMain.prc: cougaarme.jar
-	java -classpath $(KVMROOT)/tools/palm/src/palm.jar palm.database.MakePalmApp \
+	java -classpath $(MIDPROOT)/tools/palm/src/palm.jar palm.database.MakePalmApp \
 	-v -v -classpath $(OUTDIR) -bootclasspath "$(KVMCLASSES)" -networking \
 	-JARtoPRC cougaarme.jar org.cougaar.microedition.kvm.PalmMain
 
 
-#$(OBJFILES): %.class: %.java
-#	$(JAVAC) -classpath "$(TMPOUT)" -bootclasspath "$(KVMCLASSES)" $< 
-
 $(OBJFILES): 
-	$(JAVAC) -classpath "$(TMPOUT)" -bootclasspath "$(KVMCLASSES)" $(SRCFILES)
+	-mkdir $(TMPOUT)
+	$(JAVAC) -sourcepath $(TOP) -d $(TMPOUT) -classpath "$(TMPOUT)" -bootclasspath "$(KVMCLASSES)" $(SRCFILES)
 
 clean: 
 	rm -rf $(OBJFILES) $(OUTDIR)
