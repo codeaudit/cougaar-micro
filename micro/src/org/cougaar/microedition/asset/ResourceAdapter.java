@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -44,10 +44,22 @@ public abstract class ResourceAdapter implements Resource {
     attrtable = t;
     if (t != null && t.containsKey("name"))
       setName((String)t.get("name"));
+    if (t != null) {
+      String debug = (String)getParameters().get("debug");
+      if (debug != null) {
+        debugging = debug.equals("true");
+      }
+    }
   }
 
   public Hashtable getParameters() {
     return attrtable;
   }
+
+  public boolean isDebugging() {
+    return debugging;
+  }
+
+  protected boolean debugging = false;
 
 }

@@ -31,6 +31,7 @@ public class SimpleSensorResource extends SensorResource
   {
     sensorvalue = value;
     sensorvalueinit = true;
+    if (debugging) System.out.println("Sensor "+getName()+" set to "+value);
   }
 
   public long getValue()
@@ -56,5 +57,9 @@ public class SimpleSensorResource extends SensorResource
   {
     setName(ssname);
     units = unitsname;
+  }
+
+  public void setDebugging(boolean on) {
+    debugging = on;
   }
 }
