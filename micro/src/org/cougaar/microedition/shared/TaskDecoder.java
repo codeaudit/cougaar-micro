@@ -103,14 +103,15 @@ public class TaskDecoder extends HandlerBase {
     MicroAllocationResult mar = t.getAllocation().getReportedResult();
     String str;
 
-    str = (String)attr.get("success");
-    mar.setSuccess(Boolean.valueOf(str).booleanValue());
+    str = ((String)attr.get("success")).toLowerCase();
+    mar.setSuccess(str.equals("true"));
+//    mar.setSuccess(Boolean.valueOf(str).booleanValue());
 
     str = (String)attr.get("risk");
-    mar.setRisk(Long.valueOf(str).longValue());
+    mar.setRisk(Long.parseLong(str));
 
     str = (String)attr.get("confidenceRating");
-    mar.setConfidenceRating(Long.valueOf(str).longValue());
+    mar.setConfidenceRating(Long.parseLong(str));
   }
 
   /**
@@ -123,7 +124,7 @@ public class TaskDecoder extends HandlerBase {
     str = (String)attr.get("aspect");
     int aspect = Integer.valueOf(str).intValue();
     str = (String)attr.get("value");
-    long value = Long.valueOf(str).longValue();
+    long value = Long.parseLong(str);
 
     mar.addAspectValuePair(aspect, value);
   }
@@ -154,7 +155,7 @@ public class TaskDecoder extends HandlerBase {
     mar.setConfidenceRating(2.02);
     mar.setSuccess(true);
     int [] aspects = {1, 2, 3, 4};
-    double [] values = {1.1, 2.2, 3.3, 4.4};
+    long [] values = {1100, 2200, 3300, 4400};
     mar.setAspects(aspects);
     mar.setValues(values);
     ma.setReportedResult(mar);
