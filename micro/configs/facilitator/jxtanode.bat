@@ -1,19 +1,32 @@
 @echo OFF
+@setlocal
 
-CALL %ALP_INSTALL_PATH%\bin\setlibpath.bat
+set ALP_INSTALL_PATH=C:\cougaar9.0
+set COUGAAR_INSTALL_PATH=C:\cougaar9.0
+
+rem CALL %ALP_INSTALL_PATH%\bin\setlibpath.bat
 CALL %ALP_INSTALL_PATH%\bin\setarguments.bat
 
 set MYARGUMENTS= -c -n "%1"
-set PROJDIR=C:\Projects\JXTA
-set JXTADIR=C:\Projects\JXTA
+set PROJDIR=..\..\..
+set JXTADIR=C:\JXTA\platform\binding\java\lib
 set JXTAPEER="facilitator"
 set JXTAPW="jxtapeer"
 
-set MYPROPERTIES= -Dorg.cougaar.domain.micro=org.cougaar.microedition.se.domain.Domain -Dorg.cougaar.microedition.ServerPort=%2 %MYPROPERTIES% -Dorg.cougaar.core.cluster.SharedPluginManager.watching=false -Dorg.cougaar.core.cluster.enablePublishException=false -Dorg.cougaar.core.cluster.showTraffic=false -Dorg.cougaar.core.cluster.idle.verbose=false -Dorg.cougaar.useBootstrapper=false -Dnet.jxta.tls.principal=%JXTAPEER% -Dnet.jxta.tls.password=%JXTAPW%
+rem set JXTAJARLOC=C:\work\code\JXTA\stable_02082002\platform\binding\java\classes\testjxta.jar
+set JXTAJARLOC=C:\JXTA\platform\jxta.jar
 
-set LIBPATHS=%JXTADIR%\props;%PROJDIR%\micro\data\cougaarMEdomain.jar;%JXTADIR%\shell\lib\jxta.jar;%JXTADIR%\shell\lib\jxtashell.jar;%JXTADIR%\shell\lib\log4j.jar;%JXTADIR%\shell\lib\jxtasecurity.jar;%JXTADIR%\shell\lib\beepcore.jar;%JXTADIR%\shell\lib\cryptix-asn1.jar;%JXTADIR%\shell\lib\cryptix32.jar;%JXTADIR%\shell\lib\jxtaptls.jar;%JXTADIR%\shell\lib\minimalBC.jar;%ALP_INSTALL_PATH%\sys\xerces.jar;%ALP_INSTALL_PATH%\sys\xalan.jar;%LIBPATHS%
+
+set MYPROPERTIES= -Dorg.cougaar.domain.micro=org.cougaar.microedition.se.domain.Domain -Dorg.cougaar.microedition.ServerPort=%2 %MYPROPERTIES% -Dorg.cougaar.core.cluster.SharedPlugInManager.watching=false -Dorg.cougaar.core.cluster.enablePublishException=false -Dorg.cougaar.core.cluster.showTraffic=false -Dorg.cougaar.core.cluster.idle.verbose=false -Dorg.cougaar.useBootstrapper=false -Dnet.jxta.tls.principal=%JXTAPEER% -Dnet.jxta.tls.password=%JXTAPW%
+
+set JXTALIBPATHS=%JXTAJARLOC%;%JXTADIR%\log4j.jar;%JXTADIR%\jxtasecurity.jar;%JXTADIR%\beepcore.jar;%JXTADIR%\cryptix-asn1.jar;%JXTADIR%\cryptix32.jar;%JXTADIR%\jxtaptls.jar;%JXTADIR%\minimalBC.jar
+
+set COUGAARLIBPATHS=%ALP_INSTALL_PATH%\lib\core.jar;%ALP_INSTALL_PATH%\lib\glm.jar;%ALP_INSTALL_PATH%\lib\planserver.jar;%ALP_INSTALL_PATH%\lib\webserver.jar;%ALP_INSTALL_PATH%\lib\webtomcat.jar;%ALP_INSTALL_PATH%\sys\xerces.jar;%ALP_INSTALL_PATH%\sys\xalan.jar;%ALP_INSTALL_PATH%\sys\servlet.jar;%ALP_INSTALL_PATH%\sys\tomcat_core.jar;%ALP_INSTALL_PATH%\sys\etomcat.jar;%ALP_INSTALL_PATH%\sys\tomcat.jar;%ALP_INSTALL_PATH%\sys\core_util.jar;%ALP_INSTALL_PATH%\sys\tomcat_modules.jar;%ALP_INSTALL_PATH%\sys\tomcat_util.jar;%ALP_INSTALL_PATH%\sys\facade22.jar
+
+set LIBPATHS=%PROJDIR%\micro\data\cougaarMEdomain.jar;%JXTALIBPATHS%;%COUGAARLIBPATHS%;%LIBPATHS%
 
 @ECHO ON
 
-C:\JBuilder4\jdk1.3\bin\java.exe %MYPROPERTIES% -classpath %LIBPATHS% %MYCLASSES% %MYARGUMENTS%
+java %MYPROPERTIES% -classpath %LIBPATHS% %MYCLASSES% %MYARGUMENTS%
 
+@endlocal
