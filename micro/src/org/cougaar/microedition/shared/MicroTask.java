@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -39,14 +39,30 @@ public class MicroTask implements Encodable {
   private java.util.Vector prepositionalPhrases;
   private org.cougaar.microedition.shared.MicroAllocation allocation;
 
-  public void setMe(MicroTask mt) {
+  public void setMe(MicroTask mt)
+  {
     uniqueID = mt.uniqueID;
     verb = mt.verb;
     prepositionalPhrases = mt.prepositionalPhrases;
-    // (don't want to null out the allocation)
-    allocation = mt.allocation;
-    if (allocation != null)
-      allocation.setTask(this);
+
+    if(mt.allocation != null)
+    {
+      if(allocation != null)
+      {
+	//preserve parts of allocation  such as asset
+	allocation.setReportedResult(mt.allocation.getReportedResult());
+      }
+      else
+      {
+	//take the whole thing
+	allocation = mt.allocation;
+	allocation.setTask(this);
+      }
+    }
+    else
+    {
+      allocation = null;
+    }
   }
 
   /**
