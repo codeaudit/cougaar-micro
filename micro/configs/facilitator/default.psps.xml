@@ -1,0 +1,33 @@
+<object type="java.util.Vector">
+
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.demo.PSP_MicroData</Classname>
+    <PSPName>MICRO_DATA.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.lib.planserver.psp.PSP_LocateClusters</Classname>
+    <PSPName>alpine/demo/CLUSTERS.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.se.domain.PSP_MESEPlanView</Classname>
+    <PSPName>alpine/demo/TASKS.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.lib.planserver.psp.PSP_ClusterMetrics</Classname>
+    <PSPName>alpine/demo/CLUSTER_METRICS.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.lib.planserver.psp.PSP_SocietyMetrics</Classname>
+    <PSPName>alpine/demo/SOCIETY_METRICS.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.lib.planserver.psp.PSP_PlugInLoader</Classname>
+    <PSPName>alpine/demo/PLUGIN_LOADER.PSP</PSPName>
+  </element>
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.microedition.demo.PSP_ReportHeatIndex</Classname>
+    <PSPName>alpine/demo/REPORT_HEATINDEX.PSP</PSPName>
+  </element>
+</object>
+
+

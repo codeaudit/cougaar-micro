@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE jxta:PA>
+
+<jxta:PA xmlns:jxta="http://jxta.org">
+	<PID>
+		urn:jxta:uuid-59616261646162614A787461503250331D816551C610466A8C0B82C94205D59803
+	</PID>
+	<Name>
+		daffyduck
+	</Name>
+	<Dbg>
+		error
+	</Dbg>
+	<Svc>
+		<MCID>
+			urn:jxta:uuid-DEADBEEFDEAFBABAFEEDBABE0000000905
+		</MCID>
+		<Parm>
+			<jxta:TCPTransportAdvertisement>
+				<Protocol>
+					TCP
+				</Protocol>
+				<Port>
+					9704
+				</Port>
+				<MulticastAddr>
+					224.0.1.85
+				</MulticastAddr>
+				<MulticastPort>
+					1234
+				</MulticastPort>
+				<MulticastSize>
+					16384
+				</MulticastSize>
+				<Server>
+				</Server>
+				<InterfaceAddress>
+					192.233.51.172
+				</InterfaceAddress>
+				<ConfigMode>
+					auto
+				</ConfigMode>
+			</jxta:TCPTransportAdvertisement>
+		</Parm>
+	</Svc>
+	<Svc>
+		<MCID>
+			urn:jxta:uuid-DEADBEEFDEAFBABAFEEDBABE0000000605
+		</MCID>
+		<Parm>
+			<Addr>
+				http://63.98.225.218:9700
+			</Addr>
+			<Addr>
+				http://210.81.180.53:9700
+			</Addr>
+			<Addr>
+				http://209.25.154.237:9700
+			</Addr>
+			<Addr>
+				http://209.25.154.235:9700
+			</Addr>
+		</Parm>
+	</Svc>
+	<Svc>
+		<MCID>
+			urn:jxta:uuid-DEADBEEFDEAFBABAFEEDBABE0000000105
+		</MCID>
+		<Parm>
+			<RootCert>
+				MIICPjCCAaegAwIBAgIBATANBgkqhkiG9w0BAQUFADBnMRUwEwYDVQQKEwx3d3cu
+anh0YS5vcmcxCzAJBgNVBAcTAlNGMQswCQYDVQQGEwJVUzEVMBMGA1UEAxMMZGFm
+ZnlkdWNrLUNBMR0wGwYDVQQLExQ2MjNBQzIwMDIyNjVEMkMwODRBNjAeFw0wMTEy
+MjAxNDMwMDhaFw0xMTEyMjAxNDMwMDhaMGcxFTATBgNVBAoTDHd3dy5qeHRhLm9y
+ZzELMAkGA1UEBxMCU0YxCzAJBgNVBAYTAlVTMRUwEwYDVQQDEwxkYWZmeWR1Y2st
+Q0ExHTAbBgNVBAsTFDYyM0FDMjAwMjI2NUQyQzA4NEE2MIGbMAsGCSqGSIb3DQEB
+AQOBiwAwgYcCgYEAgIKhJzGBAbh+8tan+Pw6A+jsN2DXn5dYyl5+EzuexHru6Nh0
+OXV11vNsGMCAXghR6J39qvgE5tygMJX3cqyDdgHnoTuPiuJeWP1mEinuDb4gdIKn
+X8Z9lN37OJQ/0826xaXqdlc0HErBZ5WWynVWjaREw3Rr4e636dNt2b9cE5MCAREw
+DQYJKoZIhvcNAQEFBQADgYEASSoL/9eagPI/fHgZqEta+bEij264RkfAhNHheypQ
+pFxjwvtKyb8KWAVPZbVuZHLFnYd8VwBmY50Lr6zr9zg0e7AjG4QPnCPZrqvpYVBl
+2cs4vOAF9D/Mnmw6uv8tbhiqgCUr36osH94m7D7nG4R6hGwd/ddRmKOilkd97TlV
+vnM=
+			</RootCert>
+		</Parm>
+	</Svc>
+	<Svc>
+		<MCID>
+			urn:jxta:uuid-DEADBEEFDEAFBABAFEEDBABE0000000A05
+		</MCID>
+		<Parm>
+			<jxta:HTTPTransportAdvertisement>
+				<Protocol>
+					http
+				</Protocol>
+				<InterfaceAddress>
+					192.233.51.172
+				</InterfaceAddress>
+				<ConfigMode>
+					auto
+				</ConfigMode>
+				<Port>
+					9700
+				</Port>
+				<Router>
+					63.98.225.218:9700
+				</Router>
+				<Router>
+					210.81.180.53:9700
+				</Router>
+				<Router>
+					209.25.154.237:9700
+				</Router>
+				<Router>
+					209.25.154.235:9700
+				</Router>
+				<Proxy>
+					myProxy.myDomain:8080
+				</Proxy>
+				<ProxyOff>
+				</ProxyOff>
+				<Server>
+					CALCIO:9700
+				</Server>
+				<ServerOff>
+				</ServerOff>
+			</jxta:HTTPTransportAdvertisement>
+		</Parm>
+	</Svc>
+</jxta:PA>
