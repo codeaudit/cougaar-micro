@@ -54,9 +54,9 @@ ManagerPlugin got a status: Done12
 
 
 You can also use a CougaarSE agent to serve the configuration file over the
-network.  To do that, first edit the Node.bat file to set COUGAAR_ME_ROOT to
-the directory in which you unzipped CougaarME.  Make sure 
-COUGAAR_INSTALL_PATH is set, too. Then run the CougaarSE node like this:
+network.  To do that, first copy the cougaarmedomain.jar file from the 
+data/ directory into the lib/ directory under your COUGAAR_INSTAL_PATH.
+Then run the CougaarSE node like this:
 
     C:\> Node MotherNode
 
