@@ -99,7 +99,7 @@ public class Node {
     // instantiate plugin objects
     while (plugInList.hasMoreElements()) {
       NameTablePair ntp = (NameTablePair)plugInList.nextElement();
-      String classname = ntp.name;
+      String classname = ntp.name.trim();
       try {
         Class clazz = Class.forName(classname);
         PlugIn p = (PlugIn)clazz.newInstance();
