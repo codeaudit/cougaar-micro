@@ -21,10 +21,10 @@ public class MicroAllocationResult implements Encodable {
   protected static String tag = "MicroAllocationResult";
   protected static String aspectTag = "MicroAllocationResultAspect";
   private boolean success;
-  private double risk;
+  private long risk;  /* in thousandths */
   private String auxData;
-  private double confidenceRating;
-  private double[] values = new double[0];
+  private long confidenceRating;  /* in thousandths */
+  private long[] values = new long[0];  /* in thousandths */
   private int[] aspects = new int[0];
   /**
    * XML encode this object and all sub-objects.
@@ -62,14 +62,14 @@ public class MicroAllocationResult implements Encodable {
   /**
    * Get the results (array is parallel to getAspects())
    */
-  public double[] getValues() {
+  public long[] getValues() {
     return values;
   }
 
   /**
    * Set the results (array is parallel to getAspects())
    */
-  public void setValues(double[] newValues) {
+  public void setValues(long[] newValues) {
     values = newValues;
   }
 
@@ -77,7 +77,7 @@ public class MicroAllocationResult implements Encodable {
    * Set the amount of risk associated with performing this task.
    * @param newRisk (0 = no risk, 1 = certain death)
    */
-  public void setRisk(double newRisk) {
+  public void setRisk(long newRisk) {
     risk = newRisk;
   }
 
@@ -85,7 +85,7 @@ public class MicroAllocationResult implements Encodable {
    * Get the amount of risk associated with performing this task.
    * @return 0 = no risk, 1 = certain death
    */
-  public double getRisk() {
+  public long getRisk() {
     return risk;
   }
 
@@ -108,7 +108,7 @@ public class MicroAllocationResult implements Encodable {
    * Set how likely correct the answer(s) is/are.
    * @param newConfidenceRating 0 = unsure, 1.0 = completely sure.
    */
-  public void setConfidenceRating(double newConfidenceRating) {
+  public void setConfidenceRating(long newConfidenceRating) {
     confidenceRating = newConfidenceRating;
   }
 
@@ -116,7 +116,7 @@ public class MicroAllocationResult implements Encodable {
    * Get how likely correct the answer(s) is/are.
    * @return 0 = unsure, 1.0 = completely sure.
    */
-  public double getConfidenceRating() {
+  public long getConfidenceRating() {
     return confidenceRating;
   }
 
@@ -137,9 +137,9 @@ public class MicroAllocationResult implements Encodable {
   /**
    * Add a new aspect and value to the current set.
    */
-  public void addAspectValuePair(int aspect, double value) {
+  public void addAspectValuePair(int aspect, long value) {
     int [] newAspects = new int[aspects.length + 1];
-    double [] newValues = new double[aspects.length + 1];
+    long [] newValues = new long[aspects.length + 1];
 
     System.arraycopy(aspects, 0, newAspects, 0, aspects.length);
     System.arraycopy(values, 0, newValues, 0, aspects.length);

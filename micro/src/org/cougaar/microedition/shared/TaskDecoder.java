@@ -107,10 +107,10 @@ public class TaskDecoder extends HandlerBase {
     mar.setSuccess(Boolean.valueOf(str).booleanValue());
 
     str = (String)attr.get("risk");
-    mar.setRisk(Double.valueOf(str).doubleValue());
+    mar.setRisk(Long.valueOf(str).longValue());
 
     str = (String)attr.get("confidenceRating");
-    mar.setConfidenceRating(Double.valueOf(str).doubleValue());
+    mar.setConfidenceRating(Long.valueOf(str).longValue());
   }
 
   /**
@@ -123,7 +123,7 @@ public class TaskDecoder extends HandlerBase {
     str = (String)attr.get("aspect");
     int aspect = Integer.valueOf(str).intValue();
     str = (String)attr.get("value");
-    double value = Double.valueOf(str).doubleValue();
+    long value = Long.valueOf(str).longValue();
 
     mar.addAspectValuePair(aspect, value);
   }
