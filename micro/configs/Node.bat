@@ -8,7 +8,7 @@ CALL %ALP_INSTALL_PATH%\bin\setarguments.bat
 set MYARGUMENTS= -c -n "%1"
 
 set MYPROPERTIES=-Dorg.cougaar.domain.micro=org.cougaar.microedition.domain.Domain %MYPROPERTIES%
-set LIBPATHS=..\src;%LIBPATHS%
+set LIBPATHS=..\classes;%LIBPATHS%
 
 @ECHO ON
 
