@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
-  <description>LocomotionController</description>
+  <description>PositionProvider</description>
 
-  <resource>org.cougaar.microedition.tini.TiniMach5LocomotionResource</resource>
+  <resource> org.cougaar.microedition.tini.TiniGPSLocationControllerResource</resource>
 
-  <plugin resource="TiniMach5LocomotionResource" command="Advance">org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+  <plugin resource="TiniGPSLocationControllerResource" command="ReportPosition"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
 
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.tini.TiniKillPlugIn</plugin>

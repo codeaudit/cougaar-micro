@@ -2,7 +2,7 @@
 <NodeConfiguration>
   <description>PositionProvider,LocomotionController</description>
 
-  <resource SurveyLatitude="0.0" SurveyLongitude="0.8" SurveyHeading="0.0">org.cougaar.microedition.tini.TiniMach5PositionResource</resource>
+  <resource SurveyLatitude="0.0" SurveyLongitude="0.00001" SurveyHeading="0.0">org.cougaar.microedition.tini.TiniMach5PositionResource</resource>
 
   <resource>org.cougaar.microedition.tini.TiniMach5LocomotionResource</resource>
 

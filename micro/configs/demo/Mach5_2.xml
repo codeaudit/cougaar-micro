@@ -13,7 +13,7 @@
   <plugin resource="TiniMach5LocomotionResource" command="Advance" parameter="Speed" parametervalue="25">org.cougaar.microedition.plugin.ControlPlugIn</plugin>
 
   <!-- Infrastructure PlugIns -->
-  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
 </NodeConfiguration>

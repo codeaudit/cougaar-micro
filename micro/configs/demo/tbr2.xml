@@ -7,7 +7,8 @@
   <plugin resource="TiniTurretBearingResource" command="RotateTurret" parameter="bearing" parametervalue="45"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
 
   <!-- Infrastructure PlugIns -->
-  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.tini.TiniKillPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
 </NodeConfiguration>
