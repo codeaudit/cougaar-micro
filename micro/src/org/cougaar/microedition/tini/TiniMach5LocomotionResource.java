@@ -157,9 +157,9 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
     speed = newSpeed;
   }
 
-  public long []  rotate(int direction, long degrees)
+  public void  rotate(int direction, long degrees)
   {
-    long [] ret = UpdatePositionState(Mach5Command.ROTATE);
+    UpdatePositionState(Mach5Command.ROTATE);
 
     String msg = "";
     int ticks = (int)((double)degrees * TICKSPERDEGREE); // experimentally determined
@@ -177,8 +177,6 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
         throw new IllegalArgumentException("LocomotionResource.rotate must be one of CLOCKWISE or COUNTERCLOCKWISE");
     }
     sendMsg(msg);
-
-    return ret;
   }
 
 
@@ -196,29 +194,27 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
   }
 
 
-  public long [] stop() {
-    long [] ret = UpdatePositionState(Mach5Command.STOP);
+  public void stop() {
+    UpdatePositionState(Mach5Command.STOP);
     sendMsg("SV 0 0\n");
-    return ret;
   }
 
-  public long []  forward() {
+  public void  forward() {
     int spd = (int)speed;
-    long [] ret = UpdatePositionState(Mach5Command.GOFORWARD);
+    UpdatePositionState(Mach5Command.GOFORWARD);
     sendMsg("SV "+spd+" "+spd+"\n");
-    return ret;
   }
 
-  public long []  backward() {
+  public void backward() {
     int spd = 0 - (int)speed;
-    long [] ret = UpdatePositionState(Mach5Command.GOBACKWARD);
+    UpdatePositionState(Mach5Command.GOBACKWARD);
     sendMsg("SV "+spd+" "+spd+"\n");
-    return ret;
   }
 
-  private long [] UpdatePositionState(int newcommand)
+  private void UpdatePositionState(int newcommand)
   {
    long [] wheelpos = getWheelPositions();
+   if(wheelpos == null) return;
 
    //compute change in wheel positioning since last command
    long diffleft = wheelpos[0] - laststatechange.leftwheelpos;
@@ -275,10 +271,9 @@ public class TiniMach5LocomotionResource extends ControllerResource implements L
 			       +laststatechange.Yrel +" "
 			       +laststatechange.Thetarel*(180.0/Math.PI));
 
-   return wheelpos;
   }
 
-  private Mach5RelativePositionData ReadCurrentState()
+  public Mach5RelativePositionData ReadCurrentState()
   {
    Mach5RelativePositionData ret = new Mach5RelativePositionData();
 
