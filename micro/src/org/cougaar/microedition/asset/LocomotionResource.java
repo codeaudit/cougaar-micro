@@ -33,19 +33,19 @@ public abstract class LocomotionResource extends Resource {
    * @param direction one of CLOCKWISE or COUNTER_CLOCKWISE
    * @param degrees the number of degrees to rotate in that direction
    */
-  public abstract void rotate(int direction, double degrees);
+  public abstract long[] rotate(int direction, double degrees);
   /**
    * Move forward at the requested speed
    * @see setSpeed(double)
    */
-  public abstract void forward();
+  public abstract long[] forward();
   /**
    * Move in reverse at the requested speed
    * @see setSpeed(double)
    */
-  public abstract void backward();
+  public abstract long[] backward();
   /**
    * Whoa!
    */
-  public abstract void stop();
+  public abstract long[] stop();
 }
