@@ -261,7 +261,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
    laststatechange.leftwheelpos = wheelpos[0];
    laststatechange.rightwheelpos = wheelpos[1];
 
-   System.out.println("Current relative state: "
+   if (debug) System.out.println("Current relative state: "
 			       +Mach5Command.cmdstring[laststatechange.lastcommand] +" "
 			       +laststatechange.rightwheelpos +" "
 			       +laststatechange.leftwheelpos +" "
@@ -412,6 +412,7 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
           synchronized (outgoingMsgs) {
             while (outgoingMsgs.isEmpty()) {
               try {
+                System.gc();
                 if (debug) System.out.println("Waiting on "+outgoingMsgs);
                 outgoingMsgs.wait();
                 if (debug) System.out.println("DONE Waiting on "+outgoingMsgs);
@@ -436,8 +437,10 @@ public class TiniMach5LocomotionResource extends LocomotionResource implements L
              byte ch = 0;
              while (ch != 10) { // line-feed
                int datum = input.read();
-               if (datum < 0) // read timeout
+               if (datum < 0) { // read timeout
+                 if (debug) System.out.println("#### Serial port timeout");
                  continue forever;
+               }
                ch = (byte)datum;
                data[dataptr++] = ch;
              }
