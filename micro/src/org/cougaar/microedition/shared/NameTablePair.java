@@ -10,7 +10,7 @@ public class NameTablePair {
   public NameTablePair(String n, Hashtable t) {
     name = n;
     if (t != null)
-      table = (Hashtable)(t.clone());
+      table = t;
     else
       table = null;
   }
