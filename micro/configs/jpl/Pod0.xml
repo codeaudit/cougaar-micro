@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>SensorWeb Pod</description>
+  <port>2221</port>
+
+  <plugin podNumber="0" datatype="correction" datavalue="0x0908">
+    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
+  </plugin>
+
+  <plugin podNumber="0" datatype="temp" datavalue="0x010f">
+    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
+  </plugin>
+
+  <plugin podNumber="0" datatype="humidity" datavalue="0x0323">
+    gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
+  </plugin>
+
+  <plugin debug="true">gov.nasa.jpl.sensorweb.PodDataConversionPlugIn</plugin>
+  <plugin debug="true">gov.nasa.jpl.sensorweb.ComputeHeatIndexPlugIn</plugin>
+  <plugin debug="true" aggregate="15">gov.nasa.jpl.sensorweb.HeatIndexPlugIn</plugin>
+  <!-- 
+  <plugin debug="true">gov.nasa.jpl.sensorweb.MeasureHeatIndexPlugIn</plugin>
+  <plugin reapinterval="20" expiration="60">gov.nasa.jpl.sensorweb.PodIdentificationPlugIn</plugin>
+  <plugin host="127.0.0.1">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin> 
+  -->
+  <plugin datatypemask="17">gov.nasa.jpl.sensorweb.SWRecordViewPlugIn</plugin>
+</NodeConfiguration>
