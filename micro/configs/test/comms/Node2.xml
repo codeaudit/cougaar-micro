@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>test demo system</description>
+
+  <resource>org.cougaar.microedition.kvm.KvmValuemeter</resource>
+
+  <plugin>org.cougaar.microedition.plugin.TaskReporterPlugIn</plugin>
+  <!-- Infrastructure PlugIns -->
+  <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+
+  <plugin name="Value" sleeptime="1000">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
+
+</NodeConfiguration>

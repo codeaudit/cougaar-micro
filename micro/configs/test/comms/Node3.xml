@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>test demo system</description>
+
+  <plugin target="Node2">org.cougaar.microedition.plugin.test.TestAllocatorPlugIn</plugin>
+
+
+  <plugin>org.cougaar.microedition.plugin.TaskReporterPlugIn</plugin>
+  <!-- Infrastructure PlugIns -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+
+
+</NodeConfiguration>
