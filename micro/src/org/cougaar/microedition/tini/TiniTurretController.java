@@ -475,6 +475,7 @@ public class TiniTurretController extends TurretControllerResource
                   }
                   sensors.refreshAlarms();
                   if (IncrementCounter < 2) {sensors.clearRotationAlarm();}
+		  try { Thread.sleep(100); } catch (Exception e) {}
                 }
                 MotorRevs += 1;
                 sensors.clearRotationAlarm();
@@ -518,6 +519,7 @@ public class TiniTurretController extends TurretControllerResource
                 }
                 if (debugging) {System.out.println("SWEEP: Bearing = " + bearing);}
                 if (debuggingpauses) {pause("SWEEP: Pause 10 sec. before continuing...");}
+		try { Thread.sleep(100); } catch (Exception e) {}
               }
               if (debugging) {System.out.println("SWEEP: Sweep complete.  Bearing = " + bearing);}
               SweepStateIndex = SWEEP_REWIND;
@@ -607,6 +609,7 @@ public class TiniTurretController extends TurretControllerResource
                 }
                 if (debugging) {System.out.println("SWEEP_REWIND:  Bearing = " + bearing);}
                 if (debuggingpauses) {pause("SWEEP_REWIND: Pause 10 sec. then continue...");}
+		try { Thread.sleep(100); } catch (Exception e) {}
               }
               // avoid the erroneous "double close" at the end of a sweep rewind
               MotorDirection = BACKWARD;
