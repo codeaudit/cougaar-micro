@@ -10,24 +10,29 @@
 package org.cougaar.microedition.tini;
 
 import java.util.*;
-import org.cougaar.microedition.asset.FlashlightResource;
+import org.cougaar.microedition.asset.*;
+import org.cougaar.microedition.shared.Constants;
 
 /**
  * Represents Flashlight resources controlled by TINI boards.
  */
-public class TiniFlashlight extends FlashlightResource {
+public class TiniFlashlight extends ControllerResource {
 
   private boolean isOnNow=false;
+  private boolean wasOnThen = false;
+  private boolean changecondition = false;
   private DS2450 ds2450;
   private int ds2450Index=0, ds2450Channel=0;
   private String owAddr;
-  static private int debugLevel=10;
+  private int debugLevel = 0;
 
 
   /**
    * Set parameters with values from my node and initialize TiniFlashlight.
    */
-  public void setParameters(Hashtable t) {
+  public void setParameters(Hashtable t)
+  {
+    setName("TiniFlashlight");
     super.setParameters(t);
     if (t != null && t.containsKey("owaddr"))
       setAddr((String)t.get("owaddr"));
@@ -41,6 +46,15 @@ public class TiniFlashlight extends FlashlightResource {
     */
     initDS2450();
 
+
+    //testing
+    try
+    {
+      setOn(true);
+      Thread.sleep(1000);
+      setOn(false);
+    }
+    catch (Exception e) {}
   }
 
   /**
@@ -64,7 +78,7 @@ public class TiniFlashlight extends FlashlightResource {
       if (debugLevel > 20) System.out.println("TiniFlashlight.isOnNow Returned from ds2450.readOutput");
     } else {
       isOnNow=false;
-      if (debugLevel > -20) System.err.println("TiniFlashlight.isOnNow but ds2450 is null -- returning false ");
+	System.err.println("TiniFlashlight.isOnNow but ds2450 is null -- returning false ");
     }
     return isOnNow;
   }
@@ -74,16 +88,16 @@ public class TiniFlashlight extends FlashlightResource {
     @value true for on; false for off
     @return actual value after the method completes execution
   */
-  public boolean setOn(boolean value) {
-    if (debugLevel > 20) {
-      System.out.println("TiniFlashlight: setOn("+value+")");
-    }
+  public boolean setOn(boolean value)
+  {
+    System.out.println("TiniFlashlight: setOn("+value+")");
     // setPinTo returns the value of the pin after the call (should be same as value)
     isOnNow=setPinTo(value);
-    if (debugLevel > 5) {
-      System.out.println("TiniFlashlight: Leaving setOn("+value
+    System.out.println("TiniFlashlight: Leaving setOn("+value
         +") and flashlight isOn() returns "+isOn());
-    }
+
+    if(isOnNow != wasOnThen)
+      changecondition = true;
 
     return isOnNow;
   }
@@ -91,9 +105,7 @@ public class TiniFlashlight extends FlashlightResource {
   /**
    * Constructor.
    */
-  public TiniFlashlight() {
-    setName("Flashlight");
-  }
+  public TiniFlashlight() { }
 
   /**
    * Set one wire bus to the given value.
@@ -167,6 +179,52 @@ public class TiniFlashlight extends FlashlightResource {
     }
   }
 
+  public void getValues(long [] values)
+  {
+    changecondition = false; //reset
+    wasOnThen = isOnNow;
 
+    values[0] = (long)(1.0*scalingFactor);
+  }
+
+  public void getValueAspects(int [] aspects)
+  {
+    aspects[0] = Constants.Aspects.FLASHLIGHT;
+  }
+
+  public int getNumberAspects()
+  {
+    return 1;
+  }
+
+  public void setChan(int c) {}
+  public void setUnits(String u) {}
+  public boolean conditionChanged() {return changecondition;}
+
+  private boolean isundercontrol = false;
+
+  public void startControl()
+  {
+    setOn(true);
+    isundercontrol = true;
+  }
+
+  public void stopControl()
+  {
+    setOn(false);
+    isundercontrol = false;
+  }
+
+  public boolean isUnderControl()
+  {
+    return isundercontrol;
+  }
+
+  public boolean getSuccess() { return isOnNow; }
+
+  public void modifyControl(String controlparameter, String controlparametervalue)
+  {
+
+  }
 }
 

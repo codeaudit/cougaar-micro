@@ -64,17 +64,22 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 
   //private Date dgpsDate = new Date();
   private boolean dgpsHealthy=false;
-  private short dgpsSatellites;
+  private int dgpsSatellites;
   private double dgpsHeading, dgpsLatitude, dgpsLongitude, dgpsAltitude;
   private float dgpsGroundSpeed, dgpsVelocityNorth, dgpsVelocityEast,
                 dgpsVelocityVertical ;
+  private double computedheading = 0.0;
+  private double computedspeed = 0.0;
+  private static final double DGPSVELACCURACY = 0.035; //meters per sec
+  private static final int MINSATS = 4;
+  private static final int MAXSATS = 12;
 
   public TiniGPSLocationControllerResource() {}
 
   // accessor methods for DGPS properties
 
   public double getHeading() { // returns true bearing, in degrees
-    return dgpsHeading;        // (zero is true North)
+    return computedheading;        // (zero is true North)
   }
 
   public double getAltitude() { // returns altitude, in meters above SL
@@ -89,7 +94,7 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
     return dgpsLatitude;        // negative is South of the Equator
   }
 
-  public short getNumSVs() { // returns the number of Satellite Vehicles
+  public int getNumSVs() { // returns the number of Satellite Vehicles
     return dgpsSatellites;   // used from the last DGPS message 20
   }
 
@@ -227,76 +232,170 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 
       if (debug) System.out.println("TiniGPSLocationControllerResource Starting");
 
-      double PI=3.14159265358979;
-
       /*
        * Search for the beginning of Message #20 in the input stream
        */
-      while (true) {
-       try {
-         int i=0;
-         while(true) { // Identify the start of message 20
-           int datum = input.read();
-           if (datum == 1) { // SOH
-             int byte2 = input.read();
-             if (byte2 == 20) { // Msg 20
-               int byte3 = input.read();
-               if (byte3 == 235)  // complement of 20
-                 break;
-             }
-           }
-         }
+      int soh = 0, msgid = 0, msgcompid = 0, mblocksize = 0;
+      int nread = 0;
+      byte [] mblockmessage = new byte[256];
 
-         /*
-          * Input the entire message
-          */
-         byte [] block = new byte[77]; //already read 3 bytes
-         int count = input.read(block, 3, 74);
+      while(true) //continuously read the port
+      {
+	try
+	{
+	  int nskip = 0;
+	  while (true) //loop until start of header is detected
+	  {
+	    soh = input.read();
+	    if(soh == 1)
+	    {
+	      msgid = input.read(); //read message id and complement
+	      msgcompid = input.read();
 
-         /*
-          * Extract the number of satellites and date/time from the message,
-          * and use this information to determine the health of the message.
-          */
-         byte numSatellites = block[71];
-         dgpsSatellites=(short)numSatellites;
-         dgpsYear = (int)unsigned(block[16]) + (int)unsigned(block[17])*256;
-         dgpsHealthy=(numSatellites>3) & (dgpsYear==ThisYear);
-         dgpsMonth=block[15];
-         dgpsDay=block[14];
-         dgpsHour=block[4];
-         dgpsMinute=block[5];
-         byte [] dbl = new byte[8];
-         System.arraycopy(block, 6, dbl, 0, 8);
-         dgpsSeconds = makeDouble(dbl);
+	      if(msgid == (255 - msgcompid))
+		break; //start of message block detected
+	    }
+	    else
+	    {
+	      nskip++; //for debugging purposes
+	    }
+	  }
 
-         /*
-          * Extract the lat, lon, alt, speed, heading, velN, velE, and velV,
-          * and place in the private database for use by the accessor methods.
-          */
-         System.arraycopy(block, 18, dbl, 0, 8);
-         dgpsLatitude = (180.0/PI)*makeDouble(dbl);
-         System.arraycopy(block, 26, dbl, 0, 8);
-         dgpsLongitude = (180.0/PI)*makeDouble(dbl);
-         byte [] flt = new byte[4];
-         System.arraycopy(block, 34, flt, 0, 4);
-         dgpsAltitude = (double)makeFloat(flt);
-         System.arraycopy(block, 38, flt, 0, 4);
-         dgpsGroundSpeed = makeFloat(flt);
-         System.arraycopy(block, 42, flt, 0, 4);
-         dgpsHeading = (180.0/PI)*(double)makeFloat(flt);
-         System.arraycopy(block, 46, flt, 0, 4);
-         dgpsVelocityNorth = makeFloat(flt);
-         System.arraycopy(block, 50, flt, 0, 4);
-         dgpsVelocityEast = makeFloat(flt);
-         System.arraycopy(block, 54, flt, 0, 4);
-         dgpsVelocityVertical = makeFloat(flt);
+	  mblocksize = input.read(); //read message block size F(msg id)
+/*
+	  if(debug)
+	  {
+	    System.out.println("Bytes skipped        : " +nskip);
+	    System.out.println("Start Of Header (SOH): " +soh);
+	    System.out.println("Block ID             : " +msgid);
+	    System.out.println("Block ID Complement  : " +msgcompid);
+	    System.out.println("Message Length       : " +mblocksize);
+	  }
+*/
+	}
+	catch (Exception e)
+	{
+	  System.out.println("Problems reading port stream block header");
+	}
 
-         if (debug) System.out.println("GPS: nSat: "+numSatellites+ " year:"+dgpsYear+" lat:"+dgpsLatitude+" long:"+dgpsLongitude);
+	try
+	{
+	  //read message block
+	  //offset 4 bytes for header, add 2 for checksum
+	  mblockmessage[0] = (byte)soh;
+	  mblockmessage[1] = (byte)msgid;
+	  mblockmessage[2] = (byte)msgcompid;
+	  mblockmessage[3] = (byte)mblocksize;
+	  nread = input.read(mblockmessage, 4,  mblocksize + 2);
+	}
+	catch (Exception e)
+	{
+	  System.out.println("Unable to read File input stream");
+	  continue;
+	}
 
+	if(nread != (mblocksize + 2))
+	{
+	  System.out.println("Error: unable to read message block");
+	  continue;
+	}
 
-       } catch (IOException ioe) {
-         ioe.printStackTrace();
-       } // try
+	if(msgid == 20)
+	{
+
+	   /*
+	    * Extract the number of satellites and date/time from the message,
+	    * and use this information to determine the health of the message.
+	    */
+	  int numSatellites = mblockmessage[71];
+	  int readYear = (int)unsigned(mblockmessage[16]) + (int)unsigned(mblockmessage[17])*256;
+	  if((numSatellites > MINSATS) && (numSatellites < MAXSATS) && (readYear==ThisYear))
+	  {
+	    dgpsHealthy = true;
+	  }
+	  else
+	  {
+	    dgpsHealthy = false;
+	  }
+
+	  if(dgpsHealthy)
+	  {
+	    dgpsSatellites=numSatellites;
+	    dgpsYear=readYear;
+	    dgpsMonth=mblockmessage[15];
+	    dgpsDay=mblockmessage[14];
+	    dgpsHour=mblockmessage[4];
+	    dgpsMinute=mblockmessage[5];
+	    byte [] dbl = new byte[8];
+	    System.arraycopy(mblockmessage, 6, dbl, 0, 8);
+	    dgpsSeconds = makeDouble(dbl);
+
+	    /*
+	    * Extract the lat, lon, alt, speed, heading, velN, velE, and velV,
+	    * and place in the private database for use by the accessor methods.
+	    */
+	    System.arraycopy(mblockmessage, 18, dbl, 0, 8);
+	    dgpsLatitude = (180.0/Math.PI)*makeDouble(dbl);
+	    System.arraycopy(mblockmessage, 26, dbl, 0, 8);
+	    dgpsLongitude = (180.0/Math.PI)*makeDouble(dbl);
+	    byte [] flt = new byte[4];
+	    System.arraycopy(mblockmessage, 34, flt, 0, 4);
+	    dgpsAltitude = (double)makeFloat(flt);
+	    System.arraycopy(mblockmessage, 38, flt, 0, 4);
+	    dgpsGroundSpeed = makeFloat(flt);
+	    System.arraycopy(mblockmessage, 42, flt, 0, 4);
+	    dgpsHeading = (180.0/Math.PI)*(double)makeFloat(flt);
+	    System.arraycopy(mblockmessage, 46, flt, 0, 4);
+	    dgpsVelocityNorth = makeFloat(flt);
+	    System.arraycopy(mblockmessage, 50, flt, 0, 4);
+	    dgpsVelocityEast = makeFloat(flt);
+	    System.arraycopy(mblockmessage, 54, flt, 0, 4);
+	    dgpsVelocityVertical = makeFloat(flt);
+
+	    if(Math.abs(dgpsVelocityNorth) > DGPSVELACCURACY && Math.abs(dgpsVelocityEast) > DGPSVELACCURACY)
+	    {
+	     computedheading = TiniTrig.tiniatan2((double)dgpsVelocityNorth, (double)dgpsVelocityEast); //radians from -pi to pi
+	     computedheading *= (180.0/Math.PI); //degrees from -180 to 180 as measured from east vector (CCW = +)
+	     computedheading = 90.0 - computedheading; //true heading
+	     if (computedheading < 0.0) computedheading += 360.0; //keep it positive
+	    }
+
+	    //VsinA = VelNorth (sqrt function does not appear to work)
+	    //computedspeed = dgpsVelocityNorth*dgpsVelocityNorth + dgpsVelocityEast*dgpsVelocityEast;
+
+	    double angle = TiniTrig.tiniatan2((double)dgpsVelocityNorth, (double)dgpsVelocityEast);
+	    double sangle = TiniTrig.tinisin(angle);
+	    if(sangle == 0.0)
+	    {
+	      computedspeed = Math.abs(dgpsVelocityEast);
+	    }
+	    else
+	    {
+	      computedspeed = Math.abs(dgpsVelocityNorth/sangle);
+	    }
+
+	    if (debug)
+	    {
+	      int isecs = (int)dgpsSeconds;
+	      int iheading = (int)computedheading;
+	      int mmpersec = (int)(computedspeed*1000.0);
+	      System.out.println("N:"+numSatellites+" "+dgpsHour+":"+dgpsMinute+":"+isecs+" "+mmpersec+":"+iheading);
+
+	      //Warning!!!!!   too much printing causes problems while keepinmg up with port reads
+
+	      //System.out.println("GPS: nSat: "+numSatellites);
+	      //System.out.println("     date "+dgpsYear+":"+dgpsMonth+":"+dgpsDay);
+	      //System.out.println("     time "+dgpsHour+":"+dgpsMinute+":"+dgpsSeconds);
+	      //System.out.println("     lat:"+dgpsLatitude+" long:"+dgpsLongitude+" alt:"+dgpsAltitude);
+	      //System.out.println("     velN:"+dgpsVelocityNorth+" velE:"+dgpsVelocityEast);
+	      //System.out.println("     computed heading:"+computedheading+" speed:"+computedspeed);
+	    }
+	  } // if healthy
+	  else
+	  {
+	    if (debug) System.out.println("Unhealthy NAV message received "+numSatellites+" "+readYear);
+	  }
+	} //if msg = 20
       } // while
     } // public void run
 
@@ -329,12 +428,7 @@ public class TiniGPSLocationControllerResource extends ControllerResource implem
 
   public boolean getSuccess()
   {
-    if (debug)
-      System.out.println("NumSats: " + getNumSVs() + "  YearGiven: " + getDate().getYear() + "  YearNow: " + (new Date()).getYear() );
-    if ( (getNumSVs() >= 4) && (getDate().getYear() == (new Date()).getYear()) )
-      return true;
-    else
-      return false;
+    return isHealthy();
   }
 
   private void debugfunc()

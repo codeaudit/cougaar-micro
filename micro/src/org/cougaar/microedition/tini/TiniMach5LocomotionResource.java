@@ -82,18 +82,26 @@ public class TiniMach5LocomotionResource extends ControllerResource
   /**
    * Constructor.  Sets name default.
    */
-  public TiniMach5LocomotionResource()
-  {
-
-  }
+  public TiniMach5LocomotionResource(){}
 
   private String portName = "serial1";
   private boolean debug = false;
   private Mach5RelativePositionData laststatechange = new Mach5RelativePositionData();
   static final double TICKSPERDEGREE = 2.25; //experimentally determined
-  //static final double TICKSPERDEGREE = 2.1685716; //computed from wheel base
   public static final int CLOCKWISE = 0;
   public static final int COUNTER_CLOCKWISE = 1;
+
+  private long advancedistance = 2000; // millimeters
+  private long rotationdegrees = 0; // one meter
+  private boolean isUnderControl = false;
+  private static long [] wheelpos = {0, 0};
+  private static long [] endposition = {0, 0};
+  private static long [] lastreading = {0, 0};
+  private final static long TOLERANCE = 100; //mm
+
+  private long speed = 1000; // mm per second
+  private long spinspeed = 250; // mm per second
+  private long maxaccel = 250; // mm per second per second
 
   /**
    *  The only paramater is "port" which defaults to "serial1"
@@ -114,8 +122,6 @@ public class TiniMach5LocomotionResource extends ControllerResource
     startMonitorThread();
   }
 
-  private double speed = 0;
-
   public long getSpeed()
   {
     return (long)speed;
@@ -126,31 +132,127 @@ public class TiniMach5LocomotionResource extends ControllerResource
     speed = newSpeed;
   }
 
-  public void  rotate(int direction, long degrees)
+  public void  rotate(int direction, long degrees, boolean waitforcomplete)
   {
+    degrees = degrees%360;
+    System.out.println("TiniMach5LocomotionResource: Rotating "+degrees);
+    if( degrees == 0) return;
+
     UpdatePositionState(Mach5Command.ROTATE);
 
-    String msg = "";
+    //sets the speed of rotation
+    sendMsg("OFF\n");
+    String msg = "MA "+maxaccel+"\n";
+    sendMsg(msg);
+    msg = "MV "+spinspeed+"\n";
+    sendMsg(msg);
+
     int ticks = (int)((double)degrees * TICKSPERDEGREE); // experimentally determined
+
     switch (direction)
     {
       case CLOCKWISE :
         msg = "SPR "+ticks+" -"+ticks+"\n";
 	laststatechange.specifiedrotation = -1.0*degrees;
+	SetEndPosition(wheelpos[0] + ticks, wheelpos[1] - ticks);
         break;
       case COUNTER_CLOCKWISE :
         msg = "SPR -"+ticks+" "+ticks+"\n";
 	laststatechange.specifiedrotation = degrees;
+	SetEndPosition(wheelpos[0] - ticks, wheelpos[1] + ticks);
         break;
       default:
         throw new IllegalArgumentException("LocomotionResource.rotate must be one of CLOCKWISE or COUNTERCLOCKWISE");
     }
+
+
     sendMsg(msg);
+
+    if(waitforcomplete)
+    {
+      System.out.print("Wheelbase rotating...");
+
+     //totatl seconds = V/A + D/V;
+      long msecs = (long)((spinspeed/maxaccel) + (ticks/spinspeed))*1000;
+      try { Thread.sleep(msecs);}
+      catch (InterruptedException ie) {}
+      //System.out.println("...done");
+    }
+  }
+
+  public void  translate(long millimeters, boolean waitforcomplete)
+  {
+
+    System.out.println("TiniMach5LocomotionResource: translating "+millimeters);
+
+    UpdatePositionState(Mach5Command.GOFORWARD);
+
+    //sets the speed of translation
+    sendMsg("OFF\n");
+    String msg = "MA "+maxaccel+"\n";
+    sendMsg(msg);
+    msg = "MV "+speed+"\n";
+    sendMsg(msg);
+
+    msg = "SPR "+millimeters+" "+millimeters+"\n";
+
+    SetEndPosition(wheelpos[0] + millimeters, wheelpos[1] + millimeters);
+
+    sendMsg(msg);
+
+    //sleep enough time to complete command, otherwise we may pre-empt it.
+    if(waitforcomplete)
+    {
+      System.out.print("Wheelbase translating...");
+      long msecs = (long)((speed/maxaccel) + (millimeters/speed))*1000;
+      try { Thread.sleep(msecs);}
+      catch (InterruptedException ie) {}
+      //System.out.println("...done");
+    }
+  }
+
+  private void SetEndPosition(long pos0, long pos1)
+  {
+    endposition[0] = pos0;
+    endposition[1] = pos1;
+    lastreading[0] = pos0;
+    lastreading[1] = pos1;
+  }
+
+  private boolean AtDestinationPosition()
+  {
+    System.out.println("Checking if at destination...");
+    if(getWheelPositions() == false)
+    {
+      System.out.println("Something went wrong.");
+      return false;
+    }
+
+    //see if there is stagnation
+    if(wheelpos[0] == lastreading[0] && wheelpos[1] == lastreading[1])
+    {
+      System.out.println("Mach5 seems to think it is there");
+      return true;
+    }
+
+    if(Math.abs(wheelpos[0] - endposition[0]) < TOLERANCE &&
+       Math.abs(wheelpos[1] - endposition[1]) < TOLERANCE )
+    {
+      System.out.println("Destination reached!!");
+      return true;
+    }
+
+    System.out.println("Mach5 not there yet... "+wheelpos[0]+":"+wheelpos[1]+" "+endposition[0]+":"+endposition[1]);
+    lastreading[0] = wheelpos[0];
+    lastreading[1] = wheelpos[1];
+
+    return false;
   }
 
   public void stop() {
+    System.out.print("Wheelbase stopped...");
     UpdatePositionState(Mach5Command.STOP);
-    sendMsg("SV 0 0\n");
+    sendMsg("OFF\n");
   }
 
   public void  forward() {
@@ -191,8 +293,7 @@ public class TiniMach5LocomotionResource extends ControllerResource
     owner = Thread.currentThread();
    }
 
-   long [] wheelpos = getWheelPositions();
-   if(wheelpos == null) return;
+   if(getWheelPositions() == false) return;
 
    //compute change in wheel positioning since last command
    long diffleft = wheelpos[0] - laststatechange.leftwheelpos;
@@ -269,8 +370,7 @@ public class TiniMach5LocomotionResource extends ControllerResource
 
    Mach5RelativePositionData ret = new Mach5RelativePositionData();
 
-   long [] wheelpos = getWheelPositions();
-   if(wheelpos == null)
+   if(getWheelPositions() == false)
      return laststatechange;
 
    //compute change in wheel positioning since last command
@@ -311,10 +411,9 @@ public class TiniMach5LocomotionResource extends ControllerResource
    * Gets the positions of the wheels since startup.
    * @return the left wheel position in [0], the right in [1]
    */
-  public long [] getWheelPositions(){
-    long [] ret = new long[2];
-    ret[0] = 0;
-    ret[1] = 0;
+  private boolean getWheelPositions()
+  {
+    boolean retbool = false;
 
     sendMsg("QP\n");
     String msg = getMsg();
@@ -324,6 +423,7 @@ public class TiniMach5LocomotionResource extends ControllerResource
     }
 
     try {
+      //System.out.println("getWheelPosition msg = " +msg);
       org.cougaar.microedition.util.StringTokenizer toker = new org.cougaar.microedition.util.StringTokenizer(msg.trim(), " ");
 
       // format should be "> NNNNNN NNNNNN ....."
@@ -332,14 +432,22 @@ public class TiniMach5LocomotionResource extends ControllerResource
         toker.nextToken();  // eat the ">"
         String left = toker.nextToken();
         String right = toker.nextToken();
-        ret[0] = Long.parseLong(left);
-        ret[1] = Long.parseLong(right);
+        wheelpos[0] = Long.parseLong(left);
+        wheelpos[1] = Long.parseLong(right);
+	retbool = true;
       }
-    } catch (Exception nfe) { // error parsing wheel position text
-      System.out.println("getWheelPositions Exception " +nfe);
-      ret = null;
+      else
+      {
+	System.out.println("getWheelPositions: not enough tokens!!!");
+	retbool = false;
+      }
     }
-    return ret;
+    catch (Exception nfe)
+    { // error parsing wheel position text
+      System.out.println("getWheelPositions Exception " +nfe);
+      retbool = false;
+    }
+    return retbool;
   }
 
   private Vector outgoingMsgs = new Vector();
@@ -353,6 +461,7 @@ public class TiniMach5LocomotionResource extends ControllerResource
       outgoingMsgs.notifyAll();
     }
   }
+
   private String getMsg() {
     String ret = null;
     if (incomingMsgs.size() > 0) {
@@ -396,6 +505,7 @@ public class TiniMach5LocomotionResource extends ControllerResource
 
         input = sp.getInputStream();
         output = sp.getOutputStream();
+
       } catch (Exception exp) {
         System.err.println("TiniMach5LocomotionResource: Error initializing serial port '"+portName+"'");
         exp.printStackTrace();
@@ -458,68 +568,74 @@ public class TiniMach5LocomotionResource extends ControllerResource
 
 
   }
-/* */
-  public static void main (String argv[]) {
-    TiniMach5LocomotionResource resource = new TiniMach5LocomotionResource();
-    resource.setParameters(new Hashtable());
 
-    resource.setSpeed(100);
-    resource.forward();
-    System.out.println("forward...");
+  private boolean interruptcheck()
+  {
+      if(Thread.interrupted())
+      {
+	System.out.println("TiniMach5LocomotionResource Advance Manager abandoning");
+	stop();
+	return true;
+      }
 
-    long [] wheels = resource.getWheelPositions();
-    System.out.println("Wheels: "+wheels[0]+":"+wheels[1]);
-
-    try { Thread.sleep(1000); } catch (Exception ex) {}
-    System.out.println("Stop now.");
-    resource.stop();
-    wheels = resource.getWheelPositions();
-    System.out.println("Wheels: "+wheels[0]+":"+wheels[1]);
-
-    System.out.println("Wait a second.");
-    try { Thread.sleep(1000); } catch (Exception ex) {}
-    System.out.println("Exit.");
-    System.exit(0);
-
-
+      return false;
   }
 
   public void getValues(long [] values)
   {
-
+    values[0] = 0;
   }
 
   public void getValueAspects(int [] aspects)
   {
-
+    aspects[0] = 0;
   }
 
   public int getNumberAspects()
   {
-    return 0;
+    return 1;
   }
 
   public void setChan(int c) {}
   public void setUnits(String u) {}
-  public boolean conditionChanged() {return true;} //always report heading
 
-  private boolean isundercontrol = false;
+  public boolean conditionChanged()
+  {
+    if(isUnderControl)
+      return AtDestinationPosition();
+
+    return false;
+  }
+
+ public boolean getSuccess()
+ {
+   stopControl();
+   return true;
+ }
 
   public void startControl()
   {
-    forward();
-    isundercontrol = true;
+    isUnderControl = true;
+    System.out.println("TiniMach5LocomotionResource Start Control");
+    long degrees = rotationdegrees;
+    if(degrees < 0)
+      rotate(COUNTER_CLOCKWISE, (long)(-degrees), true);
+    else
+      rotate(CLOCKWISE, (long)(degrees), true);
+
+    long translation = advancedistance;
+    translate(translation, false);
   }
 
   public void stopControl()
   {
     stop();
-    isundercontrol = false;
+    isUnderControl = false;
   }
 
   public boolean isUnderControl()
   {
-    return isundercontrol;
+    return isUnderControl;
   }
 
   public void modifyControl(String controlparameter, String controlparametervalue)
@@ -533,16 +649,18 @@ public class TiniMach5LocomotionResource extends ControllerResource
 	System.out.println("TiniMach5LocomotionResource: speed set: " +getSpeed());
       }
 
-      if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.ORIENTATIONPREP]))
+      if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.TRANSLATEPREP]))
       {
 	Double temp = new Double(controlparametervalue);
-	double degrees = temp.doubleValue();
-	System.out.println("TiniMach5LocomotionResource: set orientation: " +degrees +" degrees");
-	stop();
-	if(degrees < 0)
-	  rotate(COUNTER_CLOCKWISE, (long)(-degrees));
-	else
-	  rotate(CLOCKWISE, (long)(degrees));
+	advancedistance = (long)temp.doubleValue();
+	System.out.println("TiniMach5LocomotionResource: translate: " +advancedistance+" mm");
+      }
+
+      if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]))
+      {
+	Double temp = new Double(controlparametervalue);
+	rotationdegrees = (long)temp.doubleValue();
+	System.out.println("TiniMach5LocomotionResource: rotation: " +rotationdegrees +" degrees");
       }
     }
     catch (Exception ex) {}
