@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>Motor controller agent</description>
+  <resource debug="true">org.cougaar.microedition.tini.TiniMach5LocomotionResource</resource>
+
+  <plugin> org.cougaar.microedition.tini.TiniLocomotionPlugIn</plugin>
+<!--
+  <plugin> org.cougaar.microedition.plugin.TaskReporterPlugIn</plugin>
+-->
+  <!-- Infrastructure PlugIns -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+</NodeConfiguration>
