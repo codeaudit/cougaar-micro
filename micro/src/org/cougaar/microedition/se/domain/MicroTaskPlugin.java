@@ -39,21 +39,20 @@ import org.cougaar.microedition.shared.*;
  * Infrastructure plugin for task commmunications between big Cougaar and
  * Cougaar Micro Edition.
  */
-public class MicroTaskPlugin extends SimplePlugin implements MessageListener
+public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
 {
-  private Factory f;
   private IncrementalSubscription sub;
   private IncrementalSubscription taskSub;
   private boolean debug = false;
+  MEMessageService service;
 
 
   /**
    * Subscribe to allocations to MicroAgents
    */
   protected void setupSubscriptions() {
-    f = (Factory)theLDM.getFactory("micro");
-    f.getMessageTransport().addMessageListener(this);
-    sub = (IncrementalSubscription)subscribe(new UnaryPredicate() {
+    registerMessageListener();
+    sub = (IncrementalSubscription)getBlackboardService().subscribe(new UnaryPredicate() {
       public boolean execute(Object o) {
         if (o instanceof Allocation) {
           Allocation a = (Allocation)o;
@@ -62,14 +61,14 @@ public class MicroTaskPlugin extends SimplePlugin implements MessageListener
         return false;
       }});
 
-    taskSub = (IncrementalSubscription)subscribe(new UnaryPredicate() {
+    taskSub = (IncrementalSubscription)getBlackboardService().subscribe(new UnaryPredicate() {
       public boolean execute(Object o) {
         if (o instanceof Task)
           return true;
         return false;
       }});
 
-      Vector v = getParameters();
+      Collection v = getParameters();
       debug = v.contains("debug");
       if (debug)
         System.out.println("MicroTaskPlugin: debug ON");
@@ -115,9 +114,9 @@ public class MicroTaskPlugin extends SimplePlugin implements MessageListener
     if (allo == null)
       return;
     Asset asset = allo.getAsset();
-      MicroTask mt = f.newMicroTask(task);
+      MicroTask mt = service.newMicroTask(task);
       try {
-        f.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
+        service.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
       } catch (java.io.IOException ioe)
       {
         System.err.println("IOException sending message to MicroAgent");
@@ -132,10 +131,10 @@ public class MicroTaskPlugin extends SimplePlugin implements MessageListener
     Asset asset = allo.getAsset();
       if (debug) System.out.println("MicroTaskPlugin: Allocation to MicroAgent: " + asset);
       // encode task to send to micro agent
-      MicroTask mt = f.newMicroTask(allo.getTask());
+      MicroTask mt = service.newMicroTask(allo.getTask());
 
       try {
-        f.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
+        service.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
       } catch (java.io.IOException ioe)
       {
         System.err.println("IOException sending message to MicroAgent");
@@ -150,13 +149,13 @@ public class MicroTaskPlugin extends SimplePlugin implements MessageListener
     if (msg.indexOf("<MicroTask") >= 0) {
      TaskDecoder td = new TaskDecoder();
      MicroTask mt = td.decode(msg);
-     openTransaction();
+     getBlackboardService().openTransaction();
      // lookup the original task
      Task t = lookupTask(mt.getUniqueID());
      if (debug) System.out.println("MicroTaskPlugin: Delivering task: " + t);
      if (t == null) {
        System.err.println("MicroTaskPlugin: Error finding task \""+mt.getUniqueID()+"\"");
-       closeTransaction();
+       getBlackboardService().closeTransaction();
        return true;
      }
 
@@ -164,15 +163,15 @@ public class MicroTaskPlugin extends SimplePlugin implements MessageListener
      Allocation alloc = (Allocation)t.getPlanElement();
      AllocationResult ar = decodeAllocationResult(mt);
      if ((ar == null) || (alloc == null)) {
-      closeTransaction();
+      getBlackboardService().closeTransaction();
       if (debug) System.out.println("MicroTaskPlugin: allocation not updated.  ar="+ar+": alloc="+alloc);
       return true;
      }
      ((PlanElementForAssessor)alloc).setReceivedResult(ar);
 
      if (debug) System.out.println("MicroTaskPlugin: Changing alloc: "+alloc);
-     publishChange(alloc);
-     closeTransaction();
+     getBlackboardService().publishChange(alloc);
+     getBlackboardService().closeTransaction();
     }
     return true;
   }
@@ -204,13 +203,20 @@ public class MicroTaskPlugin extends SimplePlugin implements MessageListener
    */
   private Task lookupTask(String UID) {
     Task ret = null;
-    Collection tasks_col = query(new TaskPredicate(UID));
+    Collection tasks_col = getBlackboardService().query(new TaskPredicate(UID));
     Iterator iter = tasks_col.iterator();
     if (iter.hasNext())
       ret = (Task)iter.next();
     return ret;
   }
 
+  protected void registerMessageListener() {
+    service = (MEMessageService)getBindingSite().getServiceBroker().getService(this, org.cougaar.microedition.se.domain.MEMessageService.class, null);
+    if (service == null) {
+        System.err.println("Error getting the MEMessageService: Is MicroAgentMessagePlugin initialized yet?");
+    }
+    service.getMessageTransport().addMessageListener(this);
+  }
 }
 
 /**
@@ -228,4 +234,6 @@ class TaskPredicate implements UnaryPredicate {
     }
     return false;
   }
+  
+  
 }

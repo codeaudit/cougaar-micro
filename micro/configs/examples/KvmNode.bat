@@ -16,4 +16,4 @@ set KVMCLASSES=%KVMCLASSES%;..\..\data\cougaarme.jar;.
 
 @echo on
 
-%KVMROOT%\kvm\vmWin\build\kvm_g -classpath %KVMCLASSES% org.cougaar.microedition.node.Node %1 %2 %3
+%KVMROOT%\bin\win32\kvm -heapsize 1M -classpath %KVMCLASSES% org.cougaar.microedition.node.Node %1 %2 %3

@@ -14,12 +14,12 @@
 ;;
 
 
-[MicroAgent org.cougaar.domain.planning.ldm.asset.Asset]
+[MicroAgent org.cougaar.planning.ldm.asset.Asset]
 
 slots = MicroAgentPG
 doc=Representation of a CougaarMicroEdition agent
 
-[ImageAsset org.cougaar.domain.planning.ldm.asset.Asset]
+[ImageAsset org.cougaar.planning.ldm.asset.Asset]
 
 slots = ImageAssetPG
 doc=Representation of an Asset that provides an Image

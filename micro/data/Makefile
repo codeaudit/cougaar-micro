@@ -7,10 +7,13 @@
 ## Set these three parameters to match your local installation
 ##
 
-#MIDPROOT=/home/wwright/j2me_cldc
+#CLDCROOT=/home/wwright/j2me_cldc
+#PLATFORM=linux
 #JAVAC=javac
 
-MIDPROOT=c:/dev/midp1.0.3fcs
+#CLDCROOT=c:/dev/midp1.0.3fcs
+PLATFORM=win32
+CLDCROOT=c:/dev/j2me_cldc
 JAVAC=c:/dev/jdk131/bin/javac
 
 
@@ -18,9 +21,9 @@ TOP=../src
 TMPOUT=../src
 OUTDIR=classes
 
-PREVERIFY=$(MIDPROOT)/bin/preverify
+PREVERIFY=$(CLDCROOT)/bin/$(PLATFORM)/preverify
 JAR=jar
-KVMCLASSES=$(MIDPROOT)/classes
+KVMCLASSES=$(CLDCROOT)/bin/common/api/classes
 
 SRCFILES  = $(wildcard $(TOP)/org/cougaar/microedition/asset/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/node/*.java)
@@ -53,7 +56,7 @@ cougaarme.jar: preverify
 		-C $(OUTDIR) gov
 
 PalmMain.prc: cougaarme.jar
-	java -classpath $(MIDPROOT)/tools/palm/src/palm.jar palm.database.MakePalmApp \
+	java -classpath $(CLDCROOT)/tools/palm/src/palm.jar palm.database.MakePalmApp \
 	-v -v -classpath $(OUTDIR) -bootclasspath "$(KVMCLASSES)" -networking \
 	-JARtoPRC cougaarme.jar org.cougaar.microedition.kvm.PalmMain
 

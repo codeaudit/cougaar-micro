@@ -35,13 +35,13 @@ import org.cougaar.microedition.shared.*;
  */
 class MessageTransport {
 
-  LDMServesPlugin ldm;
+  String agentName;
   short port = 1234; // default port for incoming messages
 
   Vector deadagents = new Vector();
 
-   MessageTransport(LDMServesPlugin ldm) {
-    this.ldm = ldm;
+   MessageTransport(String agentName) {
+    this.agentName = agentName;
     Thread t = new Thread(new Sender());
     t.start();
   }
@@ -90,7 +90,7 @@ class MessageTransport {
    */
   void sendTo(MicroAgent microAgent, Encodable encodable, String op)  throws IOException {
     StringBuffer buf = new StringBuffer();
-    buf.append(ldm.getClusterIdentifier().toString() + ":");
+    buf.append(agentName + ":");
     buf.append("<?xml version=\"1.0\"?>");
     buf.append("<message op=\""+op+"\">");
     encodable.encode(buf);
@@ -366,7 +366,7 @@ class MessageTransport {
       System.err.println("ERROR: Malformed message (no source)" + msg);
       return "";
     }
-    return msg.substring(0, msg.indexOf(":"));;
+    return msg.substring(0, msg.indexOf(":"));
   }
 
   /**
