@@ -17,7 +17,11 @@ import java.util.*;
  */
 public class MicroTask implements Encodable {
 
-  public MicroTask() {
+  public MicroTask() {}
+
+  public MicroTask(String source) {
+    long time = System.currentTimeMillis();
+    setUniqueID( source + "/" + new Long(time).toString() );
   }
   private String verb;
   private java.util.Vector prepositionalPhrases;
