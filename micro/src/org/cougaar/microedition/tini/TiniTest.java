@@ -16,9 +16,11 @@ import com.ibutton.container.*;
 /**
  * create a Tini Thermometer.
  */
-public class TiniTest extends TesterResource {
+public class TiniTest extends ResourceAdapter {
 
   static String[] Units = { "1", "-1", "" };
+
+  String units = "";
 
   public TiniTest() {}
 
@@ -34,6 +36,8 @@ public class TiniTest extends TesterResource {
       throw new IllegalArgumentException("bad units: " + u + "; using " + Units[0]);
     units = u;
   }
+
+  public String getUnits() { return units; }
 
   public long getValue() {
     double dval = (double)-999.999;
