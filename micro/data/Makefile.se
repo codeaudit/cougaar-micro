@@ -1,0 +1,59 @@
+#
+# Makefile for the CougaarSE -- CougaarME interface classes.
+#
+# Depends on GNU Make.  Works for linux or Win2k.
+#
+
+##
+## Set these parameters to match your local installation
+##
+PATHSEP=;# Windows
+#PATHSEP=:# UNIX
+
+JAVAC=javac
+
+
+TOP=../src
+TMPOUT=../src
+OUTDIR=SEclasses
+
+JAR=jar
+
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/se/domain/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/se/robot/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/se/test/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/se/ugs/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/tinyxml/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/shared/tinyxml/util/*.java)
+
+OBJFILES = $(patsubst %.java,%.class,$(SRCFILES))
+
+
+COUGAARJARS := "$(COUGAAR_INSTALL_PATH)/lib/core.jar$(PATHSEP)$(COUGAAR_INSTALL_PATH)/lib/planserver.jar$(PATHSEP)$(COUGAAR_INSTALL_PATH)/lib/build.jar$(PATHSEP)$(COUGAAR_INSTALL_PATH)/lib/glm.jar$(PATHSEP)$(COUGAAR_INSTALL_PATH)/lib/util.jar$(PATHSEP)$(COUGAAR_INSTALL_PATH)/sys/jchart451K.jar$(PATHSEP)$(COUGAAR_INSTALL_PATH)/sys/xerces.jar"
+
+
+
+all: assets compile cougaarmedomain.jar
+
+assets: 
+	java -classpath $(COUGAARJARS) org.cougaar.tools.build.AssetWriter \
+		-Porg.cougaar.microedition.se.domain \
+		$(TOP)/org/cougaar/microedition/se/domain/assets.def
+	java -classpath $(COUGAARJARS) org.cougaar.tools.build.PGWriter  \
+		$(TOP)/org/cougaar/microedition/se/domain/properties.def
+
+
+
+cougaarmedomain.jar: compile
+	$(JAR) -cf cougaarmedomain.jar -C $(OUTDIR) org 
+
+compile: 
+	-mkdir $(OUTDIR)
+	$(JAVAC) -sourcepath $(TOP) -d $(OUTDIR) -classpath $(COUGAARJARS) $(SRCFILES)
+
+clean: 
+	rm -rf $(OUTDIR)
+
+$(OBJFILES): $(SRCFILES)
+
