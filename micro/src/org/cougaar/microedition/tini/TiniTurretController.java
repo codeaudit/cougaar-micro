@@ -15,6 +15,7 @@ import org.cougaar.microedition.asset.*;
 import com.ibutton.adapter.*;
 import com.ibutton.container.*;
 import org.cougaar.microedition.tini.DS2406;
+import org.cougaar.microedition.shared.Constants;
 
 /**
  * Asset for turret control.
@@ -37,9 +38,9 @@ public class TiniTurretController extends TurretControllerResource implements Ru
 
   private SweepStateMachine ssm;
   private boolean SweepSMRun = false;
-  public static final int LEFT = 0;
-  public static final int MIDDLE = 1;
-  public static final int RIGHT = 2;
+  public static final int LEFT = Constants.Robot.TURRET_LEFT;
+  public static final int MIDDLE = Constants.Robot.TURRET_MIDDLE;
+  public static final int RIGHT = Constants.Robot.TURRET_RIGHT;
   private int Hemisphere = MIDDLE;
   public static final int SWEEP_WAIT = 0;
   public static final int SWEEP_CALIBRATION_REWIND = 1;
