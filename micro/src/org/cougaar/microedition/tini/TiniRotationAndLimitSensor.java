@@ -168,13 +168,14 @@ public class TiniRotationAndLimitSensor extends RotationAndLimitSensorResource {
     return 0;
   }
 
-  public void setUnits(String newUnits) {
-    return;
-  }
-
-  public void setChan(int newChannel) {
-    return;
-  }
+  public long getValueAspect() { return 0; }
+  public void setChan(int c) {}
+  public void setUnits(String u) {}
+  public void startControl() {}
+  public void stopControl()  {}
+  public boolean isUnderControl() { return false; }
+  public boolean conditionChanged() { return false; }
+  public void modifyControl(String controlparameter, String controlparametervalue) {}
 
   public boolean isLimitTriggered() {
     return LimitAlarm;

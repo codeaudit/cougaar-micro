@@ -159,11 +159,14 @@ public class TiniMotorController extends MotorControllerResource {
     return 0;
   }
 
-  public void setUnits(String newUnits) {
-    return;
-  }
+  public long getValueAspect() { return 0; }
+  public void setChan(int c) {}
+  public void setUnits(String u) {}
 
-  public void setChan(int newChannel) {
-    return;
-  }
+  public void startControl() { start(); }
+  public void stopControl()  { stop(); }
+  public boolean conditionChanged() { return false; }
+  public boolean isUnderControl() { return false; }
+  public void modifyControl(String controlparameter, String controlparametervalue) {}
+
 }

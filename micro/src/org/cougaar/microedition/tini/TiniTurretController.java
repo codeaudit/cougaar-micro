@@ -21,11 +21,13 @@ import org.cougaar.microedition.shared.Constants;
  * Asset for turret control.
  */
 
-public class TiniTurretController extends TurretControllerResource implements Runnable {
+public class TiniTurretController extends TurretControllerResource
+{
 
   public static final double TURRETRESOLUTION = 15.0;  // 1 full motor rotation = 15° turret rotation
   public static final int TURRET_RESOLUTION = 15;
   private double bearing = -360.0;  // relative to robot
+  private double oldbearing = 0; //measures change in measurement
 
   private TiniMotorController motor;
   private static final int COAST = 0;
@@ -65,8 +67,9 @@ public class TiniTurretController extends TurretControllerResource implements Ru
   static final int SUSPEND = 1;
   static final int STOP = 2;
 
-  static private boolean debugging = true;
+  static private boolean debugging = false;
   private boolean debuggingpauses = false;
+  private boolean valuechanged = true;
 
 
   // test code
@@ -99,10 +102,9 @@ public class TiniTurretController extends TurretControllerResource implements Ru
   }
 
 
-  public TiniTurretController() {
-  }
-
-  public void run() {
+  public TiniTurretController()
+  {
+    setName("TiniTurretController");
     try
     {
       if (debugging) { System.out.println("TiniTurretController ctor..."); }
@@ -133,6 +135,55 @@ public class TiniTurretController extends TurretControllerResource implements Ru
 //    }
 //    return fullyConstructed;
 //  }
+
+  public long getValue()
+  {
+    oldbearing = bearing;
+    return (long)bearing;
+  }
+
+  public long getValueAspect()
+  {
+    return Constants.Aspects.BEARING;
+  }
+
+  public void setChan(int c) {}
+  public void setUnits(String u) {}
+
+  public boolean conditionChanged()
+  {
+    return ((oldbearing != bearing));
+  }
+
+  public void startControl()
+  {
+    startScan();
+  }
+
+  public void stopControl()
+  {
+    stopScan();
+  }
+
+  public boolean isUnderControl()
+  {
+    return SweepSMRun;
+  }
+
+  public void modifyControl(String param, String val)
+  {
+    if(param.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.TURRETDIRECTIONPREP]))
+    {
+      if(val.equalsIgnoreCase(Constants.Robot.SEARCHRIGHT))
+	setHemisphere(RIGHT);
+      else if(val.equalsIgnoreCase(Constants.Robot.SEARCHLEFT))
+	setHemisphere(LEFT);
+      else
+        setHemisphere(MIDDLE);
+
+      System.out.println("TiniTurretController: hemisphere set: " +Hemisphere);
+    }
+  }
 
   synchronized public boolean startScan() {
     if (BearingThreadState != STOP || SweepThreadState != STOP) {
@@ -205,13 +256,14 @@ public class TiniTurretController extends TurretControllerResource implements Ru
     if (debugging) {System.out.println(BT.getName() + " has expired.");}
   }
 
-  public double getBearing() {
-    return bearing;
-  }
-
   public void setbearing(double val)
   {
     bearing = val;
+  }
+
+  public double getBearing()
+  {
+    return bearing;
   }
 
   private boolean lastlimit = false;
@@ -256,18 +308,6 @@ public class TiniTurretController extends TurretControllerResource implements Ru
     }
     BearingSMRun = true;
     return true;
-  }
-
-  public long getValue() {
-    return 0;
-  }
-
-  public void setUnits(String newUnits) {
-    return;
-  }
-
-  public void setChan(int newChannel) {
-    return;
   }
 
   private class SweepStateMachine implements Runnable {
