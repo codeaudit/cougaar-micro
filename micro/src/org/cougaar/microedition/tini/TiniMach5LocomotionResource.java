@@ -66,9 +66,10 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
     speed = newSpeed;
   }
 
+  static float HALF_DEGREE_TICK_CONSTANT= 2.25F; // experimentally determined
   public long []  rotate(int direction, long degrees){
     String msg = "";
-    int ticks = (int)(degrees * 2.25); // experimentally determined
+    int ticks = (int)(degrees * HALF_DEGREE_TICK_CONSTANT); // experimentally determined
     switch (direction) {
       case CLOCKWISE :
         msg = "SPR "+ticks+" -"+ticks+"\n";
@@ -82,6 +83,21 @@ public class TiniMach5LocomotionResource extends LocomotionResource {
     sendMsg(msg);
     return getWheelPositions();
   }
+
+
+
+  /**
+   * @returns heading relative to initial heading as determined by wheel positions
+   */
+  public double getWheelHeading() {
+    long []wheelPos=getWheelPositions();
+    long leftWheel=wheelPos[0]; // get left wheel ticks
+    long rightWheel=wheelPos[1]; // get right wheel ticks
+    long wheelDelta=leftWheel-rightWheel;
+    double heading=wheelDelta/(HALF_DEGREE_TICK_CONSTANT*2);
+    return heading;
+  }
+
 
   public long [] stop() {
     sendMsg("SV 0 0\n");
