@@ -19,6 +19,8 @@ import org.cougaar.microedition.ldm.*;
  */
 public abstract class VoltmeterResource extends SensorResource {
 
-  public VoltmeterResource() {}
+  public VoltmeterResource() {
+    setName("Voltage");
+  }
 
 }

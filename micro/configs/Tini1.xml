@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>Ambient Temp in Degrees Celsius</description>
-  <plugin sleeptime="1000">org.cougaar.microedition.tini.TiniTemperaturePlugIn</plugin>
-  <plugin sleeptime="2000">org.cougaar.microedition.tini.TiniLightPlugIn</plugin>
+  <resource units="Kelvin">org.cougaar.microedition.tini.TiniThermometer</resource>
+  <plugin name="Temperature1" sleeptime="2000">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
+  <plugin name="Temperature2" sleeptime="3000">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>

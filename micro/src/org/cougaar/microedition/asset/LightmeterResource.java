@@ -19,6 +19,8 @@ import org.cougaar.microedition.ldm.*;
  */
 public abstract class LightmeterResource extends SensorResource {
 
-  public LightmeterResource() {}
+  public LightmeterResource() {
+    setName("Light");
+  }
 
 }

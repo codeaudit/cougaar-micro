@@ -19,6 +19,8 @@ import org.cougaar.microedition.ldm.*;
  */
 public abstract class ThermometerResource extends SensorResource {
 
-  public ThermometerResource() {}
+  public ThermometerResource() {
+    setName("Temperature");
+  }
 
 }

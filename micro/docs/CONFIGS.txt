@@ -9,38 +9,69 @@ name of "foo.xml" existing in this directory.  To see how this is used
 and what it contains, please read on.
 
 When a MicroCougaar is started it is invoked with three arguments
-1) its arbitrary node name, which is actually a key to its role.
+1) its arbitrary node name, which can be a key to its role.
 2) the ip address of the StandardEdition Cougaar it will be dealing with (mom)
 3) the port on which mom has a ServerSocket listening.
 
 The first thing the ME does is attempt to register with the SE (mom) at
 the ip address and port given to it on the command line.  The ME passes
-its node name to mom, and mom lookes for a file named "nodename".xml in
+its node name to mom, and mom lookes for a file named "nodename.xml" in
 the configs directory.  Mom then passes this file to the ME so the ME knows
 which plugins to instantiate. Below is an example file called Tini1.xml
 used in our workshop demo scenario...
 
-
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>Ambient Temp in Degrees Celsius</description>
-  <plugin sleeptime="2000" blabbo="A">org.cougaar.microedition.tini.TiniTemperaturePlugIn</plugin>
-  <plugin sleeptime="2005" foobar = "9">org.cougaar.microedition.tini.TiniLightPlugIn</plugin>
+  <resource name="Temperature">org.cougaar.microedition.tini.TiniThermometer</resource>
+  <plugin name="Temperature1" sleeptime="2000" blabbo="A">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
+  <plugin name="Temperature2" sleeptime="3000" foobar = "9">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
 </NodeConfiguration>
 
-The xml version tag is standard xml boilerplate.  The 3 plugin lines
-below the xml comment: <!-- Infrastructure PlugIns --> are needed for
-all ME Clusters that intend to do much of anything.  The description is
-not really used by the ME, but is nice to have for comment/documentation
-purposes.  The 2 remaining application defining plugin declarations
-show the method by which parameters are passed to a plugin at runtime.
-value strings can be associated with a tag by including the quoted strings
-after an equal sign and said tags.  White space is optional on either
-side of the equal sign, however the list of parameters=value pairs
-cannot be comma separated and must be space separated.
+The xml version tag is standard xml boilerplate. The description is not 
+really used by the ME, but is nice to have for comment/documentation 
+purposes. The 3 plugin lines below the xml comment: 
+<!-- Infrastructure PlugIns --> are needed for all ME Clusters that 
+intend to do much of anything. 
+
+The line tagged <resource> describes a new type of asset unique to 
+MicroEdition Cougaars. This instantiatiates a hardware specific Temperature
+Sensor Resource. And in this case will match (via a measure plugin) all tasks
+whose PrepositionalPhrase (refered to as name in these parameter lists) 
+contains "Temperature".
+
+Shown are 2 generic Measure PlugIns. In order to perform the tasks given 
+it by the SE, they must be able to match their tasks (via Prepositional 
+Phrase) to a Temperature Sensor Resource. The "name" Temperature1 and 
+Temperature2 match the same "name" from the TempAllocatorPlugin given in the 
+Mother.ini file (see below). 
+
+These 2 generic Measure PlugIn declarations also show the method by which 
+parameters are passed to a plugin at runtime. Value strings can be 
+associated with a tag by including the quoted strings after an equal sign 
+and said tags.  White space is optional on either side of the equal sign, 
+however the list of parameters=value pairs cannot be comma separated and 
+must be space separated.
+
+Further clarity may be gleened from perusing the Mother.ini file that 
+defines the Temperature tasks performed by the ME:
+
+[ Cluster ]
+class = org.cougaar.core.cluster.ClusterImpl
+uic = MotherNode
+cloned = false
+
+[ PlugIns ]
+plugin = org.cougaar.microedition.domain.TempAllocatorPlugIn(name=Temperature1)
+plugin = org.cougaar.microedition.domain.TempAllocatorPlugIn(name=Temperature2)
+
+plugin = org.cougaar.microedition.domain.NameServerPlugIn(debug)
+plugin = org.cougaar.microedition.domain.MicroTaskPlugIn
+plugin = org.cougaar.lib.planserver.PlanServerPlugIn
+
 
 mtiberio@bbn.com
