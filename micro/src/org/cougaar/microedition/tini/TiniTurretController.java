@@ -208,6 +208,26 @@ public class TiniTurretController extends TurretControllerResource implements Ru
     return bearing;
   }
 
+  public void setbearing(double val)
+  {
+    bearing = val;
+  }
+
+  public void adjustbearing(boolean correctforrange)
+  {
+    if(MotorDirection == FORWARD)
+       bearing -= TURRETRESOLUTION;
+
+    if(MotorDirection == BACKWARD)
+       bearing += TURRETRESOLUTION;
+
+    if(correctforrange)
+    {
+      if(bearing < 0.0) bearing += 360.0;
+      if(bearing >= 360.0) bearing -= 360.0;
+    }
+  }
+
   public void setHemisphere(int SearchZone) {
     Hemisphere = SearchZone;
   }
@@ -300,7 +320,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                 IncrementCounter++;
                 if (debugging) {System.out.println("SWEEP_CALIBRATION_REWIND: Rotation Alarm.");}
                 sensors.clearRotationAlarm();
-                bearing = bearing - TURRETRESOLUTION;
+		adjustbearing(false);
                 if (debugging) {System.out.println("SWEEP_CALIBRATION_REWIND: Bearing = " + bearing);}
               }
               // safeguard the turret hardware
@@ -326,7 +346,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
             for (int j = 0; j < 2; j++) {motor.turnOneIncrement();}
             sensors.clearLimitAlarm();
             sensors.clearRotationAlarm();
-            bearing = 0.0;
+            setbearing(0.0);
             if (debugging) {System.out.println("SWEEP_CALIBRATION: Calibration Complete. Bearing = " + bearing);}
             SweepStateIndex = SWEEP_SETUP;
             break;
@@ -334,10 +354,12 @@ public class TiniTurretController extends TurretControllerResource implements Ru
           // rotate to sweep starting position
           case SWEEP_SETUP:
             System.gc();
+	    MotorDirection = BACKWARD;
+            motor.setDirection(MotorDirection);
             MotorRotations = 0;
-            if (LEFT == Hemisphere) {MotorRotations = 12;}
+            if (LEFT == Hemisphere) {MotorRotations = 0;}
             else if (MIDDLE == Hemisphere) {MotorRotations = 6;}
-            else if (RIGHT == Hemisphere) {MotorRotations = 0;}
+            else if (RIGHT == Hemisphere) {MotorRotations = 12;}
             for (int i = 0; i < MotorRotations; i++) {
               IncrementCounter = 0;
               while (!sensors.isRotationTriggered())
@@ -353,7 +375,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                 if (IncrementCounter < 1) {sensors.clearRotationAlarm();}
               }
               sensors.clearRotationAlarm();
-              bearing = bearing + TURRETRESOLUTION;
+	      adjustbearing(true);
               if (debugging) {System.out.println("SWEEP_SETUP: Bearing = " + bearing);}
               if (debuggingpauses) {pause("SWEEP_SETUP: Pause 10 sec. before continuing...");}
               if (!SweepSMRun) {
@@ -391,7 +413,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                 }
                 MotorRevs += 1;
                 sensors.clearRotationAlarm();
-                bearing = bearing + TURRETRESOLUTION;
+                adjustbearing(true);
                 // ignore false Limit Alarms
                 if (sensors.isLimitTriggered()) {
                   if (MotorRevs < (MotorRotations-1)) {
@@ -405,7 +427,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                 if (debugging) {System.out.println("SWEEP: Bearing = " + bearing);}
               }
               sensors.clearLimitAlarm();
-              bearing = 360.0;
+              setbearing(360.0);
               if (debugging) {System.out.println("SWEEP: Sweep complete.  Bearing = " + bearing);}
               SweepStateIndex = SWEEP_REWIND;
               if (debuggingpauses) {pause("SWEEP: Pause 10 sec. before beginning sweep rewind...");}
@@ -424,7 +446,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                   if (IncrementCounter < 2) {sensors.clearRotationAlarm();}
                 }
                 sensors.clearRotationAlarm();
-                bearing = bearing + TURRETRESOLUTION;
+		adjustbearing(true);
                 if (!SweepSMRun) {
                   SweepStateIndex = SWEEP_WAIT;
                   break;
@@ -471,7 +493,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                   if (IncrementCounter < 2) {sensors.clearRotationAlarm();}
                 }
                 sensors.clearRotationAlarm();
-                bearing = bearing - TURRETRESOLUTION;
+                adjustbearing(true);
                 if (!SweepSMRun) {
                   SweepStateIndex = SWEEP_WAIT;
                   break;
@@ -582,7 +604,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                 IncrementCounter++;
                 if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Rotation Alarm.");}
                 sensors.clearRotationAlarm();
-                bearing = bearing - TURRETRESOLUTION;
+                adjustbearing(true);
                 if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Bearing = " + bearing);}
               }
               // safeguard the turret hardware
@@ -603,15 +625,15 @@ public class TiniTurretController extends TurretControllerResource implements Ru
               MotorDirection = FORWARD;
               motor.setDirection(MotorDirection);
               for (int j = 0; j < 2; j++) {motor.turnOneIncrement();}
-              bearing = 0.0;
+              setbearing(0.0);
               BearingStateIndex = BEARING_FORWARD_SEEK;
             } else if (180 <= BearingOfInterest && 360 > BearingOfInterest) {
               // calibration is now complete
-              bearing = 360.0;
+              setbearing(360.0);
               BearingStateIndex = BEARING_BACKWARD_SEEK;
             } else {
               if (debugging) {System.out.println("BEARING_CALIBRATION_REWIND: Invalid Bearing.");}
-              bearing = 0.0;
+              setbearing(0.0);
               BearingStateIndex = BEARING_WAIT;
             }
             sensors.clearLimitAlarm();
@@ -638,7 +660,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                 if (IncrementCounter < 1) {sensors.clearRotationAlarm();}
               }
               sensors.clearRotationAlarm();
-              bearing = bearing + TURRETRESOLUTION;
+              adjustbearing(true);
               if (debugging) {System.out.println("BEARING_FORWARD_SEEK: Bearing = " + bearing);}
               if (debuggingpauses) {pause("BEARING_FORWARD_SEEK: Pause 10 sec. then continue...");}
               if (!BearingSMRun) {
@@ -673,7 +695,7 @@ public class TiniTurretController extends TurretControllerResource implements Ru
                 if (IncrementCounter < 2) {sensors.clearRotationAlarm();}
               }
               sensors.clearRotationAlarm();
-              bearing = bearing - TURRETRESOLUTION;
+              adjustbearing(true);
               if (!BearingSMRun) {
                 BearingStateIndex = BEARING_WAIT;
                 break;
@@ -708,5 +730,4 @@ public class TiniTurretController extends TurretControllerResource implements Ru
       System.out.println(Thread.currentThread().getName() + " PAUSE: Sleep interrupted.");
     }
   }
-
 }
