@@ -13,7 +13,7 @@
 
 PLATFORM=win32
 KVMROOT=c:/dev/j2me_cldc
-JAVAC=c:/dev/jdk122/bin/javac
+JAVAC=javac
 
 
 TOP=../src
