@@ -45,6 +45,14 @@ public class MicroAllocationResult implements Encodable {
     str.append(">");
   }
 
+
+  public String toString() {
+    StringBuffer sb=new StringBuffer();
+    encode(sb);
+    return sb.toString();
+  }
+
+
   /**
    * Is the disposition of this task OK?
    */

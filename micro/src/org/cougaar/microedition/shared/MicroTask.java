@@ -31,8 +31,9 @@ public class MicroTask implements Encodable {
     uniqueID = mt.uniqueID;
     verb = mt.verb;
     prepositionalPhrases = mt.prepositionalPhrases;
-    // (don't want to null out the allocation)?
+    // (don't want to null out the allocation)
     allocation = mt.allocation;
+    allocation.setTask(this);
   }
 
   /**
@@ -111,6 +112,15 @@ public class MicroTask implements Encodable {
     str.append(tag);
     str.append(">");
   }
+
+
+
+  public String toString() {
+    StringBuffer sb=new StringBuffer();
+    encode(sb);
+    return sb.toString();
+  }
+
 
   /**
    * Set the identifier string associated with this task.

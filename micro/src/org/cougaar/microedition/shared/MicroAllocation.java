@@ -53,6 +53,12 @@ public class MicroAllocation implements Encodable {
     str.append(">");
   }
 
+  public String toString() {
+    StringBuffer sb=new StringBuffer();
+    encode(sb);
+    return sb.toString();
+  }
+
   /**
    * Set the asset associated with this allocation.
    */
