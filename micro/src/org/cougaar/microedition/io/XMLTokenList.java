@@ -11,6 +11,7 @@
 package cougaar.microedition.io;
 
 import java.util.*;
+import cougaar.microedition.shared.*;
 import cougaar.microedition.shared.tinyxml.*;
 
 public class XMLTokenList {
@@ -19,14 +20,17 @@ public class XMLTokenList {
     String lastKey = "";
     public void elementStart(String name, Hashtable attr) throws ParseException {
       lastKey = name;
+      attrtable = attr;
     }
 
     public void charData(String charData) {
-      add(lastKey, charData);
+      NameTablePair ntp = new NameTablePair(charData, attrtable);
+      add(lastKey, ntp);
     }
   }
 
   private Hashtable table = new Hashtable();
+  public Hashtable attrtable = null;
   public XMLTokenList(String document) {
     try {
       XMLInputStream aStream = new XMLInputStream(document);
@@ -45,7 +49,7 @@ public class XMLTokenList {
 
   }
 
-  public void add(String key, String data) {
+  public void add(String key, NameTablePair data) {
     Vector v = (Vector)table.get(key);
     if (v == null) {
       v = new Vector();
@@ -63,4 +67,3 @@ public class XMLTokenList {
     return ret;
   }
 }
-
