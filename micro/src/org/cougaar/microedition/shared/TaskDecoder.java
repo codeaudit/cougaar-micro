@@ -12,6 +12,9 @@ package cougaar.microedition.shared;
 import cougaar.microedition.shared.tinyxml.*;
 import java.util.*;
 
+/**
+ * Translates an XML MicroTask into a MicroTask object
+ */
 public class TaskDecoder extends HandlerBase {
 
   MicroTask t;
@@ -59,6 +62,9 @@ public class TaskDecoder extends HandlerBase {
     else if (name.equals(MicroAllocationResult.tag)) {
       getAllocationResultAttrs(attr);
     }
+    else if (name.equals(MicroAllocationResult.aspectTag)) {
+      getAllocationResultAspects(attr);
+    }
     else if (name.equals(MicroPrepositionalPhrase.tag)) {
       getPrepositionalPhraseAttrs(attr);
     }
@@ -76,6 +82,30 @@ public class TaskDecoder extends HandlerBase {
   private void getAllocationResultAttrs(Hashtable attr) {
     if (t.getAllocation().getReportedResult() == null)
       t.getAllocation().setReportedResult(new MicroAllocationResult());
+
+    MicroAllocationResult mar = t.getAllocation().getReportedResult();
+    String str;
+
+    str = (String)attr.get("success");
+    mar.setSuccess(Boolean.valueOf(str).booleanValue());
+
+    str = (String)attr.get("risk");
+    mar.setRisk(Double.valueOf(str).doubleValue());
+
+    str = (String)attr.get("confidenceRating");
+    mar.setConfidenceRating(Double.valueOf(str).doubleValue());
+  }
+
+  private void getAllocationResultAspects(Hashtable attr) {
+    MicroAllocationResult mar = t.getAllocation().getReportedResult();
+    String str;
+
+    str = (String)attr.get("aspect");
+    int aspect = Integer.valueOf(str).intValue();
+    str = (String)attr.get("value");
+    double value = Double.valueOf(str).doubleValue();
+
+    mar.addAspectValuePair(aspect, value);
   }
 
   private void getPrepositionalPhraseAttrs(Hashtable attr) {
@@ -87,12 +117,19 @@ public class TaskDecoder extends HandlerBase {
     }
 
   }
-  
+
   public static void main(String [] args) {
     MicroTask t = new MicroTask();
     t.setVerb("AVerb");
     MicroAllocation ma = new MicroAllocation();
     MicroAllocationResult mar = new MicroAllocationResult();
+    mar.setRisk(1.01);
+    mar.setConfidenceRating(2.02);
+    mar.setSuccess(true);
+    int [] aspects = {1, 2, 3, 4};
+    double [] values = {1.1, 2.2, 3.3, 4.4};
+    mar.setAspects(aspects);
+    mar.setValues(values);
     ma.setReportedResult(mar);
     t.setAllocation(ma);
 
