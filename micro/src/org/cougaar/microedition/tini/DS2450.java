@@ -26,17 +26,159 @@ public class DS2450
 
   static int      madvsize;
   static int      timeout;
-  boolean debugging = true;
+  boolean debugging = false;
 
-  public DS2450()
-  {
+  /**
+   * Create an object for reading and setting the DS2450 device at
+   * the given address.
+   * @param name An arbitrary name for the device
+   * @param address The address of the device
+   */
+  public DS2450(String name, String address) {
+    timeout=20;
+    try {
+      DSPortAdapter   pa = new TINIExternalAdapter();
+
+          byte addr[] = Address.toByteArray(address);
+          try
+          {
+            madv.addElement(new MyADContainer(pa, addr, name));
+          }
+          catch (OneWireIOException e)
+          {
+            System.out.println("Caught OneWireIOException: "+e);
+          }
+
+          madvsize = madv.size();
+
+          initDevices();
+
+
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      System.out.println("Caught ex: "+ex);
+    }
+  }
+
+  /**
+   * Create objects for reading and setting the attached DS2450 devices.
+   */
+    public DS2450() {
     timeout = 20;
     // initialization
     if (debugging) System.out.println("in DS2450()");
+
+    DSPortAdapter   adapter = new TINIExternalAdapter();
+    try {
+      adapter.beginExclusive(true);
+      if (debugging) System.out.println("in DS2450() in exclusive region");
+      adapter.targetFamily(0x20);
+      iButtonContainer aD;
+
+      if (debugging) System.out.println("in DS2450() b4 for");
+      for (aD = adapter.getFirstiButton(); aD!=null;
+           aD = adapter.getNextiButton() ) {
+        if (debugging) System.out.println("in DS2450() in for");
+        byte                addr[] =  aD.getAddress();
+        String              sn = aD.getAddressAsString();
+        if (debugging) System.out.println("in DS2450() for addr_as_str: "+sn+"-- 1-WB");
+        madv.addElement(new MyADContainer(adapter, addr, sn));
+      }
+      if (debugging) System.out.println("in DS2450() out of for");
+
+
+    } catch (Exception e) {
+      System.out.println("Exception: " + e);
+    } catch (Throwable e) {
+      System.out.println("Throwable: " + e);
+    } finally {
+      adapter.endExclusive();
+      if (debugging) System.out.println("in DS2450() out of exclusive region");
+    }
+
+    madvsize = madv.size();
+
+    initDevices();
+
+    if (debugging) System.out.println("in DS2450() at end and madvsize is "+madvsize);
+  }
+
+  /**
+   * Initialize the devices which have been added to the container.
+   */
+  private void initDevices() {
+    if (madvsize > 0)
+      {
+        int     i = 0;
+        boolean level = true;
+        byte[]  adstate;
+        double[] advoltages;
+        // default A/D setup
+        double adrange = 5.12;       // volts
+        double adresolution = 0.01;  // volts
+        int alarmtype = 1;           // 1 = high
+        double adalarmvalue = 3.0;   // volts
+        boolean alarmenable = false; // disabled
+        boolean outputenable = true;  // enabled
+        boolean outputstate = false;    // false = logic 0
+
+        for (Enumeration e = madv.elements(); e.hasMoreElements(); )
+        {
+          MyADContainer madc = (MyADContainer)e.nextElement();
+          try
+          {
+             if (debugging) System.out.println("in DS2450() try madc "+madc);
+            synchronized (adlock)
+            {
+             if (debugging) System.out.println("in DS2450() sync  ");
+              adstate = madc.readDevice();
+             if (debugging) System.out.println("in DS2450() sync adstat "+adstate);
+              for (int adchan=0; adchan < madc.getNumberADChannels(); adchan++)
+              {
+                 madc.setADRange(adchan, adrange, adstate);
+                 madc.setADResolution(adchan, adresolution, adstate);
+                 madc.setADAlarm(adchan, alarmtype, adalarmvalue, adstate);
+                 madc.setADAlarmEnable(adchan, alarmtype, alarmenable, adstate);
+                 madc.setOutput(adchan, outputenable, outputstate, adstate);
+              }
+
+              madc.writeDevice(adstate);
+            }
+            i++;
+          }
+          catch (Throwable t)
+          {
+      System.out.println("Throwabel: " + t);
+            i += 1;
+          }
+        }
+      }
+      else
+      {
+        System.out.println("in DS2450() -- No A/D Converters");
+      }
+
+  }
+
+  /**
+   * Create objects for reading and setting the attached DS2450 devices
+   * which are identified within the given file (or in "DS2450.txt" if the
+   * given file is null).
+   */
+  public DS2450(File addressFile)
+  {
+    timeout = 20;
+    // initialization
+    if (debugging) System.out.println("in DS2450(File)");
     try
     {
       DSPortAdapter   pa = new TINIExternalAdapter();
-      File            f = new File("DS2450.txt");
+
+      //File            f = new File("DS2450.txt");
+      File f=addressFile;
+      if (f==null) {
+        f = new File("DS2450.txt");
+      }
       if (f.exists())
       {
         if (debugging) System.out.println("in DS2450() and f.exists()");
@@ -64,6 +206,7 @@ public class DS2450
           }
           catch (OneWireIOException e)
           {
+      System.out.println("Exception: " + e);
             System.out.println(e);
           }
         }
@@ -77,11 +220,17 @@ public class DS2450
           newDS2450 = new File("newDS2450.txt");
           BufferedWriter bw = new BufferedWriter(new FileWriter(newDS2450));
           pa.targetFamily(0x20);
+
+          Enumeration e;
               if (debugging) System.out.println("in DS2450() b4 for -- 1-WB");
-          for (Enumeration e = pa.getAlliButtons();e.hasMoreElements(); )
+          e= pa.getAlliButtons();
+              if (debugging) System.out.println("in DS2450() af e= pa.getAlliButtons() -- 1-WB");
+          while(e.hasMoreElements() )
+ //         for (Enumeration e = pa.getAlliButtons();e.hasMoreElements(); )
           {
               if (debugging) System.out.println("in DS2450() in for -- 1-WB");
             iButtonContainer ibc = (iButtonContainer)e.nextElement();
+
             byte                addr[] = ibc.getAddress();
             String              sn = ibc.getAddressAsString();
               if (debugging) System.out.println("in DS2450() for addr_as_str: "+sn+"-- 1-WB");
@@ -95,9 +244,11 @@ public class DS2450
               if (debugging) System.out.println("in DS2450() af for 2-- 1-WB");
         }
         catch (IOException e) {
+      System.out.println("Exception: " + e);
           e.printStackTrace();
         }
         catch (OneWireIOException e) {
+      System.out.println("Exception: " + e);
           System.out.println();
         }
       }
@@ -146,6 +297,7 @@ public class DS2450
           }
           catch (Throwable t)
           {
+      System.out.println("Throwabkle: " + t);
             i += 1;
           }
         }
@@ -433,7 +585,7 @@ public class DS2450
               if (madc.hasADAlarmed(chancount, alarmtype, adstate))
               {
                 triggered[chancount] = true;
-                System.out.println("A/D ALARM event has occurred on channel " + chancount + ".");
+                if (debugging) System.out.println("A/D ALARM event has occurred on channel " + chancount + ".");
               }
             }
             madc.writeDevice(adstate);     // clear alarm flags for all channels
@@ -564,27 +716,27 @@ public class DS2450
           synchronized (adlock)
           {
             byte[] adstate = madc.readDevice();
-            System.out.println("\n" + madc.getADName());
-            System.out.println("Number of A/D Channels supported: " + madc.getNumberADChannels() + ".");
+            if (debugging) System.out.println("\n" + madc.getADName());
+            if (debugging) System.out.println("Number of A/D Channels supported: " + madc.getNumberADChannels() + ".");
             for (int adchan=0; adchan < madc.getNumberADChannels(); adchan++)
             {
-              System.out.println ("Channel " + adchan + " status");
+              if (debugging) System.out.println ("Channel " + adchan + " status");
               double adrangeset = madc.getADRange(adchan, adstate);
-              System.out.println("A/D range set at: 0 to " + adrangeset + " volts.");
+              if (debugging) System.out.println("A/D range set at: 0 to " + adrangeset + " volts.");
               double adresolutionset = madc.getADResolution(adchan, adstate);
-              System.out.println("A/D resolution set at: " + adresolutionset + " volts.");
+              if (debugging) System.out.println("A/D resolution set at: " + adresolutionset + " volts.");
               int highalarm = 1;
               int lowalarm = 0;
               double alarmvoltageset = madc.getADAlarm(adchan, highalarm, adstate);
-              System.out.println("Alarm trigger voltage set at: " + alarmvoltageset + " volts.");
+              if (debugging) System.out.println("Alarm trigger voltage set at: " + alarmvoltageset + " volts.");
               boolean alarmenabled = madc.getADAlarmEnable(adchan, highalarm, adstate);
-              System.out.println("Alarm enabled: " + alarmenabled + ".");
+              if (debugging) System.out.println("Alarm enabled: " + alarmenabled + ".");
               boolean outputenabled = madc.isOutputEnabled(adchan, adstate);
-              System.out.println("Output enabled: " + outputenabled + ".");
+              if (debugging) System.out.println("Output enabled: " + outputenabled + ".");
               boolean outputlogiclevel = madc.getOutputState(adchan, adstate);
-              System.out.println("Output logic level (true = high/false = low): " + outputlogiclevel + ".");
+              if (debugging) System.out.println("Output logic level (true = high/false = low): " + outputlogiclevel + ".");
               boolean powerexternal = madc.isPowerExternal(adstate);
-              System.out.println("Power set to external: " + powerexternal + ".");
+              if (debugging) System.out.println("Power set to external: " + powerexternal + ".");
 
             }
           }
@@ -614,14 +766,14 @@ public class DS2450
           synchronized (adlock)
           {
             byte[] adstate = madc.readDevice();
-            System.out.println("\n" + madc.getADName());
-            System.out.println("Number of A/D Channels supported: " + madc.getNumberADChannels() + ".");
+            if (debugging) System.out.println("\n" + madc.getADName());
+            if (debugging) System.out.println("Number of A/D Channels supported: " + madc.getNumberADChannels() + ".");
 
-              System.out.println ("Channel " + adchan + " status");
+              if (debugging) System.out.println ("Channel " + adchan + " status");
               boolean outputenabled = madc.isOutputEnabled(adchan, adstate);
-              System.out.println("Output enabled: " + outputenabled + ".");
+              if (debugging) System.out.println("Output enabled: " + outputenabled + ".");
               outputlogiclevel = madc.getOutputState(adchan, adstate);
-              System.out.println("Output logic level (true = high/false = low): " + outputlogiclevel + ".");
+              if (debugging) System.out.println("Output logic level (true = high/false = low): " + outputlogiclevel + ".");
 
 
           }
@@ -680,4 +832,241 @@ public class DS2450
       }
     }
   }
+
+  /**
+   * Test driver.
+   */
+  public static void main(String[] args)
+  {
+    double adresult = 0.0;
+    boolean alarmresult = false;
+    boolean debugging = true;
+
+    try
+    {
+      int adindex = 0;
+      int adchan = 0;
+      double adrange = 5.12;
+      double adresolution = 0.01;
+      int alarmtype = 1;
+      double alarmtrigger = 3.0;
+      boolean alarmenable = true;
+      boolean adoutputenable = true;
+      boolean adoutputstate = true;  // true = not conducting to ground, logic 1
+if (debugging) System.out.println("RICH:  WTF?");
+
+      if (debugging) System.out.println("Starting....");
+      DS2450 ADConverters = new DS2450();
+      if (debugging) System.out.println("\nA/Ds Initialized.");
+      if (debugging) {
+        adindex = 0;
+        ADConverters.readStatus(adindex);
+      }
+
+      adindex = 0;
+      adchan = 0;
+      // turn off output enable feature, then set up for a/d
+      adoutputenable = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      adoutputenable = true;
+      ADConverters.configureAD(adindex, adchan, adrange, adresolution);
+      ADConverters.configureAlarm(adindex, adchan, alarmtype, alarmtrigger, alarmenable);
+      if (debugging) System.out.println("\n" + ADConverters.readDeviceName(adindex) + ", A/D " + adindex + ", channel " + adchan + " reconfigured:");
+
+      adindex = 0;
+      adchan = 1;
+      // set the output high
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + ", channel " + adchan + " reconfigured:");
+
+
+      adindex = 0;
+      adchan = 2;
+      // turn off output enable feature, then set up for a/d
+      adoutputenable = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      adoutputenable = true;
+      ADConverters.configureAD(adindex, adchan, adrange, adresolution);
+      ADConverters.configureAlarm(adindex, adchan, alarmtype, alarmtrigger, alarmenable);
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + ", channel " + adchan + " reconfigured:");
+
+      adindex = 0;
+      adchan = 3;
+      // set the output high
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + ", channel " + adchan + " reconfigured:");
+
+      if (debugging) {
+        adindex = 0;
+        ADConverters.readStatus(adindex);
+      }
+      // do an a/d
+      adindex = 0;
+      adchan = 0;
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+      adindex = 0;
+      adchan = 2;
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+//      pause();
+
+      // clear one F/F
+      adindex = 0;
+      adchan = 1;
+      adoutputstate = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      adoutputstate = true;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " F/F cleared.");
+//      pause();
+      if (debugging) {
+        adindex = 0;
+        ADConverters.readStatus(adindex);
+      }
+      // do an a/d
+      adindex = 0;
+      adchan = 0;
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+      adindex = 0;
+      adchan = 2;
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+
+
+      // clear one F/F
+      adindex = 0;
+      adchan = 3;
+      adoutputstate = false;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      adoutputstate = true;
+      ADConverters.configureADOutput(adindex, adchan, adoutputenable, adoutputstate);
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " F/F cleared.");
+      if (debugging) {
+        adindex = 0;
+        ADConverters.readStatus(adindex);
+      }
+      // do an a/d
+      adindex = 0;
+      adchan = 0;
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+      adindex = 0;
+      adchan = 2;
+      if (debugging) System.out.println(ADConverters.readDeviceName(adindex) + ", A/D " + adindex + " channel " + adchan + " conversion result = : " + ADConverters.readVoltage(adindex,adchan) + " volts.");
+      adindex = 0;
+
+
+      /*
+      // Perform A/D with no regard for alarms
+      adindex = 0;
+      adchan = 0;
+      for (int k=0;k<10;k++) {
+        adresult = ADConverters.readVoltage(adindex,adchan);
+        if (debugging) System.out.println("A/D result = : " + adresult + " volts.");
+        int junk = 0;
+        for (int kk = 0; kk<5000; kk++) {
+          junk = junk + 1;
+        }
+      }
+      */
+
+
+      /*
+      // Perform A/D and check individual channel alarm after every conversion
+      adindex = 0;
+      adchan = 0;
+      int junk = 0;
+      for (int k=0;k<10;k++) {
+        adresult = ADConverters.readVoltage(adindex,adchan);
+        if (debugging) System.out.println("A/D result = : " + adresult + " volts.");
+
+        alarmresult = ADConverters.readAlarm(adindex, adchan, alarmtype);
+        if (debugging) System.out.println("Channel " + adchan + " alarm check result = : " + alarmresult + ".");
+        // delay
+        junk = 0;
+        for (int jj = 0; jj<5000; jj++) {
+          junk = junk + 1;
+        }
+      }
+      */
+
+      // Using one DS2450 A/D device
+      // Perform A/D and check channel alarms after every conversion
+      int junk = 0;
+      int adchanA = 0;
+      int adchanB = 2;
+      int adresetA = 1;
+      int adresetB = 3;
+      int RotationAndLimit = 0;
+      double adresultA = 0.0;
+      double adresultB = 0.0;
+      boolean allalarmsresult[] = {false, false, false, false};
+
+
+
+      if (debugging) System.out.println("\n\nAbout to start continuous operation");
+      if (debugging) {
+        ADConverters.readStatus(RotationAndLimit);
+/*
+        if (debugging) System.out.println("Pause...\n\n");
+        int jjunk = 0;
+        for (int jjj = 0; jjj<250000; jjj++) {
+          jjunk = jjunk + 1;
+        }
+*/
+      }
+
+
+//      for (int i = 0; i<6; i++) {
+      for (int i = 0; i<2; i++) {
+        // do a/d
+        adresultA = ADConverters.readVoltage(RotationAndLimit,adchanA);
+        adresultB = ADConverters.readVoltage(RotationAndLimit,adchanB);
+        if (debugging) System.out.println(ADConverters.readDeviceName(RotationAndLimit) + ", Rotation A/D " + RotationAndLimit + " channel " + adchanA + " result = : " + adresultA + " volts.");
+        if (debugging) System.out.println(ADConverters.readDeviceName(RotationAndLimit) + ", Limit A/D " + RotationAndLimit + " channel " + adchanB + " result = : " + adresultB + " volts.");
+        // check alarms
+        allalarmsresult = ADConverters.readAllAlarms(RotationAndLimit, alarmtype);
+        if (debugging) System.out.println(ADConverters.readDeviceName(RotationAndLimit) + " alarms initial check result = : \n" + allalarmsresult[0] + ", "
+             + allalarmsresult[1] + ", " + allalarmsresult[2] + ", " + allalarmsresult[3] + ".");
+        // if alarm, notify user and reset F/F
+        if (allalarmsresult[adchanA]) {
+          if (debugging) System.out.println(ADConverters.readDeviceName(RotationAndLimit) + " Rotation alarm event occured on channel " + adchanA + ".");
+          if (debugging) System.out.println("About to clear Channel " + adchanA);
+          //pause();
+          // clear the associated F/F
+          adoutputstate = false;
+          ADConverters.configureADOutput(RotationAndLimit, adresetA, adoutputenable, adoutputstate);
+          adoutputstate = true;
+          ADConverters.configureADOutput(RotationAndLimit, adresetA, adoutputenable, adoutputstate);
+          if (debugging) System.out.println(ADConverters.readDeviceName(RotationAndLimit) + ", A/D " + RotationAndLimit + " channel " + adchanA + " F/F cleared.");
+          //pause();
+       }
+        if (allalarmsresult[adchanB]) {
+          if (debugging) System.out.println(ADConverters.readDeviceName(RotationAndLimit) + " Limit alarm event occured on channel " + adchanB + ".");
+          if (debugging) System.out.println("About to clear Channel " + adchanB);
+          //pause();
+          // clear the associated F/F
+          adoutputstate = false;
+          ADConverters.configureADOutput(RotationAndLimit, adresetB, adoutputenable, adoutputstate);
+          adoutputstate = true;
+          ADConverters.configureADOutput(RotationAndLimit, adresetB, adoutputenable, adoutputstate);
+          if (debugging) System.out.println(ADConverters.readDeviceName(RotationAndLimit) + ", A/D " + RotationAndLimit + " channel " + adchanB + " F/F cleared.");
+          //pause();
+        }
+
+
+        if (debugging) {
+          ADConverters.readStatus(RotationAndLimit);
+          System.out.println("Pass # " + i + " complete...");
+        }
+
+      }
+
+
+      if (debugging) System.out.println("\nDone...");
+    }
+    catch (Throwable t)
+    {
+      System.out.println("Exception: " + t);
+    }
+  }
+
+
 }
