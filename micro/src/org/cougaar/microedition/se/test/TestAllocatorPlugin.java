@@ -28,18 +28,21 @@ import org.cougaar.core.plugin.*;
 import org.cougaar.core.util.*;
 import org.cougaar.util.*;
 import org.cougaar.core.blackboard.*;
+import org.cougaar.core.service.*;
 import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.microedition.se.domain.*;
 
 /**
  * A test Plugin to test interoperatbility with Cougaar ME.
- * It asks all known micro agents for the temperature.
  */
 public class TestAllocatorPlugin extends SimplePlugin {
 
   IncrementalSubscription assetSub, allocSub;
-  String Name = "Test";
+  String verbName = "Test";
 
+  /** Holds value of property loggingService. */
+  private LoggingService loggingService;
+  
   /**
    * Subscribe to MicroAgents and my own allocations.
    */
@@ -54,8 +57,8 @@ public class TestAllocatorPlugin extends SimplePlugin {
       int indx = param.indexOf("=");
       if (indx < 0)
         continue;
-      Name = (param.substring(indx+1)).trim();
-      System.out.println("Name: " + Name);
+      verbName = (param.substring(indx+1)).trim();
+      loggingService.shout("verbName: " + verbName);
     }
 
     assetSub = (IncrementalSubscription)subscribe(new UnaryPredicate() {
@@ -66,8 +69,7 @@ public class TestAllocatorPlugin extends SimplePlugin {
       public boolean execute(Object o) {
         if (o instanceof Allocation) {
           Allocation a = (Allocation)o;
-          return a.getTask().getVerb().equals("Test") &&
-                (a.getTask().getPrepositionalPhrase(Name) != null);
+          return a.getTask().getVerb().equals(verbName);
         }
         return false;
       }});
@@ -85,6 +87,7 @@ public class TestAllocatorPlugin extends SimplePlugin {
     Enumeration micros = assetSub.getAddedList();
     while (micros.hasMoreElements()) {
       MicroAgent micro = (MicroAgent)micros.nextElement();
+      loggingService.shout("Got a new micro asset: "+micro);
       Task t = makeTask();
       publishAdd(t);
       Allocation allo = makeAllocation(t, micro);
@@ -98,8 +101,12 @@ public class TestAllocatorPlugin extends SimplePlugin {
     while (allos.hasMoreElements()) {
       Allocation alloc = (Allocation)allos.nextElement();
       AllocationResult ar = alloc.getReceivedResult();
-      double tmp = ar.getValue(0);
-      System.out.println(Name+" is: "+tmp);
+      int [] aspectTypes = ar.getAspectTypes();
+      for (int i=0; i<aspectTypes.length; i++) {
+        double tmp = ar.getValue(aspectTypes[i]);
+        loggingService.shout(verbName+" aspect "+aspectTypes[i]+" is: "+tmp);
+      }
+/*
       Task t = alloc.getTask();
       PrepositionalPhrase p = t.getPrepositionalPhrase(Name);
       String ido = p.getIndirectObject().toString();
@@ -121,17 +128,19 @@ public class TestAllocatorPlugin extends SimplePlugin {
       }
       ((NewTask)t).setPrepositionalPhrase(p);
       publishChange(t);
+ */
     }
   }
 
   /**
-   * Gin-up an new temperature task.
+   * Gin-up an new task.
    */
   private Task makeTask() {
     NewTask t = theLDMF.newTask();
     t.setPlan(theLDMF.getRealityPlan());
-    t.setVerb(Verb.getVerb("Test"));
+    t.setVerb(Verb.getVerb(verbName));
 
+/*
     Vector prepositions = new Vector();
 
     NewPrepositionalPhrase npp = theLDMF.newPrepositionalPhrase();
@@ -139,6 +148,7 @@ public class TestAllocatorPlugin extends SimplePlugin {
     npp.setIndirectObject("1");
     prepositions.add(npp);
     t.setPrepositionalPhrases(prepositions.elements());
+*/
 
     return t;
   }
@@ -152,4 +162,19 @@ public class TestAllocatorPlugin extends SimplePlugin {
       theLDMF.createAllocation(t.getPlan(), t, micro, estAR, Role.ASSIGNED);
     return allocation;
   }
+  
+  /** Getter for property loggingService.
+   * @return Value of property loggingService.
+   */
+  public LoggingService getLoggingService() {
+      return loggingService;
+  }
+  
+  /** Setter for property loggingService.
+   * @param loggingService New value of property loggingService.
+   */
+  public void setLoggingService(LoggingService loggingService) {
+      this.loggingService = loggingService;
+  }
+  
 }

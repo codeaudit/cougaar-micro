@@ -172,6 +172,7 @@ public class Node {
         Class clazz = Class.forName(classname);
         Resource r = (Resource)clazz.newInstance();
         r.setParameters(ntp.table);
+        r.setDistributor(d);
         d.openTransaction(Thread.currentThread());
         d.publishAdd(r);
         d.closeTransaction(Thread.currentThread());

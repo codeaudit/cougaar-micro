@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>Example CougaarME Node</description>
+  <port>0</port>
+  <resource debug="false" pinBank="E" pinNumber="0">org.cougaar.microedition.saje.SajeInputGpioPinResource</resource>
+  <resource debug="false" pinBank="E" pinNumber="1">org.cougaar.microedition.saje.SajeInputGpioPinResource</resource>
+  <plugin sleeptime="0" debug="false" resource="SajeInputGpioResource-GPIOE_BIT0" command="ReportMotion">org.cougaar.microedition.plugin.ControlPlugin</plugin>
+  <plugin sleeptime="0" debug="false" resource="SajeInputGpioResource-GPIOE_BIT1" command="ReportMotion2">org.cougaar.microedition.plugin.ControlPlugin</plugin>
+  <!-- -->
+  <!-- Infrastructure Plugins -->
+  <!-- (These are only needed when communicating with other nodes) -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
+</NodeConfiguration>

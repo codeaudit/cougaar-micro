@@ -81,13 +81,17 @@ public class PacketReader {
 
         while (true) {
           try {
+            SocketME socketme = null;
             if (ss != null) {
-	      SocketME socketme = ss.accept();
+              //System.err.println("PacketReader --> enter accept  ***");
+	      socketme = ss.accept();
+              //System.err.println("PacketReader --> finish accept ---");
               bufr = socketme.getInputStream();
             }
             msg = readMessage(bufr);
             if (ss != null) {
               bufr.close();
+              socketme.close();
             }
             deliverMessage(msg);
           } catch (Exception ex) {

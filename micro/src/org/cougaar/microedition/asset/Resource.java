@@ -30,4 +30,15 @@ public interface Resource extends Asset {
 
   public void setParameters(Hashtable t);
   public Hashtable getParameters();
+  
+  /** Getter for property distributor.
+   * @return Value of property distributor.
+   */
+  public org.cougaar.microedition.ldm.Distributor getDistributor();
+  
+  /** Setter for property distributor.
+   * @param distributor New value of property distributor.
+   */
+  public void setDistributor(org.cougaar.microedition.ldm.Distributor distributor);
+  
 }

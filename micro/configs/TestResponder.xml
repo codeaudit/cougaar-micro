@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<NodeConfiguration>
-  <description>testResponse among other things</description>
-  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugin</plugin>
-  <plugin>org.cougaar.microedition.plugin.MessageSendPlugin</plugin>
-  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugin</plugin>
-  <plugin>org.cougaar.microedition.plugin.test.TestResponderPlugin</plugin>
-</NodeConfiguration>

@@ -30,6 +30,7 @@ import org.cougaar.util.*;
 import org.cougaar.planning.ldm.asset.*;
 import org.cougaar.core.blackboard.*;
 import org.cougaar.core.service.*;
+import org.cougaar.core.component.*;
 import org.cougaar.core.domain.*;
 import org.cougaar.microedition.shared.tinyxml.*;
 import org.cougaar.microedition.shared.*;
@@ -38,27 +39,18 @@ import org.cougaar.microedition.shared.*;
  * Cougaar Plugin used to manage micro Cougaar assets.  Turn on debug output
  * by adding a parameter "debug" in the .ini file.
  */
-public class NameServerPlugin extends ComponentPlugin implements MessageListener {
+public class NameServerPlugin extends ComponentPlugin implements MessageListener, ServiceAvailableListener {
   private MEMessageService service;
   private RootFactory theLDMF;
   private short lastPort = 7000;
 
   private IncrementalSubscription microAgents;
 
-  private boolean debugging = false;
-
   protected void setupSubscriptions() {
 
+    getBindingSite().getServiceBroker().addServiceListener(this);
     Collection parameters = getParameters();
-    debugging = parameters.contains("debug");
-    if (debugging) System.out.println("NameServerPlugin: Debug on.");
-
-    service = (MEMessageService)getBindingSite().getServiceBroker().getService(this, MEMessageService.class, null);
-    if (service == null) {
-        System.err.println("Error getting the MEMessageService: Is MicroAgentMessagePlugin initialized yet?");
-    }
-    
-    service.getMessageTransport().addMessageListener(this);
+    loggingService.debug("SetupSubscriptions");
 
     theLDMF = getDomainService().getFactory();
     theLDMF.addPropertyGroupFactory(new org.cougaar.microedition.se.domain.PropertyGroupFactory());
@@ -125,31 +117,37 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
         if (rr.getPort() < 0)  // just assign a port
           rr.setPort(lastPort++);
         else if (rr.getPort() == 0) { // send&recv messages on this socket
-          service.getMessageTransport().addPointToPointClient(clientin, clientout, rr.getName());
+          if (mEMessageService != null) {
+            mEMessageService.getMessageTransport().addPointToPointClient(clientin, clientout, rr.getName());
+          } else {
+            loggingService.error("MessageService not initialized -- client dropped");
+          }
+        
           ret = false; // keep the socket open
         }
 
-        boolean reReg = false;
         Collection micros = microAgents.getCollection();
         Iterator iter = micros.iterator();
         while (iter.hasNext()) {
-          MicroAgent mc = (MicroAgent)iter.next();
-          MicroAgentPG mpg = mc.getMicroAgentPG();
-System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getName());
-          if (
-              srcAddress.equals(mpg.getIpAddress()) &&
-              rm.getName().equals(mpg.getName())
-             ) {
-            service.getMessageTransport().dequeue(mc);
-//            rr.setPort(mpg.getPort());
-            getBlackboardService().openTransaction();
-            System.out.println("NameServerPlugin: Removing a MicroAgent: "+mc);
-            getBlackboardService().publishRemove(mc);
-            getBlackboardService().closeTransaction();
-
-            reReg = true;
-            break;
-          }
+            MicroAgent mc = (MicroAgent)iter.next();
+            MicroAgentPG mpg = mc.getMicroAgentPG();
+            if (srcAddress.equals(mpg.getIpAddress()) &&
+                rm.getName().equals(mpg.getName())) {
+                if (mEMessageService != null) {
+                    mEMessageService.getMessageTransport().dequeue(mc);
+                    //            rr.setPort(mpg.getPort());
+                    getBlackboardService().openTransaction();
+                    if (loggingService.isInfoEnabled()){
+                        loggingService.info("NameServerPlugin: Removing a MicroAgent: "+mc);
+                    }
+                    getBlackboardService().publishRemove(mc);
+                    getBlackboardService().closeTransaction();
+                } else {
+                    loggingService.error("MessageService not initialized -- message dropped");
+                }
+                
+                break;
+            }
         }
 
         StringBuffer registrationResponse = new StringBuffer();
@@ -160,16 +158,13 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
         clientout.write(registrationResponse.toString().getBytes());
         clientout.flush();
 
-//        if (!reReg) {
           MicroAgent asset = makeMicroAgent(rr, srcAddress);
           getBlackboardService().openTransaction();
-          System.out.println("NameServerPlugin: Making a MicroAgent: "+asset);
+          loggingService.info("NameServerPlugin: Making a MicroAgent: "+asset);
           getBlackboardService().publishAdd(asset);
           getBlackboardService().closeTransaction();
-//        }
       } catch (IOException ioe) {
-        System.err.println(this.getClass().getName()+": Error accepting registration request");
-        ioe.printStackTrace();
+        loggingService.error("Error accepting registration request", ioe);
       }
     }
     /**
@@ -178,7 +173,9 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
     else if (msg.indexOf("<agentQuery>") >= 0) {
       try {
         QueryMessage lm = new QueryMessage(msg);
-        if (debugging) System.out.println("NameServerPlugin: Got a query:"+lm);
+        if (loggingService.isDebugEnabled()){
+            loggingService.debug("NameServerPlugin: Got a query:"+lm);
+        }
         Vector agents = new Vector();
         //lookup by capabilities
         if (lm.getCapabilitiesSubstring() != null) {
@@ -205,7 +202,7 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
         clientout.write(0);
         clientout.flush();
       } catch (IOException ioe) {
-        System.err.println(this.getClass().getName()+": Error processing lookup request");
+        loggingService.error("Error processing lookup request");
         ioe.printStackTrace();
       }
     }
@@ -227,6 +224,12 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
   
   /** Holds value of property prototypeRegistryService. */
   private PrototypeRegistryService prototypeRegistryService;
+  
+  /** Holds value of property mEMessageService. */
+  private MEMessageService mEMessageService;
+  
+  /** Holds value of property loggingService. */
+  private LoggingService loggingService;
   
   // look up a node by its name
   public LookupResponse lookup(String name) {
@@ -289,9 +292,52 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
       this.prototypeRegistryService = prototypeRegistryService;
   }
   
+  /** Getter for property mEMessageService.
+   * @return Value of property mEMessageService.
+   */
+  public MEMessageService getMEMessageService() {
+      return mEMessageService;
+  }
+  
+  /** Setter for property mEMessageService.
+   * @param mEMessageService New value of property mEMessageService.
+   */
+  public void setMEMessageService(MEMessageService mEMessageService) {
+      this.mEMessageService = mEMessageService;
+      if (mEMessageService != null) {
+        this.mEMessageService.getMessageTransport().addMessageListener(this);
+        loggingService.debug("MEMessageService set NON-null");
+      } else {
+        loggingService.debug("MEMessageService set to null");
+      }
+  }
+  
+  /** Getter for property loggingService.
+   * @return Value of property loggingService.
+   */
+  public LoggingService getLoggingService() {
+      return loggingService;
+  }
+  
+  /** Setter for property loggingService.
+   * @param loggingService New value of property loggingService.
+   */
+  public void setLoggingService(LoggingService loggingService) {
+      this.loggingService = loggingService;
+  }
+  
+  public void serviceAvailable(ServiceAvailableEvent sae) {
+      loggingService.debug("serviceAvailable called with a "+sae.getService().getName());
+      if (sae.getService().isAssignableFrom(MEMessageService.class)) {
+          setMEMessageService((MEMessageService) sae.getServiceBroker().getService(this, MEMessageService.class, null));
+      }
+  }
+  
+
+  
   // ++++++++ Parser and utility classes ++++++++
   //--------------------------------------------------------------------------
-  private static class RegistrationMessage extends HandlerBase {
+  private class RegistrationMessage extends HandlerBase {
     public RegistrationMessage(String msg) {
       try {
         XMLInputStream aStream = new XMLInputStream(msg);
@@ -305,7 +351,7 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
         aParser.parse();
       } catch (ParseException e) {
         // e.printStacktrace() is still a dummy in CLDC1.0
-        System.out.println(e.toString());
+        loggingService.error(e.toString());
       }
     }
     private String name;
@@ -321,7 +367,7 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
   }
   //--------------------------------------------------------------------------
   // Parse the "look up agent by capabilities" message
-  private static class QueryMessage extends HandlerBase {
+  private class QueryMessage extends HandlerBase {
     public QueryMessage(String msg) {
       try {
         XMLInputStream aStream = new XMLInputStream(msg);
@@ -330,7 +376,7 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
         aParser.setInputStream(aStream);
         aParser.parse();
       } catch (ParseException e) {
-        System.out.println(e.toString());
+        loggingService.error(e.toString());
       }
     }
     private String capabilitiesSubstring = null;
@@ -362,7 +408,7 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
   }
 
   //--------------------------------------------------------------------------
-  private static class RegistrationResponse extends HandlerBase implements Encodable {
+  private class RegistrationResponse extends HandlerBase implements Encodable {
     public RegistrationResponse(RegistrationMessage rm, String data) {
       plugins = new Vector();
       resources = new Vector();
@@ -379,7 +425,7 @@ System.out.println("Testing"+srcAddress+mpg.getIpAddress()+rm.getName()+mpg.getN
         aParser.parse();
       } catch (ParseException e) {
         // e.printStacktrace() is still a dummy in CLDC1.0
-        System.out.println(e.toString());
+        loggingService.error(e.toString());
       }
     }
 

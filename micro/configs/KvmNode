@@ -1,3 +1,0 @@
-#!/bin/sh -x
-KVM_HOME=/home/wwright/j2me_cldc
-kvm -classpath ./:../data/cougaarme.jar:$KVM_HOME/bin/kjava/api/classes org.cougaar.microedition.node.Node $1 $2 $3

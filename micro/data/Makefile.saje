@@ -23,13 +23,13 @@ OUTDIR=classes
 
 PREVERIFY=$(CLDCROOT)/bin/$(PLATFORM)/preverify
 JAR=jar
-#KVMCLASSES=$(CLDCROOT)/bin/common/api/classes
-KVMCLASSES=C:\dev\aJile\Runtime_cldc\classes.jar
+KVMCLASSES=C:\dev\aJile\Runtime_cldc\rts;C:\dev\aJile\Runtime_cldc\classes.jar
 
 SRCFILES  = $(wildcard $(TOP)/org/cougaar/microedition/asset/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/node/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/io/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/kvm/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/saje/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/ldm/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/plugin/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/plugin/test/*.java)
@@ -44,7 +44,7 @@ SRCFILES += $(wildcard $(TOP)/gov/nasa/jpl/sensorweb/*.java)
 OBJFILES = $(patsubst %.java,%.class,$(SRCFILES))
 
 
-all: $(OBJFILES) cougaarme.jar
+all: $(OBJFILES) 
 
 preverify: $(OBJFILES)
 	$(PREVERIFY) -d $(OUTDIR) -classpath "$(KVMCLASSES)" \

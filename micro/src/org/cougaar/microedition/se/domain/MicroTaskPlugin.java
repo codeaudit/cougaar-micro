@@ -32,6 +32,8 @@ import org.cougaar.core.blackboard.*;
 import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.planning.ldm.asset.*;
 import org.cougaar.core.plugin.*;
+import org.cougaar.core.service.*;
+import org.cougaar.core.component.*;
 
 import org.cougaar.microedition.shared.*;
 
@@ -39,19 +41,23 @@ import org.cougaar.microedition.shared.*;
  * Infrastructure plugin for task commmunications between big Cougaar and
  * Cougaar Micro Edition.
  */
-public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
+public class MicroTaskPlugin extends ComponentPlugin implements MessageListener, ServiceAvailableListener
 {
   private IncrementalSubscription sub;
   private IncrementalSubscription taskSub;
-  private boolean debug = false;
-  MEMessageService service;
 
+  /** Holds value of property mEMessageService. */
+  private MEMessageService mEMessageService;  
 
+  /** Holds value of property loggingService. */
+  private LoggingService loggingService;
+  
   /**
    * Subscribe to allocations to MicroAgents
    */
   protected void setupSubscriptions() {
-    registerMessageListener();
+    
+    getBindingSite().getServiceBroker().addServiceListener(this);
     sub = (IncrementalSubscription)getBlackboardService().subscribe(new UnaryPredicate() {
       public boolean execute(Object o) {
         if (o instanceof Allocation) {
@@ -69,9 +75,9 @@ public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
       }});
 
       Collection v = getParameters();
-      debug = v.contains("debug");
-      if (debug)
-        System.out.println("MicroTaskPlugin: debug ON");
+      if (loggingService.isDebugEnabled()) {
+          loggingService.debug("PARAMS: "+v);
+      }
   }
 
   /**
@@ -114,13 +120,12 @@ public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
     if (allo == null)
       return;
     Asset asset = allo.getAsset();
-      MicroTask mt = service.newMicroTask(task);
+      MicroTask mt = mEMessageService.newMicroTask(task);
       try {
-        service.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
+        mEMessageService.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
       } catch (java.io.IOException ioe)
       {
-        System.err.println("IOException sending message to MicroAgent");
-        ioe.printStackTrace();
+        loggingService.error("IOException sending message to MicroAgent", ioe);
       }
   }
 
@@ -129,16 +134,15 @@ public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
    */
   private void processAllocation(Allocation allo, String op) {
     Asset asset = allo.getAsset();
-      if (debug) System.out.println("MicroTaskPlugin: Allocation to MicroAgent: " + asset);
+      if (loggingService.isDebugEnabled()) loggingService.debug("MicroTaskPlugin: Allocation to MicroAgent: " + asset);
       // encode task to send to micro agent
-      MicroTask mt = service.newMicroTask(allo.getTask());
+      MicroTask mt = mEMessageService.newMicroTask(allo.getTask());
 
       try {
-        service.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
+        mEMessageService.getMessageTransport().sendTo((MicroAgent)asset, mt, op);
       } catch (java.io.IOException ioe)
       {
-        System.err.println("IOException sending message to MicroAgent");
-        ioe.printStackTrace();
+        loggingService.error("IOException sending message to MicroAgent", ioe);
       }
   }
 
@@ -152,9 +156,9 @@ public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
      getBlackboardService().openTransaction();
      // lookup the original task
      Task t = lookupTask(mt.getUniqueID());
-     if (debug) System.out.println("MicroTaskPlugin: Delivering task: " + t);
+     if (loggingService.isDebugEnabled()) loggingService.debug("MicroTaskPlugin: Delivering task: " + t);
      if (t == null) {
-       System.err.println("MicroTaskPlugin: Error finding task \""+mt.getUniqueID()+"\"");
+       loggingService.error("MicroTaskPlugin: Error finding task \""+mt.getUniqueID()+"\"");
        getBlackboardService().closeTransaction();
        return true;
      }
@@ -164,12 +168,12 @@ public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
      AllocationResult ar = decodeAllocationResult(mt);
      if ((ar == null) || (alloc == null)) {
       getBlackboardService().closeTransaction();
-      if (debug) System.out.println("MicroTaskPlugin: allocation not updated.  ar="+ar+": alloc="+alloc);
+      if (loggingService.isDebugEnabled()) loggingService.debug("MicroTaskPlugin: allocation not updated.  ar="+ar+": alloc="+alloc);
       return true;
      }
      ((PlanElementForAssessor)alloc).setReceivedResult(ar);
 
-     if (debug) System.out.println("MicroTaskPlugin: Changing alloc: "+alloc);
+     if (loggingService.isDebugEnabled()) loggingService.debug("MicroTaskPlugin: Changing alloc: "+alloc);
      getBlackboardService().publishChange(alloc);
      getBlackboardService().closeTransaction();
     }
@@ -211,12 +215,45 @@ public class MicroTaskPlugin extends ComponentPlugin implements MessageListener
   }
 
   protected void registerMessageListener() {
-    service = (MEMessageService)getBindingSite().getServiceBroker().getService(this, org.cougaar.microedition.se.domain.MEMessageService.class, null);
-    if (service == null) {
-        System.err.println("Error getting the MEMessageService: Is MicroAgentMessagePlugin initialized yet?");
-    }
-    service.getMessageTransport().addMessageListener(this);
+    mEMessageService.getMessageTransport().addMessageListener(this);
   }
+  
+  /** Getter for property mEMessageService.
+   * @return Value of property mEMessageService.
+   */
+  public MEMessageService getMEMessageService() {
+      return mEMessageService;
+  }
+  
+  /** Setter for property mEMessageService.
+   * @param mEMessageService New value of property mEMessageService.
+   */
+  public void setMEMessageService(MEMessageService mEMessageService) {
+      this.mEMessageService = mEMessageService;
+      if (mEMessageService != null)
+        registerMessageListener();
+  }
+  
+  public void serviceAvailable(ServiceAvailableEvent sae) {
+      if (sae.getService().isAssignableFrom(MEMessageService.class)) {
+          setMEMessageService((MEMessageService) sae.getServiceBroker().getService(this, MEMessageService.class, null));
+      }
+  }
+  
+  /** Getter for property loggingService.
+   * @return Value of property loggingService.
+   */
+  public LoggingService getLoggingService() {
+      return loggingService;
+  }  
+  
+  /** Setter for property loggingService.
+   * @param loggingService New value of property loggingService.
+   */
+  public void setLoggingService(LoggingService loggingService) {
+      this.loggingService = loggingService;
+  }
+  
 }
 
 /**

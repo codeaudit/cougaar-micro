@@ -76,11 +76,11 @@ public class ControlPlugin extends PluginAdapter {
   private boolean debugging = false;
 
   public void setupSubscriptions() {
-    System.out.println("ControlPlugin::setupSubscriptions");
+    //System.out.println("ControlPlugin::setupSubscriptions");
     if (getParameters() != null) {
       Hashtable t = getParameters();
       if (t.containsKey("debug"))
-        debugging = true;
+        debugging = !t.get("debug").equals("false");
       if (t.containsKey("sleeptime"))
         sleeptime = Integer.parseInt((String)t.get("sleeptime"));
       if (t.containsKey("resource")) //e.g. TurretController
@@ -92,15 +92,17 @@ public class ControlPlugin extends PluginAdapter {
       if (t.containsKey("parametervalue")) //e.g. front
         controlParameterValue = (String)t.get("parametervalue");
 
-      System.out.println("ControlPlugin: Sleep time (msec): "+sleeptime);
-      System.out.println("ControlPlugin: resource         : "+resourceName);
-      System.out.println("ControlPlugin: control command  : "+controlCommand);
-      System.out.println("ControlPlugin: control parameter: "+controlParameter);
-      System.out.println("ControlPlugin: parameter value  : "+controlParameterValue);
+      if (debugging) {
+          System.out.println("ControlPlugin: Sleep time (msec): "+sleeptime);
+          System.out.println("ControlPlugin: resource         : "+resourceName);
+          System.out.println("ControlPlugin: control command  : "+controlCommand);
+          System.out.println("ControlPlugin: control parameter: "+controlParameter);
+          System.out.println("ControlPlugin: parameter value  : "+controlParameterValue);
+      }
     }
     else
     {
-      System.out.println("ControlPlugin: setupSubscriptions No Parameters specified");
+      if (debugging)System.out.println("ControlPlugin: setupSubscriptions No Parameters specified");
     }
     taskSub = subscribe(getTaskPred());
 
@@ -110,7 +112,7 @@ public class ControlPlugin extends PluginAdapter {
     resourceSub = subscribe(getResourcePred());
   }
 
-  private synchronized void allocate(MicroTask mt)
+  private synchronized void allocate(MicroTask mt, boolean needNewTransaction)
   {
     if(debugging) System.out.println("ControlPlugin: in allocate " +mt);
 
@@ -132,12 +134,12 @@ public class ControlPlugin extends PluginAdapter {
     mar.setAspects(aspects);
     mar.setValues(values);
 
-    openTransaction();
+    if (needNewTransaction) openTransaction();
     mt.setAllocation(ma);
     publishChange(ma);
     publishChange(mt);
 
-    closeTransaction();
+    if (needNewTransaction) closeTransaction();
 
     if(debugging)
     {
@@ -149,20 +151,23 @@ public class ControlPlugin extends PluginAdapter {
   public void execute()
   {
 
+    if (debugging)System.out.println("ControlPlugin: execute()");
     Enumeration enum = resourceSub.getAddedList().elements();
     if (resource==null && enum.hasMoreElements())
     {
       resource = (ControllerResource)enum.nextElement();
       resource.modifyControl(controlParameter,  controlParameterValue);
-      System.out.println("ControlPlugin: resource found: "+resource.getName());
-      System.out.println("ControlPlugin: resource scale factor: "+resource.getScalingFactor());
-      System.out.println("ControlPlugin: resource num aspects: "+resource.getNumberAspects());
+      if (debugging) {
+          System.out.println("ControlPlugin: resource found: "+resource.getName());
+          System.out.println("ControlPlugin: resource scale factor: "+resource.getScalingFactor());
+          System.out.println("ControlPlugin: resource num aspects: "+resource.getNumberAspects());
+      }
     }
 
     enum = taskSub.getAddedList().elements();
     while (enum.hasMoreElements())
     {
-      System.out.println("ControlPlugin: got added "+controlCommand+" task");
+      if (debugging)System.out.println("ControlPlugin: got added "+controlCommand+" task");
       MicroTask mt = (MicroTask)enum.nextElement();
 
       if (resource!=null)
@@ -174,10 +179,11 @@ public class ControlPlugin extends PluginAdapter {
 
 	resource.startControl();
 
-        // this is for the measurement portion of the controller
-	if(debugging) System.out.println("ControlPlugin: launch polling thread");
-        Thread pt = new Thread(new PollResource(mt)/*, "Control Plugin"*/);
-        pt.start();
+        if (sleeptime > 0) { // poll
+            if(debugging) System.out.println("ControlPlugin: launch polling thread");
+            Thread pt = new Thread(new PollResource(mt)/*, "Control Plugin"*/);
+            pt.start();
+        }
       }
       else
       {
@@ -189,15 +195,28 @@ public class ControlPlugin extends PluginAdapter {
     while (enum.hasMoreElements())
     {
       MicroTask mt = (MicroTask)enum.nextElement();
-      System.out.println("ControlPlugin: got changed "+controlCommand+" task");
+      if (debugging)System.out.println("ControlPlugin: got changed "+controlCommand+" task");
       SetControlParameter(mt);
     }
 
     enum = taskSub.getRemovedList().elements();
     while (enum.hasMoreElements()) {
       MicroTask mt = (MicroTask)enum.nextElement();
-      System.out.println("ControlPlugin: got removed "+controlCommand+" task");
+      if (debugging)System.out.println("ControlPlugin: got removed "+controlCommand+" task");
       taskthreadstokill.addElement(mt);
+    }
+    
+    enum = resourceSub.getChangedList().elements();
+    if (enum.hasMoreElements())
+    {
+      resource = (ControllerResource)enum.nextElement();
+      if (debugging)System.out.println("ControlPlugin: resource changed: "+resource.getName());
+      Enumeration tenum = taskSub.getMemberList().elements();
+      while (tenum.hasMoreElements())
+      {
+        MicroTask mt = (MicroTask)tenum.nextElement();
+        allocate(mt, false);
+      }
     }
   }
 
@@ -255,7 +274,7 @@ public class ControlPlugin extends PluginAdapter {
 	      break; //I'm no longer associated with the resource
 
 	    if(resource.conditionChanged())
-	      allocate(task);
+	      allocate(task, true);
 	  }
 	}
 

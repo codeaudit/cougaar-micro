@@ -28,6 +28,7 @@ import java.io.*;
 
 import org.cougaar.core.component.*;
 import org.cougaar.core.plugin.*;
+import org.cougaar.core.service.*;
 
 
 /**
@@ -37,15 +38,16 @@ import org.cougaar.core.plugin.*;
  */
 public class MicroAgentMessagePlugin extends ComponentPlugin implements ServiceProvider
 {
-  private boolean debug = false;
-  
   private MEMessageService service = null;
 
+  /** Holds value of property loggingService. */
+  private LoggingService loggingService;  
 
   protected void setupSubscriptions() {
-      debug = getParameters().contains("debug");
       service = new MEMessageService(getBindingSite().getAgentIdentifier().toString());
+      loggingService.debug("Adding service start");
       getBindingSite().getServiceBroker().addService(MEMessageService.class, this);
+      loggingService.debug("Adding service done");
   }
   /**
    * Called when objects in the PLAN change
@@ -59,6 +61,20 @@ public class MicroAgentMessagePlugin extends ComponentPlugin implements ServiceP
   
   public java.lang.Object getService(org.cougaar.core.component.ServiceBroker serviceBroker, java.lang.Object requestor, java.lang.Class clazz) {
       return service;
+  }
+  
+  /** Getter for property loggingService.
+   * @return Value of property loggingService.
+   */
+  public LoggingService getLoggingService() {
+      return loggingService;
+  }
+  
+  /** Setter for property loggingService.
+   * @param loggingService New value of property loggingService.
+   */
+  public void setLoggingService(LoggingService loggingService) {
+      this.loggingService = loggingService;
   }
   
 }

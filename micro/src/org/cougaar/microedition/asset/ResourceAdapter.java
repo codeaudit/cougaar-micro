@@ -60,6 +60,23 @@ public abstract class ResourceAdapter implements Resource {
     return debugging;
   }
 
+  /** Getter for property distributor.
+   * @return Value of property distributor.
+   */
+  public org.cougaar.microedition.ldm.Distributor getDistributor() {
+      return distributor;
+  }
+  
+  /** Setter for property distributor.
+   * @param distributor New value of property distributor.
+   */
+  public void setDistributor(org.cougaar.microedition.ldm.Distributor distributor) {
+      this.distributor = distributor;
+  }
+  
   protected boolean debugging = false;
 
+  /** Holds value of property distributor. */
+  private org.cougaar.microedition.ldm.Distributor distributor;
+  
 }
