@@ -2,8 +2,13 @@
 <NodeConfiguration>
   <description>HeatIndexProvider</description>
   <port>2221</port>
-  <plugin>gov.nasa.jpl.sensorweb.MeasureHeatIndexPlugIn</plugin>
+
+  <!-- START Debugging and testing plugins -->
+  <!-- Replace these with the actual pod interface plugin(s) -->
   <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin>
+  <!-- END Debugging and testing plugins -->
+
+  <plugin>gov.nasa.jpl.sensorweb.MeasureHeatIndexPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>

@@ -3,24 +3,25 @@
   <description>PodThree</description>
   <port>2223</port>
 
+  <!-- START Debugging and testing plugins -->
+  <!-- Replace these with the actual pod interface plugin(s) -->
   <plugin podNumber="3" datatype="correction" datavalue="0x0908" sleeptime="1000">
     gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
   </plugin>
-
   <plugin podNumber="3" datatype="temp" datavalue="0x010f" sleeptime="1000">
     gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
   </plugin>
-
   <plugin podNumber="3" datatype="humidity" datavalue="0x00DD" sleeptime="1000">
     gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
   </plugin>
+  <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin>
+  <!-- END Debugging and testing plugins -->
 
   <plugin>gov.nasa.jpl.sensorweb.PodDataConversionPlugIn</plugin>
   <plugin>gov.nasa.jpl.sensorweb.ComputeHeatIndexPlugIn</plugin>
   <plugin aggregate="300">gov.nasa.jpl.sensorweb.HeatIndexPlugIn</plugin>
   <plugin reapinterval="15" expiration="1200">gov.nasa.jpl.sensorweb.PodIdentificationPlugIn</plugin>
 
-  <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
