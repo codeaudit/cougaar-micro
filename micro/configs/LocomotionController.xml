@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
   <description>Mach5 controller</description>
-  <resource debug="true">org.cougaar.microedition.tini.TiniMach5LocomotionResource</plugin>
+  <resource debug="true">org.cougaar.microedition.tini.TiniMach5LocomotionResource</resource>
+  <resource debug="true">org.cougaar.microedition.tini.TiniCompass</resource>
   <!-- <plugin>org.cougaar.microedition.tini.TiniMach5TesterPlugIn</plugin> -->
   <plugin>org.cougaar.microedition.tini.TiniLocomotionPlugIn</plugin>
+  <plugin>org.cougaar.microedition.tini.TiniOrientationPlugIn</plugin>
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
