@@ -126,14 +126,15 @@ public class PSP_MicroData extends PSP_BaseAdapter implements PlanServiceProvide
     while (iterate.hasNext()) {
       Allocation alloc = (Allocation)iterate.next();
       if (alloc == null) break;
+      String src = alloc.getAsset().getItemIdentificationPG().getItemIdentification();
       AllocationResult ar = alloc.getReceivedResult();
       if (ar == null) continue;
       if (alloc.getTask().getPrepositionalPhrase("Temperature") != null)
-        out.println("Temperature:"+ar.getValue(0));
+        out.println(src+":Temperature:"+ar.getValue(0));
       else if (alloc.getTask().getPrepositionalPhrase("Light") != null)
-        out.println("Light:"+ar.getValue(0));
+        out.println(src+":Light:"+ar.getValue(0));
       else if (alloc.getTask().getPrepositionalPhrase("Value") != null)
-        out.println("PDA:"+ar.getValue(0));
+        out.println(src+":PDA:"+ar.getValue(0));
 
       out.flush();
     }

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>value from KVM</description>
+  <plugin>cougaar.microedition.kvm.KvmValuePlugIn</plugin>
+  <plugin>cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+</NodeConfiguration>

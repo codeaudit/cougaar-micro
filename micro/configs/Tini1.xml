@@ -2,6 +2,6 @@
 <NodeConfiguration>
   <description>Ambient Temp in Degrees Celsius</description>
   <plugin>cougaar.microedition.tini.TiniTemperaturePlugIn</plugin>
-  <plugin>cougaar.microedition.tini.TiniVoltagePlugIn</plugin>
+  <plugin>cougaar.microedition.tini.TiniLightPlugIn</plugin>
   <plugin>cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
 </NodeConfiguration>
