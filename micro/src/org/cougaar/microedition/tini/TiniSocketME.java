@@ -31,6 +31,11 @@ public class TiniSocketME implements SocketME {
 
   Socket sock = null;
 
+  public TiniSocketME()
+  {
+    sock = null;
+  }
+
   public TiniSocketME(Socket newsock)
   {
     sock = newsock;

@@ -31,6 +31,11 @@ public class KvmSocketME implements SocketME {
 
   StreamConnection sock = null;
 
+  public KvmSocketME()
+  {
+    sock = null;
+  }
+
   public KvmSocketME(StreamConnection newsock)
   {
     sock = newsock;
