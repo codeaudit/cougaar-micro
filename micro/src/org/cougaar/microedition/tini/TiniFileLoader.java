@@ -72,7 +72,7 @@ public class TiniFileLoader implements FileLoader {
 
 	public void sendFile(String fileName, String outstring) throws Exception
 	{
-		FileOutputStream fout = new FileOutputStream(fileName);
+		FileOutputStream fout = new FileOutputStream(fileName, true);
 
 		fout.write(outstring.getBytes());
 		fout.flush();
