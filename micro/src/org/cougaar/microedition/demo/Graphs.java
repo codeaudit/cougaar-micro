@@ -154,9 +154,9 @@ public class Graphs extends JApplet {
     temperatureGuage3.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
     temperatureGuage3.setScaleColor(SystemColor.info);
     temperatureGuage3.setScaleMax(85.0);
-    temperatureGuage3.setScaleMin(65.0);
-    temperatureGuage3.setTickIncrement(2.0);
-    temperatureGuage3.setTickStartValue(65.0);
+    temperatureGuage3.setScaleMin(15.0);
+    temperatureGuage3.setTickIncrement(7.0);
+    temperatureGuage3.setTickStartValue(15.0);
     temperatureGuage3.setTickStopValue(85.0);
     temperatureGuage3.setPaintCompleteBackground(true);
     temperatureGuage3.setAutoTickGeneration(false);
@@ -187,9 +187,9 @@ public class Graphs extends JApplet {
     temperatureGuage2.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
     temperatureGuage2.setScaleColor(SystemColor.info);
     temperatureGuage2.setScaleMax(85.0);
-    temperatureGuage2.setScaleMin(65.0);
-    temperatureGuage2.setTickIncrement(2.0);
-    temperatureGuage2.setTickStartValue(65.0);
+    temperatureGuage2.setScaleMin(15.0);
+    temperatureGuage2.setTickIncrement(7.0);
+    temperatureGuage2.setTickStartValue(15.0);
     temperatureGuage2.setTickStopValue(85.0);
     temperatureGuage2.setPaintCompleteBackground(true);
     temperatureGuage2.setAutoTickGeneration(false);
@@ -220,9 +220,9 @@ public class Graphs extends JApplet {
     temperatureGuage1.setTickStyle(com.klg.jclass.swing.gauge.beans.JCCircularGaugeBean.TICK_REVERSE_TRIANGLE);
     temperatureGuage1.setScaleColor(SystemColor.info);
     temperatureGuage1.setScaleMax(85.0);
-    temperatureGuage1.setScaleMin(65.0);
-    temperatureGuage1.setTickIncrement(2.0);
-    temperatureGuage1.setTickStartValue(65.0);
+    temperatureGuage1.setScaleMin(15.0);
+    temperatureGuage1.setTickIncrement(7.0);
+    temperatureGuage1.setTickStartValue(15.0);
     temperatureGuage1.setTickStopValue(85.0);
     temperatureGuage1.setPaintCompleteBackground(true);
     temperatureGuage1.setAutoTickGeneration(false);
@@ -242,8 +242,8 @@ public class Graphs extends JApplet {
     jPanel1.add(PDAField1, BorderLayout.SOUTH);
     this.getContentPane().add(jPanel14, null);
     jPanel14.add(jPanel15, null);
-    jPanel15.add(temperatureGuage1, BorderLayout.CENTER);
     jPanel15.add(temperatureField1, BorderLayout.SOUTH);
+    jPanel15.add(temperatureGuage1, BorderLayout.CENTER);
     jPanel14.add(jPanel16, null);
     jPanel16.add(lightField1, BorderLayout.SOUTH);
     jPanel16.add(lightGuage1, BorderLayout.CENTER);
