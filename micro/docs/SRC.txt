@@ -5,7 +5,7 @@ the Standard Edition. All of our code lives under org.cougaar.
 From there you will find a microedition directory, under which 
 exists the individual directories for .java files. For example:
 
-org/cougaar/microedition/cluster/Node.java, where the top main method
+org/cougaar/microedition/node/Node.java, where the top main method
 which you would invoke to kick off a Micro Cougaar lives.
 
 org.cougaar.microedition.io.*; which you would import to include

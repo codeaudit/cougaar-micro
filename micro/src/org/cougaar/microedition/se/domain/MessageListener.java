@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -26,12 +26,12 @@ import java.io.OutputStream;
 import java.io.InputStream;
 /**
  * Interface to be implemented by classes interested in receiving messages
- * (text) from Micro clusters.
+ * (text) from Micro agents.
  */
 public interface MessageListener {
 
   /**
-   * Callback method for text messages from micro clusters.
+   * Callback method for text messages from micro agents.
    * @param message The text of the message.
    * @param source ID of the sender of the message.
    * @param srcAddress IP address of the sender

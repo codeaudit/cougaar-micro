@@ -3,6 +3,6 @@
   <description>testResponse among other things</description>
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.test.TestResponderPlugIn</plugin>
 </NodeConfiguration>

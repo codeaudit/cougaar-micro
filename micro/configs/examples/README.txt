@@ -21,7 +21,7 @@ You should see output like this:
 
 
 C:\> c:\dev\j2me_cldc\kvm\vmWin\build\kvm_g -classpath
-c:\dev\j2me_cldc\bin\common\api\classes;..\..\data\cougaarme.jar;. org.cougaar.microedition.cluster.Node Tutorial.xml
+c:\dev\j2me_cldc\bin\common\api\classes;..\..\data\cougaarme.jar;. org.cougaar.microedition.node.Node Tutorial.xml
 I am java null or CLDC-1.0, running on null
 Reading config from local file: Tutorial.xml
 My description: Example CougaarME Node

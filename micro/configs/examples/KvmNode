@@ -13,4 +13,4 @@
 KVM_HOME=/usr/local/j2me_cldc
 
 
-kvm -classpath ./:../../data/cougaarme.jar:$KVM_HOME/bin/kjava/api/classes org.cougaar.microedition.cluster.Node $1 $2 $3
+kvm -classpath ./:../../data/cougaarme.jar:$KVM_HOME/bin/kjava/api/classes org.cougaar.microedition.node.Node $1 $2 $3

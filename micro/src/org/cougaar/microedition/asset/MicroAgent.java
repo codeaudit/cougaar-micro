@@ -20,23 +20,28 @@
  * PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
  */
-package org.cougaar.microedition.tini;
+package org.cougaar.microedition.asset;
 
-import org.cougaar.microedition.node.Node;
-import com.dalsemi.tininet.TININet;
-import com.dalsemi.shell.TINIShell;
-
-public class MotorControllerMain {
-  public static void main(String[] args) {
-//    TININet.setIPAddress("192.233.51.95");
-    TININet.setIPAddress("192.168.0.2");
-    TININet.setSubnetMask("255.255.255.0");
+import org.cougaar.microedition.io.*;
 
 
-    com.dalsemi.system.Debug.setDefaultStreams("serial0", 115200);
-    System.out.println("Starting Node");
+public class MicroAgent implements Asset {
 
-    String [] nodeArgs = {"LocomotionController", "192.168.0.10", "1235"};
-    Node.main(nodeArgs);
+  private AgentId agentID;
+
+  /**
+   * Set the identifier for this agent.  Should only be used when the MicroAgent
+   * is created.
+   */
+  public void setAgentId(AgentId agentID) {
+    this.agentID = agentID;
   }
+  /**
+   * Get the identifier information for this agent.
+   */
+  public AgentId getAgentId() {
+    return agentID;
+  }
+
+
 }

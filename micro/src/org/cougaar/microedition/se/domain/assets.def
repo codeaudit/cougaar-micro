@@ -14,10 +14,10 @@
 ;;
 
 
-[MicroCluster org.cougaar.domain.planning.ldm.asset.Asset]
+[MicroAgent org.cougaar.domain.planning.ldm.asset.Asset]
 
-slots = MicroClusterPG
-doc=Representation of a CougaarMicroEdition cluster
+slots = MicroAgentPG
+doc=Representation of a CougaarMicroEdition agent
 
 [ImageAsset org.cougaar.domain.planning.ldm.asset.Asset]
 

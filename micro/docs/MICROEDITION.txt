@@ -4,8 +4,8 @@ Welcome to the org/cougaar/microedition directory from here you will
 find the meat of the MicroEdition source code. This directory contains
 a number of subdirectories, descriptions of same follows:
 
-asset	a directory where code concerning microassets and microclusters lives.
-cluster	where the top level Node.java file and the "main" for MicroCluster lives.
+asset	a directory where code concerning microassets and microagents lives.
+agent	where the top level Node.java file and the "main" for MicroCluster lives.
 demo	code used at the December 2000 ALP Workshop to show ME capabilities.
 domain	place where SE (Big Cougaar) code specific to support ME's lives. We
 	call this domain cougaarMEdomain.

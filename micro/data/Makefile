@@ -25,7 +25,7 @@ JAR=jar
 KVMCLASSES=$(KVMROOT)/bin/common/api/classes
 
 SRCFILES  = $(wildcard $(TOP)/org/cougaar/microedition/asset/*.java)
-SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/cluster/*.java)
+SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/node/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/io/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/kvm/*.java)
 SRCFILES += $(wildcard $(TOP)/org/cougaar/microedition/ldm/*.java)

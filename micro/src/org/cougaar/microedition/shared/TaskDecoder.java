@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -157,14 +157,14 @@ public class TaskDecoder extends HandlerBase {
   /**
    * A test stub
    */
-/* No need to code-bloat the KVM
+/* No need to code-bloat the KVM*/
   public static void main(String [] args) {
     MicroTask t = new MicroTask();
     t.setVerb("AVerb");
-    MicroAllocation ma = new MicroAllocation();
+    MicroAllocation ma = new MicroAllocation(null, t);
     MicroAllocationResult mar = new MicroAllocationResult();
-    mar.setRisk(1.01);
-    mar.setConfidenceRating(2.02);
+    mar.setRisk(1);
+    mar.setConfidenceRating(2);
     mar.setSuccess(true);
     int [] aspects = {1, 2, 3, 4};
     long [] values = {1100, 2200, 3300, 4400};
@@ -174,17 +174,18 @@ public class TaskDecoder extends HandlerBase {
     t.setAllocation(ma);
 
     Vector v = new Vector();
-    v.add(new MicroPrepositionalPhrase("Preposition1", "Ind-Obj1"));
-    v.add(new MicroPrepositionalPhrase("Preposition2", "Ind-Obj2"));
+    v.addElement(new MicroPrepositionalPhrase("Preposition1", "Ind-Obj1"));
+    v.addElement(new MicroPrepositionalPhrase("Preposition2", "Ind-Obj2"));
     t.setPrepositionalPhrases(v);
 
     StringBuffer str = new StringBuffer();
     str.append("<?xml version=\"1.0\"?>");
     t.encode(str);
 
+    System.out.println(str.toString());
     TaskDecoder d = new TaskDecoder();
     MicroTask new_t = d.decode(str.toString());
     System.out.println(new_t);
   }
-*/
+
 }

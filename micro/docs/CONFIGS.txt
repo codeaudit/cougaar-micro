@@ -37,13 +37,13 @@ used in our workshop demo scenario...
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
 </NodeConfiguration>
 
 The xml version tag is standard xml boilerplate. The description is not 
 really used by the ME, but is nice to have for comment/documentation 
 purposes. The 3 plugin lines below the xml comment: 
-<!-- Infrastructure PlugIns --> are needed for all ME Clusters that 
+<!-- Infrastructure PlugIns --> are needed for all ME Agents that 
 intend to do much of anything. 
 
 The line tagged <resource> describes a new type of asset unique to 

@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -106,7 +106,7 @@ public class ServerSocketMessageTransport implements MessageTransport {
     }
   }
 
-  public void sendMessage(Encodable msg, MicroCluster dest, String op) {
+  public void sendMessage(Encodable msg, MicroAgent dest, String op) {
     StringBuffer buf = new StringBuffer();
     buf.append(nodeName + ":");
     buf.append(msg.xmlPreamble);
@@ -114,8 +114,8 @@ public class ServerSocketMessageTransport implements MessageTransport {
     msg.encode(buf);
     buf.append("</message>");
     buf.append('\0');
-    String ipAddress = dest.getClusterId().getIpAddress();
-    short port = dest.getClusterId().getPort();
+    String ipAddress = dest.getAgentId().getIpAddress();
+    short port = dest.getAgentId().getPort();
 
 //    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
 

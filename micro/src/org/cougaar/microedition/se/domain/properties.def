@@ -11,13 +11,13 @@
 ;
 package=org.cougaar.microedition.se.domain
 
-[MicroClusterPG]
-doc=Characteristics of a Cougaar Micro Edition cluster
+[MicroAgentPG]
+doc=Characteristics of a Cougaar Micro Edition agent
 slots=String name, String capabilities, short port, String ipAddress
-name.doc=Name by which this cluster is known
-capabilities.doc=Resources available to this Cougaar ME cluster
-port.doc=Network port to be used to reach this Cougaar ME cluster
-ipAddress.doc=Network address to be used to reach this Cougaar ME cluster
+name.doc=Name by which this agent is known
+capabilities.doc=Resources available to this Cougaar ME agent
+port.doc=Network port to be used to reach this Cougaar ME agent
+ipAddress.doc=Network address to be used to reach this Cougaar ME agent
 
 [RobotPG]
 doc=Characteristics of a Robot Asset

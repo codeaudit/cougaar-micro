@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -31,14 +31,14 @@ import org.cougaar.domain.planning.ldm.*;
 import org.cougaar.microedition.shared.*;
 
 /**
- * Class used to send and receive messages to/from micro clusters.
+ * Class used to send and receive messages to/from micro agents.
  */
 class MessageTransport {
 
   LDMServesPlugIn ldm;
   short port = 1234; // default port for incoming messages
 
-  Vector deadclusters = new Vector();
+  Vector deadagents = new Vector();
 
    MessageTransport(LDMServesPlugIn ldm) {
     this.ldm = ldm;
@@ -48,8 +48,8 @@ class MessageTransport {
 
   private Vector outgoingQueue =  new Vector();
   private void enqueueOutgoing(OutgoingMessage msg) {
-    if (deadclusters.contains(msg.address + ":" + msg.port)) {
-      deadclusters.removeElement(msg.address + ":" + msg.port);
+    if (deadagents.contains(msg.address + ":" + msg.port)) {
+      deadagents.removeElement(msg.address + ":" + msg.port);
       return;
     }
     synchronized (outgoingQueue){
@@ -86,9 +86,9 @@ class MessageTransport {
 
 
   /**
-   * Send a message to a micro cluster.
+   * Send a message to a micro agent.
    */
-  void sendTo(MicroCluster microCluster, Encodable encodable, String op)  throws IOException {
+  void sendTo(MicroAgent microAgent, Encodable encodable, String op)  throws IOException {
     StringBuffer buf = new StringBuffer();
     buf.append(ldm.getClusterIdentifier().toString() + ":");
     buf.append("<?xml version=\"1.0\"?>");
@@ -96,15 +96,15 @@ class MessageTransport {
     encodable.encode(buf);
     buf.append("</message>");
     buf.append('\0');
-    String ipAddress = microCluster.getMicroClusterPG().getIpAddress();
-    short port = microCluster.getMicroClusterPG().getPort();
+    String ipAddress = microAgent.getMicroAgentPG().getIpAddress();
+    short port = microAgent.getMicroAgentPG().getPort();
 
     if (port == 0) { // should have a PointToPoint
-      String name = microCluster.getMicroClusterPG().getName();
+      String name = microAgent.getMicroAgentPG().getName();
       // System.out.println("Sending to P2P "+name+" : "+buf.toString());
       sendP2PMessage(name, buf.toString().getBytes());
     } else {
-//      System.out.println("Queueing: "+encodable+" to "+microCluster);
+//      System.out.println("Queueing: "+encodable+" to "+microAgent);
       enqueueOutgoing(new OutgoingMessage(ipAddress, port, buf.toString().getBytes()));
     }
   }
@@ -112,14 +112,14 @@ class MessageTransport {
   /**
    * Stop trying to send messages to this guy
    */
-  public void dequeue(MicroCluster mc) {
-    deadclusters.addElement(mc.getMicroClusterPG().getIpAddress() + ":" + mc.getMicroClusterPG().getPort());
+  public void dequeue(MicroAgent mc) {
+    deadagents.addElement(mc.getMicroAgentPG().getIpAddress() + ":" + mc.getMicroAgentPG().getPort());
 
     synchronized (outgoingQueue){
       Enumeration outgoing = outgoingQueue.elements();
       Vector deadones = new Vector();
-      String address = mc.getMicroClusterPG().getIpAddress();
-      short port = mc.getMicroClusterPG().getPort();
+      String address = mc.getMicroAgentPG().getIpAddress();
+      short port = mc.getMicroAgentPG().getPort();
 //      System.out.println("*** Removing messages to "+address+":"+port);
       while (outgoing.hasMoreElements()) {
         OutgoingMessage om = (OutgoingMessage)outgoing.nextElement();
@@ -138,7 +138,7 @@ class MessageTransport {
       io.out.write(data);
       io.out.flush();
     } else {
-      throw new RuntimeException("No client socket found for cluster: "+name);
+      throw new RuntimeException("No client socket found for agent: "+name);
     }
   }
 
@@ -276,7 +276,7 @@ class MessageTransport {
 
       try {
         ServerSocket ss = new ServerSocket(port);
-        System.out.println("listening for micro clusters on " +port);
+        System.out.println("listening for micro agents on " +port);
         while (true) {
           try {
             Socket s = ss.accept();
@@ -358,8 +358,8 @@ class MessageTransport {
 
 
   /**
-   * Parse the source cluster name from a message.  Assumed message format is
-   * <clusterName>:<messageText>  (Separated by a colon)
+   * Parse the source agent name from a message.  Assumed message format is
+   * <agentName>:<messageText>  (Separated by a colon)
    */
   private String getSource(String msg) {
     if (msg.indexOf(":") < 0) {
@@ -371,7 +371,7 @@ class MessageTransport {
 
   /**
    * Parse the message text from a message.  Assumed message format is
-   * <clusterName>:<messageText>  (Separated by a colon)
+   * <agentName>:<messageText>  (Separated by a colon)
    */
   private String getMessage(String msg) {
     return msg.substring(msg.indexOf(":")+1);

@@ -2,4 +2,4 @@ set KVMROOT=c:\dev\j2me_cldc
 set KVMCLASSES=%KVMROOT%\bin\common\api\classes
 set KVMCLASSES=%KVMCLASSES%;..\..\..\data\classes
 
-%KVMROOT%\kvm\vmWin\build\kvm_g -classpath %KVMCLASSES% org.cougaar.microedition.cluster.Node %1 %2 %3
+%KVMROOT%\kvm\vmWin\build\kvm_g -classpath %KVMCLASSES% org.cougaar.microedition.node.Node %1 %2 %3

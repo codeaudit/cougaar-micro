@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -29,7 +29,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This class handles sending messages to another cluster,
+ * This class handles sending messages to another agent,
  */
 public interface MessageTransport {
 
@@ -37,7 +37,7 @@ public interface MessageTransport {
 
   public void removeMessageListener(MessageListener ml);
 
-  public void sendMessage(Encodable msg, MicroCluster dest, String op);
+  public void sendMessage(Encodable msg, MicroAgent dest, String op);
 
   public void takePacket(String data, String source);
 

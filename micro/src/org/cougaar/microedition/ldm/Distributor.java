@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -25,7 +25,7 @@ package org.cougaar.microedition.ldm;
 import java.util.*;
 
 import org.cougaar.microedition.io.*;
-import org.cougaar.microedition.cluster.*;
+import org.cougaar.microedition.node.*;
 import org.cougaar.microedition.plugin.*;
 
 /**
@@ -48,14 +48,14 @@ public class Distributor {
   private Node node;
 
   /**
-   * @param name the cluster name to be accessed by plugins.
+   * @param name the agent name to be accessed by plugins.
    */
   public Distributor(Node node) {
     this.node = node;
   }
 
   /**
-   * @return the name of this cluster.
+   * @return the name of this agent.
    */
   public String getNodeName() {
     return node.getNodeName();

@@ -1,14 +1,14 @@
 /*
  * <copyright>
- * 
+ *
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -33,7 +33,7 @@ import org.cougaar.microedition.se.domain.*;
 
 /**
  * A test PlugIn to test interoperatbility with Cougaar ME.
- * It asks all known micro clusters for the temperature.
+ * It asks all known micro agents for the temperature.
  */
 public class TestAllocatorPlugIn extends SimplePlugIn {
 
@@ -41,7 +41,7 @@ public class TestAllocatorPlugIn extends SimplePlugIn {
   String Name = "Test";
 
   /**
-   * Subscribe to MicroClusters and my own allocations.
+   * Subscribe to MicroAgents and my own allocations.
    */
   protected void setupSubscriptions() {
 
@@ -59,7 +59,7 @@ public class TestAllocatorPlugIn extends SimplePlugIn {
     }
 
     assetSub = (IncrementalSubscription)subscribe(new UnaryPredicate() {
-      public boolean execute(Object o) {return o instanceof MicroCluster;}});
+      public boolean execute(Object o) {return o instanceof MicroAgent;}});
 
 
     allocSub = (IncrementalSubscription)subscribe(new UnaryPredicate() {
@@ -75,16 +75,16 @@ public class TestAllocatorPlugIn extends SimplePlugIn {
   }
 
   /**
-   * Handle new micro clusters and changes to my allocations
+   * Handle new micro agents and changes to my allocations
    */
   protected void execute() {
 
     //
-    // Allocate a temperature measure task to all micro clusters
+    // Allocate a temperature measure task to all micro agents
     //
     Enumeration micros = assetSub.getAddedList();
     while (micros.hasMoreElements()) {
-      MicroCluster micro = (MicroCluster)micros.nextElement();
+      MicroAgent micro = (MicroAgent)micros.nextElement();
       Task t = makeTask();
       publishAdd(t);
       Allocation allo = makeAllocation(t, micro);
@@ -146,7 +146,7 @@ public class TestAllocatorPlugIn extends SimplePlugIn {
   /**
    * Gin-up an allocation of this task to this asset
    */
-  private Allocation makeAllocation(Task t, MicroCluster micro) {
+  private Allocation makeAllocation(Task t, MicroAgent micro) {
     AllocationResult estAR = null;
     Allocation allocation =
       theLDMF.createAllocation(t.getPlan(), t, micro, estAR, Role.ASSIGNED);

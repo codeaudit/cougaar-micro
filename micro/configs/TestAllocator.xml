@@ -5,5 +5,5 @@
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
 </NodeConfiguration>

@@ -8,7 +8,7 @@
   <!-- Infrastructure PlugIns -->
   <plugin debug="true">org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
-  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
 
   <plugin name="Value" sleeptime="1000">org.cougaar.microedition.plugin.MeasurePlugIn</plugin>
 
