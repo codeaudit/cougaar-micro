@@ -1,12 +1,12 @@
 [Prototype]     Organization          
 
-[UIC]		"SurveillanceProvider5"  
+[UIC]		"UIC/SurveillanceProvider5"  
 
 [Relationship] 
 Supporting	"SurveillanceManager"		"SurveillanceProvider"          
 
 [TypeIdentificationPG]                       
-TypeIdentification		String	"SurveillanceProvider" 
+TypeIdentification		String	"UTC/RTOrg" 
 Nomenclature			String	"SurveillanceProvider" 
 AlternateTypeIdentification	String	"SurveillanceProvider"  
 

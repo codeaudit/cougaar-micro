@@ -1,11 +1,13 @@
 [Prototype]     Organization
-        
-[UIC]		"SurveillanceManager"
+
+[UniqueId]      "UTC/SurveillanceManager"
+  
+[UIC]		"UIC/SurveillanceManager"
 
 [Relationship]
         
 [TypeIdentificationPG]                      
-TypeIdentification		String	"SurveillanceManager"
+TypeIdentification		String	"UTC/RTOrg"
 Nomenclature			String	"SurveillanceManager"
 AlternateTypeIdentification	String	"SurveillanceManager"
 
