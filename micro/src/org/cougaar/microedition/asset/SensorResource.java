@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Base class for all SensorResources.
  */
-public abstract class SensorResource extends Resource {
+public abstract class SensorResource extends ResourceAdapter {
 
   public int chan = 0;
   public String units = "";

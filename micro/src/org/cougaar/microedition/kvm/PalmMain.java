@@ -1,5 +1,6 @@
 package org.cougaar.microedition.kvm;
 
+import com.sun.kjava.*;
 import org.cougaar.microedition.cluster.Node;
 
 public class PalmMain {

@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Base class for all ControllerResources.
  */
-public abstract class ControllerResource extends Resource {
+public abstract class ControllerResource extends ResourceAdapter {
 
   public int chan = 0;
   public String units = "";

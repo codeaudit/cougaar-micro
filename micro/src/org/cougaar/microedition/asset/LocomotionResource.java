@@ -15,7 +15,7 @@ package org.cougaar.microedition.asset;
  * This resource controls a two-wheeled robot base.  Note that the speed
  * can only be set while the robot is stopped.
  */
-public abstract class LocomotionResource extends Resource {
+public abstract class LocomotionResource extends ResourceAdapter {
 
   /**
    * @return the speed setting (in mm/sec)

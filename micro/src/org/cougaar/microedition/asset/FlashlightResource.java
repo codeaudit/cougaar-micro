@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Class for FlashlightResources.
  */
-abstract public class FlashlightResource extends Resource {
+abstract public class FlashlightResource extends ResourceAdapter {
 
   static private boolean debug=true;
 
