@@ -1,14 +1,14 @@
 /*
  * <copyright>
- *
+ * 
  * Copyright 1997-2001 BBNT Solutions, LLC.
  * under sponsorship of the Defense Advanced Research Projects
  * Agency (DARPA).
- *
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the Cougaar Open Source License as published by
  * DARPA on the Cougaar Open Source Website (www.cougaar.org).
- *
+ * 
  * THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  * PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  * IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -29,13 +29,18 @@ import org.cougaar.microedition.ldm.*;
 import org.cougaar.microedition.shared.*;
 
 /**
- * Base class for all Plugins.  Implements subscription handling.
+ * Base class for all PlugIns.  Implements subscription handling.
  */
 public abstract class PluginAdapter implements Plugin {
 
+    // private container of subscriptions
+    private Vector m_subscriptions = new Vector();
+    
   public PluginAdapter() {
   }
 
+    // PlugIn interface methods
+    
   /**
    * Called on agent startup to initialize plugin.
    */
@@ -45,6 +50,14 @@ public abstract class PluginAdapter implements Plugin {
    */
   public abstract void execute();
 
+    /**
+     * Called to get the list of subscriptions for this plugin
+     */
+    public Enumeration getSubscriptions()
+    {
+	return m_subscriptions.elements();
+    }
+    
   /**
    * Set the distributor associated with this plugin.
    */
@@ -108,7 +121,7 @@ public abstract class PluginAdapter implements Plugin {
 
   /**
    * Create a subscription.  Objects matching the UnaryPredicate
-   * will me maintained on the subscription list.
+   * will be maintained on the subscription list.
    */
   protected Subscription subscribe(UnaryPredicate pred) {
     Subscription subscription = new Subscription();
@@ -123,6 +136,8 @@ public abstract class PluginAdapter implements Plugin {
 
     getDistributor().addSubscriber(subscriber);
 
+    m_subscriptions.addElement(subscription);
+    
     return subscription;
   }
 
@@ -167,10 +182,10 @@ public abstract class PluginAdapter implements Plugin {
 
     is_debugging_set = true;
     if (getParameters() != null) {
-        String debug = (String)getParameters().get("debug");
-        if (debug != null) {
-          is_debugging = debug.equals("true");
-        }
+      String debug = (String)getParameters().get("debug");
+      if (debug != null) {
+        is_debugging = debug.equals("true");
+      }
     }
     return is_debugging;
   }

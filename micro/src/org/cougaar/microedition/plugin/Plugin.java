@@ -23,9 +23,10 @@
 package org.cougaar.microedition.plugin;
 
 /**
- * Base interface that must be implemented by all Plugins
+ * Base interface that must be implemented by all PlugIns
  */
 public interface Plugin {
   void setupSubscriptions();
+    java.util.Enumeration getSubscriptions();
   void execute();
 }

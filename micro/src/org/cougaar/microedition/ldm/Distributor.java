@@ -29,7 +29,7 @@ import org.cougaar.microedition.node.*;
 import org.cougaar.microedition.plugin.*;
 
 /**
- * The Distributor registers Plugin subscriptions, executing Plugins based
+ * The Distributor registers Plugin subscriptions, executing Plugin based
  * on changes to their subscriptions.
  */
 public class Distributor {
@@ -38,7 +38,7 @@ public class Distributor {
   private Vector changedList = new Vector();
   private Vector removedList = new Vector();
 
-  private Vector runnableSubscribers = new Vector();
+  private Vector runnablePlugins = new Vector();
   private Vector allSubscribers = new Vector();
 
   private Vector allObjects = new Vector();
@@ -129,8 +129,8 @@ public class Distributor {
       list = s.getSubscription().getMemberList();
       if (!list.contains(o))
         list.addElement(o);
-      if (!runnableSubscribers.contains(s))
-        runnableSubscribers.addElement(s);
+      if (!runnablePlugins.contains(s.getPlugin()))
+        runnablePlugins.addElement(s.getPlugin());
     }
     // Update the master blackboard
     if (!allObjects.contains(o))
@@ -149,8 +149,8 @@ public class Distributor {
       Vector list = s.getSubscription().getChangedList();
       if (!list.contains(o))
         list.addElement(o);
-      if (!runnableSubscribers.contains(s))
-        runnableSubscribers.addElement(s);
+      if (!runnablePlugins.contains(s.getPlugin()))
+        runnablePlugins.addElement(s.getPlugin());
     }
   }
 
@@ -166,8 +166,8 @@ public class Distributor {
         list.addElement(o);
       list = s.getSubscription().getMemberList();
       list.removeElement(o);
-      if (!runnableSubscribers.contains(s))
-        runnableSubscribers.addElement(s);
+      if (!runnablePlugins.contains(s.getPlugin()))
+        runnablePlugins.addElement(s.getPlugin());
     }
     // Update the master blackboard
     allObjects.removeElement(o);
@@ -221,8 +221,8 @@ public class Distributor {
       if (s.getSubscription().getPredicate().execute(o)) {
         s.getSubscription().getMemberList().addElement(o);
         s.getSubscription().getAddedList().addElement(o);
-        if (!runnableSubscribers.contains(s))
-          runnableSubscribers.addElement(s);
+        if (!runnablePlugins.contains(s.getPlugin()))
+          runnablePlugins.addElement(s.getPlugin());
       }
     }
     return true;
@@ -267,22 +267,22 @@ public class Distributor {
    * Pause until a subscriber has something to do.
    */
   public void waitForSomeWork() {
-    if (runnableSubscribers.size() == 0)
+    if (runnablePlugins.size() == 0)
       sem.take();
   }
 
   /**
-   * Manage Plugin subscriptions and executions
+   * Manage PlugIn subscriptions and executions
    */
   public void cycle() {
 
     for (;;) {
-      // execute Plugins
+      // execute PlugIns
       try {
 
-	while (runnableSubscribers.size() > 0) {
-	  Subscriber runme = (Subscriber)runnableSubscribers.elementAt(0);
-	  runnableSubscribers.removeElementAt(0);
+	while (runnablePlugins.size() > 0) {
+	  Plugin runme = (Plugin)runnablePlugins.elementAt(0);
+	  runnablePlugins.removeElementAt(0);
 	  openTransaction(Thread.currentThread());
 	  try {
 	      //System.out.println("EXECUTE : " +runme.getPlugin().getClass());
@@ -292,9 +292,13 @@ public class Distributor {
 	  catch (Throwable e) {
 	    System.out.println("Exception thrown from plugin: " +e);
 	  }
-	  runme.getSubscription().clearLists();
+	  // clear out lists of all subscription for this plugin
+	  for (Enumeration subs = runme.getSubscriptions();
+	       subs.hasMoreElements();)
+	      ((Subscription)subs.nextElement()).clearLists();
+	  
 	  // collect changed subscriptions
-	  closeTransaction(Thread.currentThread(), runme.getPlugin());
+	  closeTransaction(Thread.currentThread(), runme);
 	}
 	waitForSomeWork();
 
