@@ -79,6 +79,17 @@ public class TiniTurretBearingResource extends ControllerResource
     {
       Double temp = new Double(controlparametervalue);
       fixedturretbearing = temp.doubleValue();
+      System.out.println("TiniTurretBearingResource: modifyControl bearing value: " +fixedturretbearing);
+    }
+
+    if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.TURRETDIRECTIONPREP]))
+    {
+      if(controlparametervalue.equalsIgnoreCase(Constants.Robot.SEARCHRIGHT))
+	System.out.println("TiniTurretBearingResource: modifyControl set RIGHT hemisphere");
+      else if(controlparametervalue.equalsIgnoreCase(Constants.Robot.SEARCHLEFT))
+	System.out.println("TiniTurretBearingResource: modifyControl set LEFT hemisphere");
+      else
+        System.out.println("TiniTurretBearingResource: modifyControl set MIDDLE hemisphere");
     }
   }
 }
