@@ -1,0 +1,1 @@
+/usr/java/jdk1.2.2/bin/java -Dorg.cougaar.system.path=.. -Dcougaar.install.path=.. -classpath ../lib/core.jar:../lib/planserver.jar:../lib/xml.jar:../lib/miniglm.jar:../lib/cougaarMEdomain.jar org.cougaar.core.society.Node -c -n LaptopNode dummy1
