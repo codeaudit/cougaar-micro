@@ -32,9 +32,9 @@ import org.cougaar.lib.planserver.*;
 import org.cougaar.core.plugin.*;
 import org.cougaar.core.util.*;
 import org.cougaar.util.*;
-import org.cougaar.core.cluster.*;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.asset.*;
+import org.cougaar.core.blackboard.*;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.planning.ldm.asset.*;
 
 import org.cougaar.microedition.se.domain.*;
 
