@@ -41,7 +41,7 @@ public abstract class ControllerResource extends ResourceAdapter
     return units;
   }
 
-  public double getScalingFactor() {
+  public long getScalingFactor() {
     return scalingFactor;
   }
 
