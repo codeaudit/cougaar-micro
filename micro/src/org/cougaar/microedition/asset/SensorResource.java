@@ -28,6 +28,8 @@ public abstract class SensorResource extends Resource {
   public void init() {
     try {
       Hashtable t = getParameters();
+      if (t == null)
+        return;
       if (t.containsKey("units"))
         setUnits((String)t.get("units"));
       if (t.containsKey("chan"))
