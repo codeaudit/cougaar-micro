@@ -28,6 +28,7 @@ public class Subscription {
   private java.util.Vector changedList;
   private java.util.Vector removedList;
   private java.util.Vector memberList;
+  private boolean seeOwnChanges = true;
 
   protected void clearLists() {
     addedList.removeAllElements();
@@ -106,6 +107,24 @@ public class Subscription {
     return ((addedList.size()   != 0) ||
             (changedList.size() != 0) ||
             (removedList.size() != 0));
+  }
+
+  /**
+   * Controls whether changes to the objects on this subscription are
+   * seen by the plugin that publishes them.  The default is that plugins
+   * DO see their own changes.
+   * @param newSeeMyOwnChanges if false, the plugin doing publishChange() operations
+   *                           will not be notified (woken up) for the change
+   *                           on this subscription.
+   */
+  public void setSeeOwnChanges(boolean newSeeOwnChanges) {
+    seeOwnChanges = newSeeOwnChanges;
+  }
+  /**
+   * @return true if the subscriber plugin will see its own changes on this subscription.
+   */
+  public boolean isSeeOwnChanges() {
+    return seeOwnChanges;
   }
 
 }

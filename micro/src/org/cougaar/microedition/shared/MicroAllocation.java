@@ -20,25 +20,25 @@ public class MicroAllocation implements Encodable {
     setTask(task);
     task.setAllocation(this);
   }
-  private org.cougaar.microedition.shared.MicroAllocationResult reportedResult;
+  private MicroAllocationResult reportedResult;
 
   /**
    * Get the results (status) of this allocation.
    */
-  public org.cougaar.microedition.shared.MicroAllocationResult getReportedResult() {
+  public MicroAllocationResult getReportedResult() {
     return reportedResult;
   }
 
   /**
    * Set the results (status) of this allocation.
    */
-  public void setReportedResult(org.cougaar.microedition.shared.MicroAllocationResult newReportedResult) {
+  public void setReportedResult(MicroAllocationResult newReportedResult) {
     reportedResult = newReportedResult;
   }
 
   protected static String tag = "MicroAllocation";
-  private org.cougaar.microedition.shared.MicroAsset asset;
-  private org.cougaar.microedition.shared.MicroTask task;
+  private MicroAsset asset;
+  private MicroTask task;
   /**
    * XML encode this object and all sub-objects.
    */

@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.cougaar.microedition.io.*;
 import org.cougaar.microedition.cluster.*;
+import org.cougaar.microedition.plugin.*;
 
 /**
  * The Distributor registers PlugIn subscriptions, executing PlugIns based
@@ -81,27 +82,23 @@ public class Distributor {
   /**
    * Commit (finish) modifications to the blackboard.  Delta lists are updated
    * for all subscribers.
-   * @param subscriber The object that currently holds the "lock" on this transaction.
-   * @exception RuntimeException if the subscriber parameter does not equal the last
-   * subscriber given to openTransaction.
+   * @param thread The thread that currently holds the "lock" on this transaction.
+   * @exception RuntimeException if the thread parameter does not equal the last
+   * thread given to openTransaction.
    */
-  public void closeTransaction(Thread thread, Object subscriber) {
-    closeTransaction(thread, subscriber, true);
+
+  public void closeTransaction(Thread thread) {
+    closeTransaction(thread, null);
   }
 
-
   /**
-   * Commit (finish) modifications to the blackboard.  If "seeMyOwnChanges" is true, delta
-   * lists are updated for all subscribers.  If "seeMyOwnChanges" is false, changed lists
-   * for the transaction owner are not updated.
-   * @param subscriber The object that currently holds the "lock" on this transaction.
-   * @param seeMyOwnChanges if true, changes will be visible to the plugin making the changes.
-   *        if false, these changes will not be on this subscriber's changed list(s).
-   * @exception RuntimeException if the subscriber parameter does not equal the last
-   * subscriber given to openTransaction.
+   * Commit (finish) modifications to the blackboard.
+   * @param thread The thread that currently holds the "lock" on this transaction.
+   * @param publisher The plugin that is closing the transaction.  (can be null)
+   * @exception RuntimeException if the thread parameter does not equal the last
+   * thread given to openTransaction.
    */
-  public synchronized void closeTransaction(Thread thread, Object subscriber, boolean seeMyOwnChanges) {
-
+  public synchronized void closeTransaction(Thread thread, PlugIn publisher) {
   //System.out.println("CLOSE TRANSACTION thread: " +thread.getName() +" owner" +owner.getName());
   if (owner == null || thread != owner )
     throw new RuntimeException("Attempt to close unopen transaction");
@@ -134,7 +131,7 @@ public class Distributor {
     // update subscribers
     for (Enumeration subsenum = subs.elements(); subsenum.hasMoreElements();) {
       Subscriber s = (Subscriber)subsenum.nextElement();
-      if ((!seeMyOwnChanges) && (s.getPlugIn() == subscriber))
+      if ((!s.getSubscription().isSeeOwnChanges()) && (s.getPlugIn() == publisher))
         continue;
       Vector list = s.getSubscription().getChangedList();
       if (!list.contains(o))
@@ -284,8 +281,7 @@ public class Distributor {
 	  }
 	  runme.getSubscription().clearLists();
 	  // collect changed subscriptions
-	  closeTransaction(Thread.currentThread(), runme);
-  //        try {Thread.sleep(5000);} catch (Exception e) {}
+	  closeTransaction(Thread.currentThread(), runme.getPlugIn());
 	}
 	waitForSomeWork();
 
