@@ -32,9 +32,7 @@ import org.cougaar.lib.planserver.*;
 import org.cougaar.core.plugin.*;
 import org.cougaar.core.util.*;
 import org.cougaar.util.*;
-import org.cougaar.core.cluster.*;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.asset.*;
+import org.cougaar.core.blackboard.*;
 
 import org.cougaar.microedition.se.domain.*;
 
@@ -49,7 +47,7 @@ public class PSP_ReportHeatIndex extends PSP_BaseAdapter implements PlanServiceP
       if (o instanceof HeatIndexRecord)
       {
         HeatIndexRecord rec = (HeatIndexRecord)o;
-	return true;
+        return true;
       }
       return false;
     }
@@ -105,11 +103,11 @@ public class PSP_ReportHeatIndex extends PSP_BaseAdapter implements PlanServiceP
       HeatIndexRecord hirec = (HeatIndexRecord)rec_iter.next();
 
        cout.print(
-	"  <TR>\n" +
-	"    <TD width=350 valign=top><P>"+hirec.GetRecordTime()+"</P></TD>\n" +
-	"    <TD width=50 valign=top><P>"+hirec.GetPodId()+"</P></TD>\n" +
-	"    <TD width=150 valign=top><P>"+hirec.GetHeatIndex()+"</P></TD>\n" +
-	"  </TR>\n");
+        "  <TR>\n" +
+        "    <TD width=350 valign=top><P>"+hirec.GetRecordTime()+"</P></TD>\n" +
+        "    <TD width=50 valign=top><P>"+hirec.GetPodId()+"</P></TD>\n" +
+        "    <TD width=150 valign=top><P>"+hirec.GetHeatIndex()+"</P></TD>\n" +
+        "  </TR>\n");
     }
 
     cout.print("</TABLE>\r\n\n");

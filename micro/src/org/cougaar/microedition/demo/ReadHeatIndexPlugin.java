@@ -26,8 +26,8 @@ import java.util.*;
 import gov.nasa.jpl.sensorweb.Datatypes;
 
 import org.cougaar.core.plugin.SimplePlugin;
-import org.cougaar.core.cluster.IncrementalSubscription;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.core.blackboard.IncrementalSubscription;
+import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.core.plugin.util.PluginHelper;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.microedition.se.domain.*;
@@ -52,20 +52,20 @@ public class ReadHeatIndexPlugin extends SimplePlugin
   {
 
     if(debugging)
-	System.out.println("ReadHeatIndexPlugin: setupSubscriptions");
+        System.out.println("ReadHeatIndexPlugin: setupSubscriptions");
 
     assetSub = (IncrementalSubscription)subscribe(new UnaryPredicate() {
       public boolean execute(Object o) {
         if (o instanceof MicroAgent) {
           MicroAgent m = (MicroAgent)o;
           String possible_roles = m.getMicroAgentPG().getCapabilities();
-	  StringTokenizer st = new StringTokenizer(possible_roles, ",");
-	  while (st.hasMoreTokens())
-	  {
-	    String a_role = st.nextToken();
-	    if(a_role.equals(microAgentRole))
-		 return true;
-	  }
+          StringTokenizer st = new StringTokenizer(possible_roles, ",");
+          while (st.hasMoreTokens())
+          {
+            String a_role = st.nextToken();
+            if(a_role.equals(microAgentRole))
+                 return true;
+          }
         }
         return false;
       }});
@@ -93,14 +93,14 @@ public class ReadHeatIndexPlugin extends SimplePlugin
     if (micros.hasMoreElements())
     {
       if(debugging)
-	System.out.println("ReadHeatIndexPlugin: A heat index provider agent has been identified.");
+        System.out.println("ReadHeatIndexPlugin: A heat index provider agent has been identified.");
 
       heatindexprovider = (MicroAgent)micros.nextElement();
 
       //create a task for this agent
       if(reportheatindex != null)
       {
-	publishRemove(reportheatindex);
+        publishRemove(reportheatindex);
       }
 
       reportheatindex = theLDMF.newTask();
@@ -109,9 +109,9 @@ public class ReadHeatIndexPlugin extends SimplePlugin
       publishAdd(reportheatindex);
 
       Allocation allo = theLDMF.createAllocation(reportheatindex.getPlan(),
-						  reportheatindex,
-						  heatindexprovider,
-						  null, Role.ASSIGNED);
+                                                  reportheatindex,
+                                                  heatindexprovider,
+                                                  null, Role.ASSIGNED);
       publishAdd(allo);
 
     }
@@ -123,17 +123,17 @@ public class ReadHeatIndexPlugin extends SimplePlugin
       MicroAgent magent = (MicroAgent)micros.nextElement();
       if(magent == heatindexprovider)
       {
-	if(debugging)
-	  System.out.println("ReadHeatIndexPlugin: Heat index provider agent was removed.");
+        if(debugging)
+          System.out.println("ReadHeatIndexPlugin: Heat index provider agent was removed.");
 
-	//create a task for this agent
-	if(reportheatindex != null)
-	{
-	  publishRemove(reportheatindex);
-	  reportheatindex = null;
-	}
+        //create a task for this agent
+        if(reportheatindex != null)
+        {
+          publishRemove(reportheatindex);
+          reportheatindex = null;
+        }
 
-	heatindexprovider = null;
+        heatindexprovider = null;
 
       }
     }
@@ -147,22 +147,22 @@ public class ReadHeatIndexPlugin extends SimplePlugin
 
       if (ar==null)
       {
-	if(debugging) System.out.println("ReadHeatIndexPlugin allocation result null!");
-	continue;
+        if(debugging) System.out.println("ReadHeatIndexPlugin allocation result null!");
+        continue;
       }
 
       if (ar.isSuccess())
       {
-	int podid = (int)(ar.getValue((int)Datatypes.IDENTIFY)*1000.0);
-	long recordtime = (long)(ar.getValue((int)Datatypes.RECORDTIME)*1000.0);
-	double heatindex = (ar.getValue((int)Datatypes.HEAT_INDEX)*1000.0);
+        int podid = (int)(ar.getValue((int)Datatypes.IDENTIFY)*1000.0);
+        long recordtime = (long)(ar.getValue((int)Datatypes.RECORDTIME)*1000.0);
+        double heatindex = (ar.getValue((int)Datatypes.HEAT_INDEX)*1000.0);
 
-	if(debugging)
-	  System.out.println("ReadHeatIndexPlugin allocation result is " +podid+" "+recordtime+" "+heatindex);
+        if(debugging)
+          System.out.println("ReadHeatIndexPlugin allocation result is " +podid+" "+recordtime+" "+heatindex);
 
 
-	HeatIndexRecord hirec = new HeatIndexRecord(podid, new Date(recordtime), heatindex);
-	publishAdd(hirec);
+        HeatIndexRecord hirec = new HeatIndexRecord(podid, new Date(recordtime), heatindex);
+        publishAdd(hirec);
       }
     }
   }

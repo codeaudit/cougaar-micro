@@ -21,7 +21,7 @@
     <PSPName>alpine/demo/SOCIETY_METRICS.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
-    <Classname>org.cougaar.lib.planserver.psp.PSP_PluginLoader</Classname>
+    <Classname>org.cougaar.lib.planserver.psp.PSP_PlugInLoader</Classname>
     <PSPName>alpine/demo/PLUGIN_LOADER.PSP</PSPName>
   </element>
   <element type="org.cougaar.lib.planserver.NamedPSP">
