@@ -32,7 +32,7 @@ public class MicroEdition {
  static ObjectFactory factory = null;
 
 /**
- * This static variable stores the kvm (j2me) configuration. If null we assume tini (java1.1).
+ * This static variable stores the kvm (j2me) configuration. If null we assume java1.1.
  */
  static String kvmConfig;
  static {
@@ -41,8 +41,8 @@ public class MicroEdition {
      if (kvmConfig != null) {
        factory = (ObjectFactory)Class.forName("org.cougaar.microedition.kvm.KvmObjectFactory").newInstance();
      } else {
-       factory = (ObjectFactory)Class.forName("org.cougaar.microedition.tini.TiniObjectFactory").newInstance();
-     }
+       factory = (ObjectFactory)Class.forName("org.cougaar.microedition.jvm.JvmObjectFactory").newInstance();
+     } // I have no way to distinguish TINI from a java1.1  Good thing it doesn't matter now.
    } catch (Exception ex) {
      System.err.println("Error installing object factory");
      ex.printStackTrace();
