@@ -82,7 +82,22 @@ public class Distributor {
    * @exception RuntimeException if the subscriber parameter does not equal the last
    * subscriber given to openTransaction.
    */
-  public synchronized void closeTransaction(Object subscriber) {
+  public void closeTransaction(Object subscriber) {
+    closeTransaction(subscriber, true);
+  }
+
+
+  /**
+   * Commit (finish) modifications to the blackboard.  If "seeMyOwnChanges" is true, delta
+   * lists are updated for all subscribers.  If "seeMyOwnChanges" is false, changed lists
+   * for the transaction owner are not updated.
+   * @param subscriber The object that currently holds the "lock" on this transaction.
+   * @param seeMyOwnChanges if true, changes will be visible to the plugin making the changes.
+   *        if false, these changes will not be on this subscriber's changed list(s).
+   * @exception RuntimeException if the subscriber parameter does not equal the last
+   * subscriber given to openTransaction.
+   */
+  public synchronized void closeTransaction(Object subscriber, boolean seeMyOwnChanges) {
 
   if (subscriber != owner)
     throw new RuntimeException("Attempt to close unopen transaction");
@@ -115,6 +130,8 @@ public class Distributor {
     // update subscribers
     for (Enumeration subsenum = subs.elements(); subsenum.hasMoreElements();) {
       Subscriber s = (Subscriber)subsenum.nextElement();
+      if ((!seeMyOwnChanges) && (s.getPlugIn() == subscriber))
+        continue;
       Vector list = s.getSubscription().getChangedList();
       if (!list.contains(o))
         list.addElement(o);
