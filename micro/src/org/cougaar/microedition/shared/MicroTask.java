@@ -33,7 +33,8 @@ public class MicroTask implements Encodable {
     prepositionalPhrases = mt.prepositionalPhrases;
     // (don't want to null out the allocation)
     allocation = mt.allocation;
-    allocation.setTask(this);
+    if (allocation != null)
+      allocation.setTask(this);
   }
 
   /**
