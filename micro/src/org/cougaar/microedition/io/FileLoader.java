@@ -28,7 +28,7 @@ public interface FileLoader {
 	 * @param   hostPort	use default if = zero, default for http is 80
 	 * @since   Oct 2, 2000
 	 */
-	void configure(String protocol, String hostName, short hostPort);
+  void configure(String protocol, String hostName, short hostPort);
 
 	/**
 	 * Returns the contents of the pnp String. (pnp=Protocol + hostName + hostPort).
