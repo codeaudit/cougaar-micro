@@ -155,14 +155,24 @@ public class TiniMach5LocomotionResource extends ControllerResource
 
   public void  forward() {
     int spd = (int)speed;
-    UpdatePositionState(Mach5Command.GOFORWARD);
-    sendMsg("SV "+spd+" "+spd+"\n");
+    if(spd == 0)
+       stop();
+    else
+    {
+      UpdatePositionState(Mach5Command.GOFORWARD);
+      sendMsg("SV "+spd+" "+spd+"\n");
+    }
   }
 
   public void backward() {
     int spd = 0 - (int)speed;
-    UpdatePositionState(Mach5Command.GOBACKWARD);
-    sendMsg("SV "+spd+" "+spd+"\n");
+    if(spd == 0)
+      stop();
+    else
+    {
+      UpdatePositionState(Mach5Command.GOBACKWARD);
+      sendMsg("SV "+spd+" "+spd+"\n");
+    }
   }
 
   private Thread owner = null;
@@ -514,11 +524,27 @@ public class TiniMach5LocomotionResource extends ControllerResource
 
   public void modifyControl(String controlparameter, String controlparametervalue)
   {
-    if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.SPEEDPREP]))
+    try
     {
-      Double temp = new Double(controlparametervalue);
-      setSpeed((long)temp.doubleValue());
-      System.out.println("TiniMach5LocomotionResource: speed set: " +getSpeed());
+      if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.VELOCITYPREP]))
+      {
+	Double temp = new Double(controlparametervalue);
+	setSpeed((long)temp.doubleValue());
+	System.out.println("TiniMach5LocomotionResource: speed set: " +getSpeed());
+      }
+
+      if(controlparameter.equalsIgnoreCase(Constants.Robot.prepositions[Constants.Robot.ORIENTATIONPREP]))
+      {
+	Double temp = new Double(controlparametervalue);
+	double degrees = temp.doubleValue();
+	System.out.println("TiniMach5LocomotionResource: set orientation: " +degrees +" degrees");
+	stop();
+	if(degrees < 0)
+	  rotate(COUNTER_CLOCKWISE, (long)(-degrees));
+	else
+	  rotate(CLOCKWISE, (long)(degrees));
+      }
     }
+    catch (Exception ex) {}
   }
 }
