@@ -1,0 +1,33 @@
+This is a README file for the src directory under micro...
+
+Welcome to the top of the Cougaar MicroEdition source tree. Like
+the Standard Edition. All of our code lives under org.cougaar.
+From there you will find a microedition directory, under which 
+exists the individual directories for .java files. For example:
+
+org/cougaar/microedition/cluster/Node.java, where the top main method
+which you would invoke to kick off a Micro Cougaar lives.
+
+org.cougaar.microedition.io.*; which you would import to include
+final processing target independent interfaces for socket io, 
+among other things.
+
+org.cougaar.microedition.plugin; which is the namespace of the 
+package which provides the abstract classes to support plugins,
+among other things.
+
+Other directories under src besides org are com and tutorial. Tutorial
+contains some hacked versions of the tutorial code from the Alp Plugin
+Developers course. The com directory contains code specific to support 
+the Dallas Semiconductor iButtons. These files are not needed for a KVM
+distribution as they are specific to a TINI board and its ancillary H/W.
+Speaking of code specific to a particular final processing target (TINI
+or J2ME-CLDC/KVM) you will find under the microedition subdirectory a TINI
+directory and a KVM directory which is where ".java" files specific to 
+each target lives.
+
+Since java has no compile time conditionals, run time conditionals and the
+System.getProperty("...") method were used to determine at runtime which
+target we are running on in order to use appropriate classes accordingly...
+
+mtiberio@bbn.com

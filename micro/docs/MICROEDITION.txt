@@ -1,0 +1,28 @@
+This is a README file for the microedition directory under src/org/cougaar...
+
+Welcome to the org/cougaar/microedition directory from here you will
+find the meat of the MicroEdition source code. This directory contains
+a number of subdirectories, descriptions of same follows:
+
+asset	a directory where code concerning microassets and microclusters lives.
+cluster	where the top level Node.java file and the "main" for MicroCluster lives.
+demo	code used at the December 2000 ALP Workshop to show ME capabilities.
+domain	place where SE (Big Cougaar) code specific to support ME's lives. We
+	call this domain cougaarMEdomain.
+io	Socket interfaces, listener, reader and transport code lives here.
+kvm	kvm (j2me-cldc) specific code lives here.
+ldm	Subscriptoin, subscriber and distributor code lives here.
+plugin	Generic plugin classes and interfaces.
+shared	a directory specifically for files shared between the ME and SE.
+	includes some xml and character handling code.
+tini	tini specific code lives here.
+util	grab bag of utility routines, MicroEdition.java determines target type.
+
+NOTE:
+If you are coding for a specific target, please put such code in the appropriate
+tini or kvm (or start another) directory. KVM and TINI each have specific shortcomings
+and ommisions. If you change code in any of the non target specific directories, 
+please be considerate of the fact that this code will need to be compiled under either
+or both of the targets...
+
+mtiberio@bbn.com

@@ -1,0 +1,46 @@
+This a README file for the configs directory under micro...
+
+This directory is where the ".ini" files you know so well from
+standard edition cougaar live.  We have developed a ".xml" file
+interface for all data transport between SE and ME cougaars.  One use of
+this xml interface is for ME node initialization.  In order to initialize
+a MicroEdition Cougaar of node name foo, you must have a file by the
+name of "foo.xml" existing in this directory.  To see how this is used
+and what it contains, please read on.
+
+When a MicroCougaar is started it is invoked with three arguments
+1) its arbitrary node name, which is actually a key to its role.
+2) the ip address of the StandardEdition Cougaar it will be dealing with (mom)
+3) the port on which mom has a ServerSocket listening.
+
+The first thing the ME does is attempt to register with the SE (mom) at
+the ip address and port given to it on the command line.  The ME passes
+its node name to mom, and mom lookes for a file named "nodename".xml in
+the configs directory.  Mom then passes this file to the ME so the ME knows
+which plugins to instantiate. Below is an example file called Tini1.xml
+used in our workshop demo scenario...
+
+
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>Ambient Temp in Degrees Celsius</description>
+  <plugin sleeptime="2000" blabbo="A">org.cougaar.microedition.tini.TiniTemperaturePlugIn</plugin>
+  <plugin sleeptime="2005" foobar = "9">org.cougaar.microedition.tini.TiniLightPlugIn</plugin>
+  <!-- Infrastructure PlugIns -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+</NodeConfiguration>
+
+The xml version tag is standard xml boilerplate.  The 3 plugin lines
+below the xml comment: <!-- Infrastructure PlugIns --> are needed for
+all ME Clusters that intend to do much of anything.  The description is
+not really used by the ME, but is nice to have for comment/documentation
+purposes.  The 2 remaining application defining plugin declarations
+show the method by which parameters are passed to a plugin at runtime.
+value strings can be associated with a tag by including the quoted strings
+after an equal sign and said tags.  White space is optional on either
+side of the equal sign, however the list of parameters=value pairs
+cannot be comma separated and must be space separated.
+
+mtiberio@bbn.com
