@@ -26,7 +26,7 @@ public class DS2450
 
   static int      madvsize;
   static int      timeout;
-  boolean debugging = false;
+  boolean debugging =  false;
 
   /**
    * Create an object for reading and setting the DS2450 device at
@@ -462,7 +462,7 @@ public class DS2450
    */
   public double readVoltage(int adindex, int adchannel)
   {
-    System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+")");
+    if (debugging) System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+")");
     double voltage = 0.0;
     try
     {
@@ -490,7 +490,7 @@ public class DS2450
     catch (Throwable t)
     {
     }
-    System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+") leaving method");
+    if (debugging) System.out.println("in DS2450.readVoltage("+adindex+", "+adchannel+") leaving method");
     return voltage;
   }
 
