@@ -55,6 +55,8 @@ public class SimpleSensorResource extends SensorResource
 
   public SimpleSensorResource(String ssname, String unitsname)
   {
+    System.out.println("SimpleSensorResource "+ssname+" created.");
+
     setName(ssname);
     units = unitsname;
   }

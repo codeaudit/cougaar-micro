@@ -1,0 +1,12 @@
+[Prototype]     Organization          
+
+[UIC]		"PodMonitor"  
+
+[Relationship] 
+
+[TypeIdentificationPG]                       
+TypeIdentification		String	"PodMonitor" 
+Nomenclature			String	"PodMonitor" 
+AlternateTypeIdentification	String	"PodMonitor"  
+
+[OrganizationPG] Roles	Collection<Role>  "PodMonitor"  

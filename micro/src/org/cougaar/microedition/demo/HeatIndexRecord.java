@@ -38,10 +38,12 @@ public class HeatIndexRecord
   {
     return podid;
   }
+
   public Date GetRecordTime()
   {
     return timeofrecord;
   }
+
   public double GetHeatIndex()
   {
     return heatindexvalue;
@@ -51,3 +53,4 @@ public class HeatIndexRecord
   private double heatindexvalue;
   private Date timeofrecord;
 }
+

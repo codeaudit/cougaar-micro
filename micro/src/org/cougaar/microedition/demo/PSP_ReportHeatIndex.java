@@ -78,13 +78,41 @@ public class PSP_ReportHeatIndex extends PSP_BaseAdapter implements PlanServiceP
       PlanServiceUtilities psu) throws Exception
   {
     Collection recs = psc.getServerPlugInSupport().queryForSubscriber( new AllRecords());
+    HeatIndexRecordComparator hirc = new HeatIndexRecordComparator();
+
+    TreeSet timeordered = new TreeSet(hirc);
+
     Iterator rec_iter = recs.iterator();
-    cout.println("Pod ID\t\t Time\t\t HeatIndex(F)");
     while (rec_iter.hasNext())
     {
       HeatIndexRecord hirec = (HeatIndexRecord)rec_iter.next();
-      cout.println(hirec.GetPodId()+"\t\t "+hirec.GetRecordTime()+"\t\t "+hirec.GetHeatIndex());
+      timeordered.add(hirec);
     }
+
+    rec_iter = timeordered.iterator();
+
+    cout.print(
+    "<TABLE border=1>\n" +
+    "  <TR>\n" +
+    "    <TD width=350 valign=top><P>Time</P></TD>\n" +
+    "    <TD width=50 valign=top><P>Pod ID</P></TD>\n" +
+    "    <TD width=150 valign=top><P>Heat Index</P></TD>\n" +
+    "  </TR>\n");
+
+
+    while (rec_iter.hasNext())
+    {
+      HeatIndexRecord hirec = (HeatIndexRecord)rec_iter.next();
+
+       cout.print(
+	"  <TR>\n" +
+	"    <TD width=350 valign=top><P>"+hirec.GetRecordTime()+"</P></TD>\n" +
+	"    <TD width=50 valign=top><P>"+hirec.GetPodId()+"</P></TD>\n" +
+	"    <TD width=150 valign=top><P>"+hirec.GetHeatIndex()+"</P></TD>\n" +
+	"  </TR>\n");
+    }
+
+    cout.print("</TABLE>\r\n\n");
   }
 
   public boolean returnsXML()
@@ -104,5 +132,29 @@ public class PSP_ReportHeatIndex extends PSP_BaseAdapter implements PlanServiceP
 
   public void subscriptionChanged(Subscription subscription)
   {
+  }
+
+  class HeatIndexRecordComparator implements Comparator
+  {
+    public int compare(Object o1, Object o2)
+    {
+      HeatIndexRecord rec1 = (HeatIndexRecord)o1;
+      HeatIndexRecord rec2 = (HeatIndexRecord)o2;
+
+      if(rec1.GetRecordTime().getTime() < rec2.GetRecordTime().getTime()) return (-1);
+      if(rec1.GetRecordTime().getTime() > rec2.GetRecordTime().getTime()) return(1);
+
+      return 0;
+    }
+
+    public boolean equals(Object o1, Object o2)
+    {
+      HeatIndexRecord rec1 = (HeatIndexRecord)o1;
+      HeatIndexRecord rec2 = (HeatIndexRecord)o2;
+
+      if(rec1.GetRecordTime().getTime() == rec2.GetRecordTime().getTime()) return true;
+
+      return false;
+    }
   }
 }

@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
-  <description>PodOne,HeatIndexProvider</description>
-  <port>2221</port>
-  <plugin podNumber="1" datatype="correction" datavalue="0x0888" sleeptime="1000">
+  <description>PodFour</description>
+  <port>2224</port>
+  <plugin podNumber="4" datatype="correction" datavalue="0x0908" sleeptime="1000">
     gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
   </plugin>
 
-  <plugin podNumber="1" datatype="temp" datavalue="0x014D" sleeptime="1000">
+  <plugin podNumber="4" datatype="temp" datavalue="0x010f" sleeptime="1000">
     gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
   </plugin>
 
-  <plugin podNumber="1" datatype="humidity" datavalue="0x0207" sleeptime="1000">
+  <plugin podNumber="4" datatype="humidity" datavalue="0x0323" sleeptime="1000">
     gov.nasa.jpl.sensorweb.GenerateRawRecordPlugIn
   </plugin>
 
@@ -19,12 +19,9 @@
   <plugin aggregate="15">gov.nasa.jpl.sensorweb.HeatIndexPlugIn</plugin>
   <plugin reapinterval="30" expiration="120">gov.nasa.jpl.sensorweb.PodIdentificationPlugIn</plugin>
 
-  <plugin>gov.nasa.jpl.sensorweb.MeasureHeatIndexPlugIn</plugin>
-
-  <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin>
-
   <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
   <plugin>org.cougaar.microedition.plugin.AgentQueryPlugIn</plugin>
+  <plugin host="192.233.51.156">gov.nasa.jpl.sensorweb.SWCommSimulatorPlugIn</plugin>
 
 </NodeConfiguration>
