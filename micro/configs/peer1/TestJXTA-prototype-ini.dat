@@ -1,0 +1,12 @@
+[Prototype]     Organization          
+
+[UIC]		"TestJXTA"  
+
+[Relationship] 
+
+[TypeIdentificationPG]                       
+TypeIdentification		String	"TestJXTA" 
+Nomenclature			String	"TestJXTA" 
+AlternateTypeIdentification	String	"TestJXTA"  
+
+[OrganizationPG] Roles	Collection<Role>  "TestJXTA"  
