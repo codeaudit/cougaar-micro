@@ -9,6 +9,12 @@
 #7=cougaar.microedition.tini
 #8=cougaar.microedition.util
 #9=..\TINI\Node.tini
+idl[0].ProcessIDL=false
+runtime.0[0].RunnableType=com.borland.jbuilder.runtime.ApplicationRunner
+runtime.0[0].application.class=cougaar.microedition.cluster.Node
+runtime.0[0].application.vmparameters=Temperature localhost 1235
+runtime.0[0].jsprunner.docbase=.
+runtime.0[0].jsprunner.jspfile=../../../../JBuilder4/bin
 sys[0].AuthorLabel=@author
 sys[0].BackupPath=..\src
 sys[0].CheckStable=1
