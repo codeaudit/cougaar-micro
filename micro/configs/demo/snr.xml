@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<NodeConfiguration>
+  <description>SONARSensor</description>
+
+  <resource> org.cougaar.microedition.tini.TiniSONARController</resource>
+
+  <plugin resource="TiniSONARController" command="ReportDetection" parameter="Threshold" parametervalue="2.0"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+
+  <!-- Infrastructure PlugIns -->
+  <plugin>org.cougaar.microedition.plugin.MessageRecvPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.MessageSendPlugIn</plugin>
+  <plugin>org.cougaar.microedition.plugin.ClusterQueryPlugIn</plugin>
+</NodeConfiguration>
