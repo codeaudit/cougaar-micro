@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <NodeConfiguration>
-  <description>PositionProvider</description>
+  <description>PositionProvider,WeaponProvider</description>
 
-  <resource> org.cougaar.microedition.tini.TiniGPSLocationControllerResource</resource>
+  <resource hfom="1.0"> org.cougaar.microedition.tini.TiniGPSLocationControllerResource</resource>
 
   <plugin resource="TiniGPSLocationControllerResource" command="ReportPosition"> org.cougaar.microedition.plugin.ControlPlugIn</plugin>
+
+  <plugin buzztime="10000" weaponspeed="0.5">org.cougaar.microedition.tini.TiniBuzzerPlugIn</plugin>
 
   <!-- Infrastructure PlugIns -->
   <plugin>org.cougaar.microedition.tini.TiniKillPlugIn</plugin>
