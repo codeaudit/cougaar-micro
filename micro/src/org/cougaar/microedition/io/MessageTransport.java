@@ -24,15 +24,17 @@ public class MessageTransport {
  */
   private PacketReader reader = null;
 
+  private String nodeName = null;
 /**
  * This constructor starts a listening/reader thread as well as instantiates a sender object.
  *
  * @param   myListenPort    the port number the reader thread should listen on.
  */
-  public MessageTransport (int myListenPort) {
+  public MessageTransport (int myListenPort, String name) {
     reader = new PacketReader(myListenPort);
     reader.setMessageTransport(this);
     reader.start();
+    nodeName = name;
   }
 
 /**
@@ -86,13 +88,13 @@ public class MessageTransport {
 
   public void sendMessage(Encodable msg, ClusterId dest) {
     StringBuffer buf = new StringBuffer();
-    buf.append("Micro" + ":");
+    buf.append(nodeName + ":");
     buf.append("<?xml version=\"1.0\"?>");
     msg.encode(buf);
     String ipAddress = dest.getIpAddress();
     short port = dest.getPort();
 
-    System.out.println("Sending: "+msg+" to "+ipAddress);
+    System.out.println("Sending: "+buf.toString()+" to "+ipAddress);
 
     sendMessage(ipAddress, port, buf.toString());
   }
