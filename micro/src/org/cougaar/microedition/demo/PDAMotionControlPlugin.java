@@ -56,9 +56,9 @@ public class PDAMotionControlPlugin extends SimplePlugin
   public void setupSubscriptions() {
     System.out.println("PDAMotionControlPlugin::setupSubscriptions");
 
-    Enumeration enum = getParameters().elements();
-    while (enum.hasMoreElements()) {
-      String param = (String)enum.nextElement();
+    Enumeration enm = getParameters().elements();
+    while (enm.hasMoreElements()) {
+      String param = (String)enm.nextElement();
       velocityMultiplier = Integer.parseInt(param);
       System.out.println("PDAMotionControlPlugin: velocityMultiplier set to: "+velocityMultiplier);
     }

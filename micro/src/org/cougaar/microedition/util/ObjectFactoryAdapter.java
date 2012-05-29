@@ -53,8 +53,8 @@ public abstract class ObjectFactoryAdapter implements ObjectFactory {
 
   public Object getObjectME(Class ofType) {
     Object ret = null;
-    for (Enumeration enum = classes.elements(); enum.hasMoreElements();) {
-      Class clazz = (Class) enum.nextElement();
+    for (Enumeration enm = classes.elements(); enm.hasMoreElements();) {
+      Class clazz = (Class) enm.nextElement();
       if (ofType.isAssignableFrom(clazz)) {
         try {
           ret = clazz.newInstance();

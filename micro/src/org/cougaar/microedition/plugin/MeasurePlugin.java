@@ -146,17 +146,17 @@ System.out.println("Sending "+prepPhrase+": " + values[0]);
   }
 
   public void execute() {
-    Enumeration enum = sub.getAddedList().elements();
-    while (enum.hasMoreElements()) {
+    Enumeration enm = sub.getAddedList().elements();
+    while (enm.hasMoreElements()) {
 System.out.println("MeasurePlugin::got Measure "+prepPhrase+" Task");
-      MicroTask mt = (MicroTask)enum.nextElement();
+      MicroTask mt = (MicroTask)enm.nextElement();
       monitorTask(mt, sleepTime);
     }
 
     if (mySensorResource == null) {
-      enum = resourceSub.getAddedList().elements();
-      while (enum.hasMoreElements()) {
-        SensorResource sr = (SensorResource)enum.nextElement();
+      enm = resourceSub.getAddedList().elements();
+      while (enm.hasMoreElements()) {
+        SensorResource sr = (SensorResource)enm.nextElement();
         if (prepPhrase.indexOf(sr.getName()) >= 0) {
 System.out.println("MeasurePlugin::found "+sr.getName()+" Resource");
           mySensorResource = sr;

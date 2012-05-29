@@ -165,7 +165,7 @@ public class UGSBogusTiniPlugin extends SimplePlugin {
       }
     }
 
-    Enumeration enum;
+    Enumeration enm;
 
     Enumeration tasks = targetSub.elements();
     while (tasks.hasMoreElements()) {
@@ -190,9 +190,9 @@ System.out.println("nsofUGSBogusTiniPlugin Execute -- xfering rec to est");
     }
 
 
-    enum = positionSub.elements();
-    while (enum.hasMoreElements()) {
-      Task t=(Task)enum.nextElement();
+    enm = positionSub.elements();
+    while (enm.hasMoreElements()) {
+      Task t=(Task)enm.nextElement();
       if (t.getPlanElement() != null) {
         System.out.println("nsofUGSBogusTiniPlugin Execute -- pos task has planElement "+t);
         continue; // only want unallocated tasks
@@ -202,9 +202,9 @@ System.out.println("nsofUGSBogusTiniPlugin Execute -- xfering rec to est");
     }
 
 
-    enum = targetSub.getRemovedList();
-    while (enum.hasMoreElements()) {
-      processRemovedTargetingTask((Task)enum.nextElement());
+    enm = targetSub.getRemovedList();
+    while (enm.hasMoreElements()) {
+      processRemovedTargetingTask((Task)enm.nextElement());
     }
 
     if (debugLevel > 60) System.out.println("nsofUGSBogusTiniPlugin Leaving execute now");

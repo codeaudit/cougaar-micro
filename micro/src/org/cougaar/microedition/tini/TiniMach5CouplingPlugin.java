@@ -77,16 +77,16 @@ public class TiniMach5CouplingPlugin extends PluginAdapter {
 
     System.out.println("TiniMach5CouplingPlugin.execute()");
 
-    Enumeration enum = pos_resourceSub.getAddedList().elements();
-    if (enum.hasMoreElements())
+    Enumeration enm = pos_resourceSub.getAddedList().elements();
+    if (enm.hasMoreElements())
     {
-      posresource = (TiniMach5PositionResource)enum.nextElement();
+      posresource = (TiniMach5PositionResource)enm.nextElement();
     }
 
-    enum = loc_resourceSub.getAddedList().elements();
-    if (enum.hasMoreElements())
+    enm = loc_resourceSub.getAddedList().elements();
+    if (enm.hasMoreElements())
     {
-      locresource = (TiniMach5LocomotionResource)enum.nextElement();
+      locresource = (TiniMach5LocomotionResource)enm.nextElement();
     }
 
     if(posresource != null && locresource != null)

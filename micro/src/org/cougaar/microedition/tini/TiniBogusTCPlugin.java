@@ -100,10 +100,10 @@ public class TiniBogusTCPlugin extends PluginAdapter
 
   public void execute()
   {
-    Enumeration enum = taskSub.getRemovedList().elements();
-    while (enum.hasMoreElements())
+    Enumeration enm = taskSub.getRemovedList().elements();
+    while (enm.hasMoreElements())
     {
-      MicroTask mt = (MicroTask)enum.nextElement();
+      MicroTask mt = (MicroTask)enm.nextElement();
       System.out.println("Got removed "+mt.getVerb()+" task");
       if(pushthread != null)
       {
@@ -115,9 +115,9 @@ public class TiniBogusTCPlugin extends PluginAdapter
       }
     }
 
-    enum = taskSub.getAddedList().elements();
-    while (enum.hasMoreElements()) {
-      MicroTask mt = (MicroTask)enum.nextElement();
+    enm = taskSub.getAddedList().elements();
+    while (enm.hasMoreElements()) {
+      MicroTask mt = (MicroTask)enm.nextElement();
       System.out.println("Bogus Targeting: started thread");
 
       for (Enumeration eprep = mt.getPrepositionalPhrases().elements();
@@ -147,10 +147,10 @@ public class TiniBogusTCPlugin extends PluginAdapter
 
     }
 
-    enum = taskSub.getChangedList().elements();
-    while (enum.hasMoreElements())
+    enm = taskSub.getChangedList().elements();
+    while (enm.hasMoreElements())
     {
-      MicroTask mt = (MicroTask)enum.nextElement();
+      MicroTask mt = (MicroTask)enm.nextElement();
       System.out.println("Got changed "+mt.getVerb()+" task");
     }
   }

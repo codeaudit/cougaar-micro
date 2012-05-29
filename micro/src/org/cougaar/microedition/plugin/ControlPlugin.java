@@ -152,10 +152,10 @@ public class ControlPlugin extends PluginAdapter {
   {
 
     if (debugging)System.out.println("ControlPlugin: execute()");
-    Enumeration enum = resourceSub.getAddedList().elements();
-    if (resource==null && enum.hasMoreElements())
+    Enumeration enm = resourceSub.getAddedList().elements();
+    if (resource==null && enm.hasMoreElements())
     {
-      resource = (ControllerResource)enum.nextElement();
+      resource = (ControllerResource)enm.nextElement();
       resource.modifyControl(controlParameter,  controlParameterValue);
       if (debugging) {
           System.out.println("ControlPlugin: resource found: "+resource.getName());
@@ -164,11 +164,11 @@ public class ControlPlugin extends PluginAdapter {
       }
     }
 
-    enum = taskSub.getAddedList().elements();
-    while (enum.hasMoreElements())
+    enm = taskSub.getAddedList().elements();
+    while (enm.hasMoreElements())
     {
       if (debugging)System.out.println("ControlPlugin: got added "+controlCommand+" task");
-      MicroTask mt = (MicroTask)enum.nextElement();
+      MicroTask mt = (MicroTask)enm.nextElement();
 
       if (resource!=null)
       {
@@ -191,30 +191,30 @@ public class ControlPlugin extends PluginAdapter {
       }
     }
 
-    enum = taskSub.getChangedList().elements();
-    while (enum.hasMoreElements())
+    enm = taskSub.getChangedList().elements();
+    while (enm.hasMoreElements())
     {
-      MicroTask mt = (MicroTask)enum.nextElement();
+      MicroTask mt = (MicroTask)enm.nextElement();
       if (debugging)System.out.println("ControlPlugin: got changed "+controlCommand+" task");
       SetControlParameter(mt);
     }
 
-    enum = taskSub.getRemovedList().elements();
-    while (enum.hasMoreElements()) {
-      MicroTask mt = (MicroTask)enum.nextElement();
+    enm = taskSub.getRemovedList().elements();
+    while (enm.hasMoreElements()) {
+      MicroTask mt = (MicroTask)enm.nextElement();
       if (debugging)System.out.println("ControlPlugin: got removed "+controlCommand+" task");
       taskthreadstokill.addElement(mt);
     }
     
-    enum = resourceSub.getChangedList().elements();
-    if (enum.hasMoreElements())
+    enm = resourceSub.getChangedList().elements();
+    if (enm.hasMoreElements())
     {
-      resource = (ControllerResource)enum.nextElement();
+      resource = (ControllerResource)enm.nextElement();
       if (debugging)System.out.println("ControlPlugin: resource changed: "+resource.getName());
-      Enumeration tenum = taskSub.getMemberList().elements();
-      while (tenum.hasMoreElements())
+      Enumeration tenm = taskSub.getMemberList().elements();
+      while (tenm.hasMoreElements())
       {
-        MicroTask mt = (MicroTask)tenum.nextElement();
+        MicroTask mt = (MicroTask)tenm.nextElement();
         allocate(mt, false);
       }
     }
@@ -225,10 +225,10 @@ public class ControlPlugin extends PluginAdapter {
     if (mt.getPrepositionalPhrases() == null)
      return;
 
-    for (Enumeration enum= mt.getPrepositionalPhrases().elements();
-	  enum.hasMoreElements(); )
+    for (Enumeration enm= mt.getPrepositionalPhrases().elements();
+	  enm.hasMoreElements(); )
     {
-      MicroPrepositionalPhrase preps=(MicroPrepositionalPhrase)enum.nextElement();
+      MicroPrepositionalPhrase preps=(MicroPrepositionalPhrase)enm.nextElement();
       if (preps!=null)
       {
 	controlParameter = preps.getPreposition();

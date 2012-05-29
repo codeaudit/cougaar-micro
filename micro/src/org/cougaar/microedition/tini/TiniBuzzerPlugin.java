@@ -105,18 +105,18 @@ public class TiniBuzzerPlugin extends PluginAdapter
 
   public void execute()
   {
-    Enumeration enum = buzzTask.getAddedList().elements();
-    while (enum.hasMoreElements())
+    Enumeration enm = buzzTask.getAddedList().elements();
+    while (enm.hasMoreElements())
     {
-      MicroTask mt = (MicroTask)enum.nextElement();
+      MicroTask mt = (MicroTask)enm.nextElement();
       //System.out.println("TiniBuzzerPlugin: got added task " +mt);
       if (mt.getPrepositionalPhrases() != null)
       {
 	System.out.println("TiniBuzzerPlugin: examining prepositional phrases");
-	for (Enumeration enumprep = mt.getPrepositionalPhrases().elements();
-	      enumprep.hasMoreElements(); )
+	for (Enumeration enmprep = mt.getPrepositionalPhrases().elements();
+	      enmprep.hasMoreElements(); )
 	{
-	  MicroPrepositionalPhrase preps=(MicroPrepositionalPhrase)enumprep.nextElement();
+	  MicroPrepositionalPhrase preps=(MicroPrepositionalPhrase)enmprep.nextElement();
 
 	  if (preps!=null)
 	  {
@@ -154,10 +154,10 @@ public class TiniBuzzerPlugin extends PluginAdapter
       }
     }
 
-    enum = timeAlloc.getChangedList().elements();
-    while (enum.hasMoreElements())
+    enm = timeAlloc.getChangedList().elements();
+    while (enm.hasMoreElements())
     {
-      MicroAllocation ma = (MicroAllocation)enum.nextElement();
+      MicroAllocation ma = (MicroAllocation)enm.nextElement();
       MicroAllocationResult mar = ma.getReportedResult();
       if (mar == null)
         continue;

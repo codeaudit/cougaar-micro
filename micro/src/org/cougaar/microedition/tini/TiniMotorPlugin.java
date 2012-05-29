@@ -95,16 +95,16 @@ public class TiniMotorPlugin extends PluginAdapter {
 
   public void execute() {
     if (debugging) System.out.println("MotorPlugin: execute");
-    Enumeration enum = sub.getAddedList().elements();
-    while (enum.hasMoreElements()) {
-      MicroTask mt = (MicroTask)enum.nextElement();
+    Enumeration enm = sub.getAddedList().elements();
+    while (enm.hasMoreElements()) {
+      MicroTask mt = (MicroTask)enm.nextElement();
       startMotor(mt);
     }
 
     // could be a direction change?
-    enum = sub.getChangedList().elements();
-    while (enum.hasMoreElements()) {
-      MicroTask mt = (MicroTask)enum.nextElement();
+    enm = sub.getChangedList().elements();
+    while (enm.hasMoreElements()) {
+      MicroTask mt = (MicroTask)enm.nextElement();
       startMotor(mt);
     }
 

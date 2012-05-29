@@ -118,22 +118,22 @@ public class UGSEmuPlugin extends SimplePlugin {
   public void execute() {
     if (debugLevel > 60) System.out.println("nsofUGSEmuPlugin Execute ");
 
-    Enumeration enum;
+    Enumeration enm;
 
-    enum = targetSub.getAddedList();
-    while (enum.hasMoreElements()) {
-      processNewTargetingTask((Task)enum.nextElement());
+    enm = targetSub.getAddedList();
+    while (enm.hasMoreElements()) {
+      processNewTargetingTask((Task)enm.nextElement());
     }
 
-    enum = positionSub.getAddedList();
-    while (enum.hasMoreElements()) {
-      processNewPositionTask((Task)enum.nextElement());
+    enm = positionSub.getAddedList();
+    while (enm.hasMoreElements()) {
+      processNewPositionTask((Task)enm.nextElement());
     }
 
 
-    enum = targetSub.getRemovedList();
-    while (enum.hasMoreElements()) {
-      processRemovedTargetingTask((Task)enum.nextElement());
+    enm = targetSub.getRemovedList();
+    while (enm.hasMoreElements()) {
+      processRemovedTargetingTask((Task)enm.nextElement());
     }
 
 

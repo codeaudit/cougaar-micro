@@ -149,9 +149,9 @@ public abstract class PluginAdapter implements Plugin {
     MicroPrepositionalPhrase ret = null;
     Vector prepositions = mt.getPrepositionalPhrases();
     if (prepositions != null) {
-      Enumeration enum = prepositions.elements();
-      while (enum.hasMoreElements()) {
-        MicroPrepositionalPhrase mpp = (MicroPrepositionalPhrase)enum.nextElement();
+      Enumeration enm = prepositions.elements();
+      while (enm.hasMoreElements()) {
+        MicroPrepositionalPhrase mpp = (MicroPrepositionalPhrase)enm.nextElement();
         if (mpp.getPreposition().equals(prep)) {
           ret = mpp;
           break;

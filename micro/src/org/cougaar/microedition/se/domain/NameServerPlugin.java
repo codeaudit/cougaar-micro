@@ -197,7 +197,7 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
           if (lr != null)
             agents.addElement(lr);
         }
-        Enumeration agent_enum = agents.elements();
+        Enumeration agent_enm = agents.elements();
 
         StringBuffer lookupResponse = new StringBuffer();
         String agentName = "unknown";
@@ -209,8 +209,8 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
         lookupResponse.append(agentName + ":");
         lookupResponse.append(Encodable.xmlPreamble);
         lookupResponse.append("<list>");
-        while (agent_enum.hasMoreElements()) {
-          LookupResponse lr = (LookupResponse)agent_enum.nextElement();
+        while (agent_enm.hasMoreElements()) {
+          LookupResponse lr = (LookupResponse)agent_enm.nextElement();
           lr.encode(lookupResponse);
         }
         lookupResponse.append("</list>");
@@ -477,9 +477,9 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
       registrationResponse.append("<registrationResponse>");
       registrationResponse.append("<port>"+port+"</port>");
       registrationResponse.append("<description>"+description+"</description>");
-      Enumeration enum = plugins.elements();
-      while (enum.hasMoreElements()) {
-        NameTablePair ntp = (NameTablePair)enum.nextElement();
+      Enumeration enm = plugins.elements();
+      while (enm.hasMoreElements()) {
+        NameTablePair ntp = (NameTablePair)enm.nextElement();
         String plugin = ntp.name;
         Hashtable nametable = ntp.table;
         registrationResponse.append("<plugin");
@@ -494,9 +494,9 @@ public class NameServerPlugin extends ComponentPlugin implements MessageListener
         registrationResponse.append("</plugin>");
       }
 
-      enum = resources.elements();
-      while (enum.hasMoreElements()) {
-        NameTablePair ntp = (NameTablePair)enum.nextElement();
+      enm = resources.elements();
+      while (enm.hasMoreElements()) {
+        NameTablePair ntp = (NameTablePair)enm.nextElement();
         String resource = ntp.name;
         Hashtable nametable = ntp.table;
         registrationResponse.append("<resource");

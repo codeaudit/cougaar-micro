@@ -212,7 +212,7 @@ public class UGSPlugin extends SimplePlugin {
     turretResource=getMCResource(turretResource, turretResourceSub);
 
 
-    Enumeration enum;
+    Enumeration enm;
     Enumeration tasks = targetSub.elements();
     while (tasks.hasMoreElements()) {
       Task t = (Task)tasks.nextElement();
@@ -248,9 +248,9 @@ public class UGSPlugin extends SimplePlugin {
     // then check for detections and update allocationResults with bearing & detection
     processDetectionAllocations();
 
-    enum = positionSub.elements();
-    while (enum.hasMoreElements()) {
-      Task t=(Task)enum.nextElement();
+    enm = positionSub.elements();
+    while (enm.hasMoreElements()) {
+      Task t=(Task)enm.nextElement();
       if (t.getPlanElement() != null) {
         //System.out.println("nsofUGSPlugin Execute -- pos task has planElement "+t);
         continue; // only want unallocated tasks
@@ -260,9 +260,9 @@ public class UGSPlugin extends SimplePlugin {
     }
 
 
-    enum = targetSub.getRemovedList();
-    while (enum.hasMoreElements()) {
-      processRemovedTargetingTask((Task)enum.nextElement());
+    enm = targetSub.getRemovedList();
+    while (enm.hasMoreElements()) {
+      processRemovedTargetingTask((Task)enm.nextElement());
     }
 
 

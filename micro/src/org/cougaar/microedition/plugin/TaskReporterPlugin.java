@@ -51,19 +51,19 @@ public class TaskReporterPlugin extends PluginAdapter {
   }
 
   public void execute() {
-    Enumeration enum = sub.getAddedList().elements();
-    while (enum.hasMoreElements()) {
-      MicroTask mt = (MicroTask)enum.nextElement();
+    Enumeration enm = sub.getAddedList().elements();
+    while (enm.hasMoreElements()) {
+      MicroTask mt = (MicroTask)enm.nextElement();
       System.out.println("TaskReporter: Added Task: "+mt.getVerb());
     }
-    enum = sub.getChangedList().elements();
-    while (enum.hasMoreElements()) {
-      MicroTask mt = (MicroTask)enum.nextElement();
+    enm = sub.getChangedList().elements();
+    while (enm.hasMoreElements()) {
+      MicroTask mt = (MicroTask)enm.nextElement();
       System.out.println("TaskReporter: Changed Task: "+mt.getVerb());
     }
-    enum = sub.getRemovedList().elements();
-    while (enum.hasMoreElements()) {
-      MicroTask mt = (MicroTask)enum.nextElement();
+    enm = sub.getRemovedList().elements();
+    while (enm.hasMoreElements()) {
+      MicroTask mt = (MicroTask)enm.nextElement();
       System.out.println("TaskReporter: Removed Task: "+mt.getVerb());
     }
 

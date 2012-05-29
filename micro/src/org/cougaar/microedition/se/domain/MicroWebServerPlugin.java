@@ -88,10 +88,10 @@ public class MicroWebServerPlugin extends SimplePlugin
   {
 
     //Examine new microagents in the society
-    Enumeration enum = agentSub.getAddedList();
-    while(enum.hasMoreElements())
+    Enumeration enm = agentSub.getAddedList();
+    while(enm.hasMoreElements())
     {
-      MicroAgent magent = (MicroAgent)enum.nextElement();
+      MicroAgent magent = (MicroAgent)enm.nextElement();
       MicroAgentPG mapg = magent.getMicroAgentPG();
 
       if(pubhash.table.containsKey(mapg.getName()))
@@ -118,10 +118,10 @@ public class MicroWebServerPlugin extends SimplePlugin
        }
     }
 
-    enum = agentSub.getRemovedList();
-    while(enum.hasMoreElements())
+    enm = agentSub.getRemovedList();
+    while(enm.hasMoreElements())
     {
-      MicroAgent magent = (MicroAgent)enum.nextElement();
+      MicroAgent magent = (MicroAgent)enm.nextElement();
       MicroAgentPG mapg = magent.getMicroAgentPG();
 
       if(pubhash.table.containsKey(mapg.getName()))
@@ -132,10 +132,10 @@ public class MicroWebServerPlugin extends SimplePlugin
     }
 
     //Examine allocation results for port id reporting
-    enum = portidallocSub.getChangedList();
-    while(enum.hasMoreElements())
+    enm = portidallocSub.getChangedList();
+    while(enm.hasMoreElements())
     {
-      Allocation ma = (Allocation)enum.nextElement();
+      Allocation ma = (Allocation)enm.nextElement();
 
       String assetname = null;
       MicroAgent magent = (MicroAgent)ma.getAsset();

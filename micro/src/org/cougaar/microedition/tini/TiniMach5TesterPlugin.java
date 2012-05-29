@@ -53,10 +53,10 @@ public class TiniMach5TesterPlugin extends PluginAdapter {
   }
 
   public void execute() {
-    Enumeration enum = botSub.getAddedList().elements();
-    while (enum.hasMoreElements()) {
+    Enumeration enm = botSub.getAddedList().elements();
+    while (enm.hasMoreElements()) {
       try {
-        TiniMach5LocomotionResource bot = (TiniMach5LocomotionResource)enum.nextElement();
+        TiniMach5LocomotionResource bot = (TiniMach5LocomotionResource)enm.nextElement();
         System.out.println("TiniMach5TesterPlugin::Got added "+bot);
 
 	bot.setSpeed(100);

@@ -150,10 +150,10 @@ System.out.println("LocatingPlugin::setupSubscriptions");
       e.nextElement();
     }
 
-    Enumeration enum = advTaskSub.getAddedList();
-    while (enum.hasMoreElements())
+    Enumeration enm = advTaskSub.getAddedList();
+    while (enm.hasMoreElements())
     {
-      Task advtask = (Task)enum.nextElement();
+      Task advtask = (Task)enm.nextElement();
 
       PrepositionalPhrase prep = advtask.getPrepositionalPhrase(Constants.Robot.prepositions[Constants.Robot.TRANSLATEPREP]);
       if (prep!=null)
@@ -168,10 +168,10 @@ System.out.println("LocatingPlugin::setupSubscriptions");
       prep = advtask.getPrepositionalPhrase(Constants.Robot.prepositions[Constants.Robot.ROTATEPREP]);
       if (prep!=null)
       {
-        Enumeration enum2 = taskSub.elements();
-        while (enum2.hasMoreElements())
+        Enumeration enm2 = taskSub.elements();
+        while (enm2.hasMoreElements())
         {
-          NewTask t = (NewTask)enum2.nextElement();
+          NewTask t = (NewTask)enm2.nextElement();
           t.setPrepositionalPhrase((PrepositionalPhrase)prep);
           //System.out.println("Locating Plugin changing reportposition task");
           publishChange(t);

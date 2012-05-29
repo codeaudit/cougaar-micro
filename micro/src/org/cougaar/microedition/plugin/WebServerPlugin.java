@@ -191,10 +191,10 @@ public class WebServerPlugin extends PluginAdapter
   {
 
     //Examine new microagents in the society
-    Enumeration enum = agentSub.getAddedList().elements();
-    while(enum.hasMoreElements())
+    Enumeration enm = agentSub.getAddedList().elements();
+    while(enm.hasMoreElements())
     {
-      MicroAgent magent = (MicroAgent)enum.nextElement();
+      MicroAgent magent = (MicroAgent)enm.nextElement();
 
       if(webserverports.containsKey(magent.getAgentId().getName()))
 	continue; //don't spawn a task for this
@@ -216,10 +216,10 @@ public class WebServerPlugin extends PluginAdapter
        }
     }
 
-    enum = agentSub.getRemovedList().elements();
-    while(enum.hasMoreElements())
+    enm = agentSub.getRemovedList().elements();
+    while(enm.hasMoreElements())
     {
-      MicroAgent magent = (MicroAgent)enum.nextElement();
+      MicroAgent magent = (MicroAgent)enm.nextElement();
 
       if(webserverports.containsKey(magent.getAgentId().getName()))
       {
@@ -228,10 +228,10 @@ public class WebServerPlugin extends PluginAdapter
     }
 
     //Examine allocation results for port id reporting
-    enum = portidallocSub.getChangedList().elements();
-    while(enum.hasMoreElements())
+    enm = portidallocSub.getChangedList().elements();
+    while(enm.hasMoreElements())
     {
-      MicroAllocation ma = (MicroAllocation)enum.nextElement();
+      MicroAllocation ma = (MicroAllocation)enm.nextElement();
 
       String assetname = null;
       MicroAgent magent = (MicroAgent)ma.getAsset();
@@ -278,10 +278,10 @@ public class WebServerPlugin extends PluginAdapter
     }
 
     //Examine the tasks that enquire for own port id
-    enum = portidtaskSub.getAddedList().elements();
-    while(enum.hasMoreElements())
+    enm = portidtaskSub.getAddedList().elements();
+    while(enm.hasMoreElements())
     {
-      MicroTask mt = (MicroTask)enum.nextElement();
+      MicroTask mt = (MicroTask)enm.nextElement();
 
       //see if this is my own task
       org.cougaar.microedition.util.StringTokenizer st = new org.cougaar.microedition.util.StringTokenizer(mt.getUniqueID(), "/");
@@ -334,11 +334,11 @@ public class WebServerPlugin extends PluginAdapter
     "  </TR>\n");
 
 
-    Enumeration enum = taskSub.getMemberList().elements();
-    while(enum.hasMoreElements())
+    Enumeration enm = taskSub.getMemberList().elements();
+    while(enm.hasMoreElements())
     {
       //task verb information
-      MicroTask t = (MicroTask)enum.nextElement();
+      MicroTask t = (MicroTask)enm.nextElement();
       if(debugging) System.out.println( "Task = "+t.getVerb() );
       stream.print("  <TR>\n");
       stream.print("    <TD width=200 valign=top><P>"+t.getVerb()+"</P></TD>\n");
@@ -348,10 +348,10 @@ public class WebServerPlugin extends PluginAdapter
       if (t.getPrepositionalPhrases() != null)
       {
 
-	for (Enumeration prepenum = t.getPrepositionalPhrases().elements();
-	      prepenum.hasMoreElements(); )
+	for (Enumeration prepenm = t.getPrepositionalPhrases().elements();
+	      prepenm.hasMoreElements(); )
 	{
-	  MicroPrepositionalPhrase mpp =(MicroPrepositionalPhrase)enum.nextElement();
+	  MicroPrepositionalPhrase mpp =(MicroPrepositionalPhrase)enm.nextElement();
 	  if (mpp !=null)
 	  {
 	    prepstring = prepstring + mpp.getPreposition() + "=" + mpp.getIndirectObject() + ",";
@@ -415,10 +415,10 @@ public class WebServerPlugin extends PluginAdapter
     "  </TR>\n");
 
 
-    Enumeration enum = otherSub.getMemberList().elements();
-    while(enum.hasMoreElements())
+    Enumeration enm = otherSub.getMemberList().elements();
+    while(enm.hasMoreElements())
     {
-      Object other = (Object)enum.nextElement();
+      Object other = (Object)enm.nextElement();
       stream.print("  <TR>\n");
       stream.print("    <TD width=200 valign=top><P>"+other.getClass().getName()+"</P></TD>\n");
       stream.print("    <TD width=200 valign=top><P>"+other.toString()+"</P></TD>\n");
@@ -444,11 +444,11 @@ public class WebServerPlugin extends PluginAdapter
     "  </TR>\n");
 
 
-    Enumeration enum = resourceSub.getMemberList().elements();
-    while(enum.hasMoreElements())
+    Enumeration enm = resourceSub.getMemberList().elements();
+    while(enm.hasMoreElements())
     {
       //task verb information
-      Resource r = (Resource)enum.nextElement();
+      Resource r = (Resource)enm.nextElement();
       if(debugging) System.out.println( "Resource = "+r.getName());
 
       stream.print("  <TR>\n");
@@ -510,11 +510,11 @@ public class WebServerPlugin extends PluginAdapter
 
 
     Vector alreadylisted = new Vector();
-    Enumeration enum = agentSub.getMemberList().elements();
-    while(enum.hasMoreElements())
+    Enumeration enm = agentSub.getMemberList().elements();
+    while(enm.hasMoreElements())
     {
       //task verb information
-      MicroAgent magent = (MicroAgent)enum.nextElement();
+      MicroAgent magent = (MicroAgent)enm.nextElement();
       if(debugging) System.out.println( "MicroAgent Name = "+magent.getAgentId().getName());
       if(debugging) System.out.println( "MicroAgent Address = "+magent.getAgentId().getIpAddress());
       if(debugging) System.out.println( "MicroAgent Port = "+magent.getAgentId().getPort());
